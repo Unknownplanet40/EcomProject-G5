@@ -29,9 +29,8 @@
 
             <div class="text-end mx-3">
                 <?php
-                //[temporary] Check if user is logged in
-                $isLogin = false;
-                $haveCart = false;
+                $isLogin = false; // true - if user is logged in
+                $haveCart = false; // true - if user have items in cart
 
                 if (!$isLogin) { ?>
                     <a href="#" data-bs-target="#SignIN" data-bs-toggle="modal" class="d-block link-body-emphasis text-decoration-none">
