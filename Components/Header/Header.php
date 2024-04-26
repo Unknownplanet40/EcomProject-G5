@@ -10,7 +10,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
             <ul class="nav me-auto mb-2 mb-lg-0">
-                <li><a href="#" class="nav-link px-2 link-hover"><svg class="mb-1" width="16" height="16" role="img" aria-label="Home">
+                <li><a href="#" class="nav-link px-2 link-hover active-tab"><svg class="mb-1" width="16" height="16" role="img" aria-label="Home">
                             <use xlink:href="#home" />
                         </svg> Home</a></li>
                 <li><a href="#" class="nav-link px-2 link-hover"><svg class="mb-1" width="16" height="16" role="img" aria-label="Shop">
@@ -29,8 +29,8 @@
 
             <div class="text-end mx-3">
                 <?php
-                //[temporary] Check if user is logged in
-                $isLogin = false;
+                $isLogin = false; // true - if user is logged in
+                $haveCart = false; // true - if user have items in cart
 
                 if (!$isLogin) { ?>
                     <a href="#" data-bs-target="#SignIN" data-bs-toggle="modal" class="d-block link-body-emphasis text-decoration-none">
@@ -40,25 +40,50 @@
                     </a>
                 <?php } else { ?>
                     <!-- If Login-->
-                    <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
-                        <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
-                    </a>
-                    <ul class="dropdown-menu text-small shadow dropdown-menu-end">
-                        <li>
-                            <p class="dropdown-header">Welcome,</p>
-                            <p class="dropdown-item-text px-2">Lorem Ipsum Dolor</p>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item" href="#">About Us</a></li>
-                        <li><a class="dropdown-item" href="#">Settings</a></li>
-                        <li><a class="dropdown-item" href="#">Profile</a></li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item" href="#">Sign out</a></li>
-                    </ul>
+                    <div class="hstack gap-3">
+                        <?php if ($haveCart) { ?>
+                            <div class="me-3 position-relative">
+                                <a href="#" class="d-block link-body-emphasis text-decoration-none mt-1">
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-2 text-bg-primary bg-opacity-75">
+                                        99+
+                                        <span class="visually-hidden">Items in cart</span>
+                                    </span>
+                                    <svg class="mb-1" width="24" height="24" role="img" aria-label="Cart">
+                                        <use xlink:href="#Cart" />
+                                    </svg>
+                                </a>
+                            </div>
+                        <?php } else { ?>
+                            <div class="me-3" title="Cart is empty">
+                                <a href="#" class="d-block link-body-emphasis text-decoration-none mt-1">
+                                    <svg class="mb-1" width="24" height="24" role="img" aria-label="Cart">
+                                        <use xlink:href="#Cart" />
+                                    </svg>
+                                </a>
+                            </div>
+                        <?php } ?>
+                        <div>
+                            <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+                                <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
+                            </a>
+                            <ul class="dropdown-menu text-small shadow dropdown-menu-end">
+                                <li>
+                                    <p class="dropdown-header">Welcome,</p>
+                                    <p class="dropdown-item-text px-2">Lorem Ipsum Dolor</p>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" href="#">About Us</a></li>
+                                <li><a class="dropdown-item" href="#">Settings</a></li>
+                                <li><a class="dropdown-item" href="#">Profile</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" href="#">Sign out</a></li>
+                            </ul>
+                        </div>
+                    </div>
                 <?php } ?>
             </div>
         </div>
