@@ -1,3 +1,10 @@
+// check if browser is Chrome
+var isChrome =
+  /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+if (!isChrome) {
+  alert("Your not using Chrome Browser, some features may not work properly");
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   // hide loader after fully load
   document.getElementById("loader").classList.remove("d-block");
@@ -30,5 +37,4 @@ document.addEventListener("DOMContentLoaded", function () {
       Pword.type = "password";
     }
   });
-  
 });
