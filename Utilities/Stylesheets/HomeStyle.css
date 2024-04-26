@@ -1,0 +1,140 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.link-hover {
+    text-decoration: none;
+    transition: 300ms ease-in-out;
+    text-transform: uppercase;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.link-hover:hover {
+    transform: scale(1.1, 1.1);
+    font-weight: 700;
+    color: #0d6efd !important;
+}
+
+.pop{
+    transition: 300ms ease-in-out;
+}
+
+.pop:hover{
+    transform: scale(1.1, 1.1);
+}
+
+.clamp {
+    font-size: clamp(12px, 4vw, 32px);
+    text-transform: uppercase;
+}
+
+.Cmodal-backdrop {
+    --bs-backdrop-zindex: 1050;
+    --bs-backdrop-bg: #000;
+    --bs-backdrop-opacity: 0.3;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: var(--bs-backdrop-zindex);
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--bs-backdrop-bg);
+}
+
+.Cmodal-backdrop.Cfade {
+    opacity: 0;
+}
+
+.Cmodal-backdrop.Cshow {
+    opacity: 0.9;
+}
+
+.Fbackg {
+    background: rgb(2, 0, 36);
+    background: linear-gradient(180deg, rgba(2, 0, 36, 0) 0%, rgba(0, 0, 0, 1) 100%);
+}
+
+.CarimgSize {
+    height: 512px !important;
+}
+
+.bg-blur{
+    backdrop-filter: blur(5px) !important
+}
+
+.Carousel-prev,
+.Carousel-next {
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    background-size: 100% 100%;
+}
+
+.Carousel-next {
+    background-image: url("data: image/svg+xml, %3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 25 24' fill='%23fff' %3e%3cpath fill-rule='evenodd' clip-rule='evenodd' d='M8.75094 19.9997C8.40894 19.9997 8.07594 19.8247 7.88994 19.5097C7.60794 19.0337 7.76594 18.4207 8.23994 18.1397C10.8649 16.5837 14.7499 13.5567 14.7499 11.9997C14.7499 10.4397 10.8659 7.41374 8.23994 5.85974C7.76594 5.57874 7.60794 4.96574 7.88994 4.48974C8.17094 4.01574 8.78394 3.85874 9.25994 4.13974C10.5099 4.87974 16.7499 8.73774 16.7499 11.9997C16.7499 15.2607 10.5109 19.1197 9.25994 19.8597C9.09994 19.9547 8.92394 19.9997 8.75094 19.9997Z' /%3e%3c/svg%3e");
+}
+
+.Carousel-prev {
+    background-image: url("data: image/svg+xml, %3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 25 24' fill='%23fff' %3e%3cpath fill-rule='evenodd' clip-rule='evenodd' d='M15.749 19.9997C15.576 19.9997 15.4 19.9547 15.24 19.8597C13.99 19.1197 7.75 15.2617 7.75 11.9997C7.75 8.73874 13.989 4.87974 15.24 4.13974C15.717 3.85874 16.33 4.01574 16.61 4.48974C16.892 4.96574 16.734 5.57874 16.26 5.85974C13.635 7.41574 9.75 10.4427 9.75 11.9997C9.75 13.5597 13.634 16.5857 16.26 18.1397C16.734 18.4207 16.892 19.0337 16.61 19.5097C16.424 19.8247 16.091 19.9997 15.749 19.9997Z'/%3e%3c/svg%3e");
+}
+
+.nb-t {
+    transition: 200ms;
+}
+
+.nb-t:hover {
+    transform: scale(1.2, 1.2);
+}
+
+.nb-t:active {
+    transform: rotate(90deg) scale(1, 1);
+}
+
+.custom-devtool{
+    position: fixed;
+    top: 50%;
+    right: 50%;
+    transform: translate(50%, -50%);
+    z-index: 9999;
+    color: #fff;
+    padding: 10px;
+    border-radius: 0 0 0 10px;
+    cursor: pointer;
+}
+
+
+.custom-loader {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+
+    z-index: 1060;
+
+    background-image: url('../../Assets/Images/Logo_2.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+
+    width: 192px;
+    height: 128px;
+
+    animation: zoom 1500ms ease-in-out infinite;
+}
+
+@keyframes zoom {
+    0% {
+        transform: translate(-50%, -50%) scale(1, 1);
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(1.5, 1.5);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(1, 1);
+    }
+}
