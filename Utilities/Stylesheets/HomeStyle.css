@@ -46,6 +46,7 @@
     width: 100vw;
     height: 100vh;
     background-color: var(--bs-backdrop-bg);
+    backdrop-filter: blur(5px) !important;
 }
 
 .Cmodal-backdrop.Cfade {
@@ -66,7 +67,7 @@
 }
 
 .bg-blur{
-    backdrop-filter: blur(5px) !important
+    backdrop-filter: blur(5px) !important;
 }
 
 .Carousel-prev,
@@ -109,6 +110,10 @@
     padding: 10px;
     border-radius: 0 0 0 10px;
     cursor: pointer;
+}
+
+.offcanvas-size {
+    width: 512px !important;
 }
 
 

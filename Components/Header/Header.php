@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary bg-opacity-25 bg-blur border-bottom shadow-sm fixed-top">
+<nav class="navbar navbar-expand-lg bg-body-tertiary bg-opacity-75 bg-blur border-bottom shadow-sm fixed-top">
     <div class="container-fluid">
         <div class="col-md-3 mb-2 mb-md-0">
             <a href="<?php echo $_SERVER['PHP_SELF']; ?>" class="d-inline-flex link-body-emphasis text-decoration-none">
@@ -27,13 +27,14 @@
                         </svg> Search</a></li>
             </ul>
 
-            <div class="text-end mx-3">
+            <div class="d-flex justify-content-end">
                 <?php
                 $isLogin = false; // true - if user is logged in
-                $haveCart = false; // true - if user have items in cart
+                $haveCart = true; // true - if user have items in cart
+                $CartItem = 5; // Number of items in cart
 
                 if (!$isLogin) { ?>
-                    <a href="#" data-bs-target="#SignIN" data-bs-toggle="modal" class="d-block link-body-emphasis text-decoration-none">
+                    <a href=" #" data-bs-target="#SignIN" data-bs-toggle="modal" class="d-block link-body-emphasis text-decoration-none">
                         <svg class="" width="16" height="16" role="img" aria-label="Register">
                             <use xlink:href="#Login" />
                         </svg> Sign In / Register
@@ -43,7 +44,7 @@
                     <div class="hstack gap-3">
                         <?php if ($haveCart) { ?>
                             <div class="me-3 position-relative">
-                                <a href="#" class="d-block link-body-emphasis text-decoration-none mt-1">
+                                <a class="d-block link-body-emphasis text-decoration-none mt-1" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">
                                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-2 text-bg-primary bg-opacity-75">
                                         99+
                                         <span class="visually-hidden">Items in cart</span>
@@ -56,7 +57,7 @@
                         <?php } else { ?>
                             <div class="me-3" title="Cart is empty">
                                 <a href="#" class="d-block link-body-emphasis text-decoration-none mt-1">
-                                    <svg class="mb-1" width="24" height="24" role="img" aria-label="Cart">
+                                    <svg class="mb-1" width="24" height="24" role="img" aria-label="Cart is empty">
                                         <use xlink:href="#Cart" />
                                     </svg>
                                 </a>
@@ -89,4 +90,60 @@
         </div>
     </div>
 </nav>
+<div class="offcanvas-size offcanvas offcanvas-end bg-blur bg-opacity-50 bg-body-tertiary" data-bs-backdrop="static" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Items in Cart</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="vstack gap-5">
+            <?php
+            if ($CartItem != 0) { ?>
+                <ol class="list-group list-group-numbered list-group-flush rounded-2 shadow">
+                    <?php for ($i = 0; $i < $CartItem; $i++) { ?>
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <input class="form-check-input mx-2" type="checkbox" value="" id="firstCheckbox">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Product Name</div>
+                                <div class="hstack gap-2">
+                                    <small class="text-muted">
+                                        <select class="form-select form-select-sm" aria-label="Select Size">
+                                            <option selected disabled hidden>Select Size</option>
+                                            <option value="1">Small</option>
+                                            <option value="2">Medium</option>
+                                            <option value="3">Large</option>
+                                        </select>
+                                    </small>
+                                    <small class="text-muted">
+                                        <input type="number" class="form-control form-control-sm" value="1" min="1" max="99" placeholder="Quantity">
+                                    </small>
+                                </div>
+                            </div>
+                            <span class="badge bg-primary rounded-2">₱ 199.98</span>
+                        </li>
+                    <?php }
+                } else { ?>
+                </ol>
+                <div class="text-center">
+                    <svg class="mb-1" width="64" height="64" role="img" aria-label="Cart">
+                        <use xlink:href="#Cart" />
+                    </svg>
+                    <h3 class="text-muted">Cart is Empty</h3>
+                </div>
+            <?php } ?>
+            <!-- Cart Total -->
+            <div class="hstack gap-3">
+                <div class="hstack gap-2">
+                    <h3 class="text-muted">Total:</h3>
+                    <h2>₱ 999.99</h2>
+                </div>
+            </div>
+            <div class="hstack gap-3">
+                <button class="btn btn-sm btn-primary w-50 me-3" type="button">Checkout</button>
+                <div class="vr"></div>
+                <button class="btn btn-danger" type="button">Clear Selected Items</button>
+            </div>
+        </div>
+    </div>
+</div>
 <hr style="height: 64px; margin: 0;">

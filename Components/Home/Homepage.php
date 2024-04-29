@@ -3,7 +3,7 @@
 ?>
 
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="auto">
+<html lang="en" data-bs-theme="dark">
 
 <head>
     <meta charset="UTF-8">
@@ -43,17 +43,19 @@
     include_once('../Modal/SigninModal.php');
     ?>
 
+    <!-- Carousel -->
     <div class="container-responsive mt-3 px-1">
         <?php include_once('../Carousel/CarouselFrontPage.php'); ?>
     </div>
-    <!-- Carousel -->
-    <h1 class="text-center clamp pt-5">Our Products</h1>
+    <!-- Categories -->
+
     <!-- Product Cards -->
+    <h1 class="text-center clamp m-5">ALL PRODUCTS</h1>
     <div class="album bg-body-tertiary pt-1">
         <div class="container-lg">
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3" data-masonry='{"percentPosition": true }'>
+            <div class="row row-cols-1 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3" data-masonry='{"percentPosition": true }'>
                 <?php
-                $Item = 11;
+                $Item = 14;
 
                 for ($i = 1; $i < $Item; $i++) {
                     $OP = rand(1, 500);
@@ -71,12 +73,15 @@
                                             }
                                             ?>" class="bd-placeholder-img card-img-top object-fit-cover" role="img" preserveAspectRatio="xMidYMid slice" focusable="false">
                                 <div class="card-body">
-                                    <p class="card-title fw-bold">Product Name <?php echo $i; ?></p>
-                                    <div class="d-flex justify-content-between align-items-center">
+                                    <p class="card-title text-center">Product Name <?php echo $i; ?> - Black</p>
+                                    <div class="d-flex justify-content-between align-items-center visually-hidden">
                                         <h5 class=" text-primary card-text">₱ <?php echo intval($DP); ?></h5>
                                         <small class="text-body">
                                             <span class="text-decoration-line-through fw-bold">₱ <?php echo $OP; ?></span> - <span class="text-body-secondary"><?php echo intval($percent) . '%'; ?> off </span>
                                         </small>
+                                    </div>
+                                    <div class="text-center">
+                                        <h5>₱ <?php echo intval($OP); ?></h5>
                                     </div>
                                 </div>
                             </div>
@@ -87,6 +92,7 @@
         </div>
     </div>
     <!-- Footer -->
+    <?php include_once('../Footer/Footer.php'); ?>
 </body>
 
 </html>

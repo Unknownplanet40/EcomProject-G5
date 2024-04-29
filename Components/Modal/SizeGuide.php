@@ -16,19 +16,19 @@
                     </div>
                     <div class="tab-content text-center" id="v-pills-tabContent">
                         <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab" tabindex="0">
-                            <img src="https://cdn.shopify.com/s/files/1/0248/7910/4072/files/TEE_-_BOX_FIT.jpg?v=1704337182" style="width: 620px; height: 445px;" class="img-fluid object-fit-fill" alt="...">
+                            <img src="https://cdn.shopify.com/s/files/1/0248/7910/4072/files/TEE_-_BOX_FIT.jpg?v=1704337182" style="width: 620px; height: 445px;" class="img-fluid object-fit-fill rounded-3" alt="...">
                         </div>
                         <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab" tabindex="0">
-                            <img src="https://cdn.shopify.com/s/files/1/0248/7910/4072/files/TEE_-_BOX_FIT.jpg?v=1704337182" style="width: 620px; height: 445px;" class="img-fluid object-fit-fill" alt="...">
+                            <img src="https://cdn.shopify.com/s/files/1/0248/7910/4072/files/TEE_-_BOX_FIT.jpg?v=1704337182" style="width: 620px; height: 445px;" class="img-fluid object-fit-fill rounded-3" alt="...">
                         </div>
                         <div class="tab-pane fade" id="v-pills-disabled" role="tabpanel" aria-labelledby="v-pills-disabled-tab" tabindex="0">
-                            <img src="https://cdn.shopify.com/s/files/1/0248/7910/4072/files/TEE_-_BOX_FIT.jpg?v=1704337182" style="width: 620px; height: 445px;" class="img-fluid object-fit-fill" alt="...">
+                            <img src="https://cdn.shopify.com/s/files/1/0248/7910/4072/files/TEE_-_BOX_FIT.jpg?v=1704337182" style="width: 620px; height: 445px;" class="img-fluid object-fit-fill rounded-3" alt="...">
                         </div>
                         <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab" tabindex="0">
-                            <img src="https://cdn.shopify.com/s/files/1/0248/7910/4072/files/TEE_-_BOX_FIT.jpg?v=1704337182" style="width: 620px; height: 445px;" class="img-fluid object-fit-fill" alt="...">
+                            <img src="https://cdn.shopify.com/s/files/1/0248/7910/4072/files/TEE_-_BOX_FIT.jpg?v=1704337182" style="width: 620px; height: 445px;" class="img-fluid object-fit-fill rounded-3" alt="...">
                         </div>
                         <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab" tabindex="0">
-                            <img src="https://cdn.shopify.com/s/files/1/0248/7910/4072/files/TEE_-_BOX_FIT.jpg?v=1704337182" style="width: 620px; height: 445px;" class="img-fluid object-fit-fill" alt="...">
+                            <img src="https://cdn.shopify.com/s/files/1/0248/7910/4072/files/TEE_-_BOX_FIT.jpg?v=1704337182" style="width: 620px; height: 445px;" class="img-fluid object-fit-fill rounded-3" alt="...">
                         </div>
                     </div>
                 </div>
