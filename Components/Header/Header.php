@@ -29,7 +29,7 @@
 
             <div class="d-flex justify-content-end">
                 <?php
-                $isLogin = false; // true - if user is logged in
+                $isLogin = true; // true - if user is logged in
                 $haveCart = true; // true - if user have items in cart
                 $CartItem = 5; // Number of items in cart
 
@@ -95,11 +95,12 @@
         <h5 class="offcanvas-title" id="offcanvasExampleLabel">Items in Cart</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
+    <small class="text-muted text-center">*Note: initial design only</small>
     <div class="offcanvas-body">
         <div class="vstack gap-5">
             <?php
             if ($CartItem != 0) { ?>
-                <ol class="list-group list-group-numbered list-group-flush rounded-2 shadow">
+                <ol class="list-group list-group-numbered list-group-flush rounded-2">
                     <?php for ($i = 0; $i < $CartItem; $i++) { ?>
                         <li class="list-group-item d-flex justify-content-between align-items-start">
                             <input class="form-check-input mx-2" type="checkbox" value="" id="firstCheckbox">

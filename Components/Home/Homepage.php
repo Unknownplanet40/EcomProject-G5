@@ -3,7 +3,7 @@
 ?>
 
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en" data-bs-theme="light">
 
 <head>
     <meta charset="UTF-8">
@@ -41,14 +41,54 @@
     include_once('../Modal/SearchModal.php');
     include_once('../Modal/SizeGuide.php');
     include_once('../Modal/SigninModal.php');
+    include_once('../Modal/ProductModal.php');
     ?>
 
     <!-- Carousel -->
-    <div class="container-responsive mt-3 px-1">
+    <div class="container-responsive mt-3 mb-5 px-1">
         <?php include_once('../Carousel/CarouselFrontPage.php'); ?>
     </div>
     <!-- Categories -->
+    <div class="container mt-4 border border-3 rounded-2">
+        <div class="hstack gap-3 p-3 justify-content-center">
+            <a href="#" class="text-decoration-none text-body">
+                <div class="card">
+                    <div class="card-body">
+                        DBTK Logo
+                    </div>
+                </div>
+            </a>
+            <a href="#" class="text-decoration-none text-body">
+                <div class="card">
+                    <div class="card-body">
+                        UNDFTD Logo
+                    </div>
+                </div>
+            </a>
+            <a href="#" class="text-decoration-none text-body">
+                <div class="card">
+                    <div class="card-body">
+                        COZIEST Logo
+                    </div>
+                </div>
+            </a>
+            <a href="#" class="text-decoration-none text-body">
+                <div class="card">
+                    <div class="card-body">
+                        RICHBOYZ Logo
+                    </div>
+                </div>
+            </a>
+            <a href="#" class="text-decoration-none text-body">
+                <div class="card">
+                    <div class="card-body">
+                        MFCKN kids Logo
+                    </div>
+                </div>
+            </a>
+        </div>
 
+    </div>
     <!-- Product Cards -->
     <h1 class="text-center clamp m-5">ALL PRODUCTS</h1>
     <div class="album bg-body-tertiary pt-1">
@@ -65,7 +105,7 @@
                     $percent = 100 - (($DP / $OP) * 100);
                 ?>
                     <div class="col">
-                        <a href="#" class="text-decoration-none">
+                        <a class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#Product">
                             <div class="card pop border-0">
                                 <img src="<?php
                                             for ($j = 0; $j < 1; $j++) {

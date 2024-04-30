@@ -7,7 +7,7 @@
             </div>
             <div class="modal-header border-0">
                 <div class="input-group flex-nowrap">
-                    <input type="text" class="form-control border-1 border-end-0 border-secondary
+                    <input type="text" class="form-control border-1 border-end-0 border-secondary bg-transparent text-body-trertiary fw-bold
                     " id="search-bar" placeholder="Search here...">
                     <button class="btn btn-outline-secondary" type="button" id="search-btn">
                         <svg class="mb-1" width="16" height="16" role="img" aria-label="Search">
@@ -39,8 +39,6 @@
                             </li>
                         <?php
                         }
-
-                        $isLogin = false;
 
                         if (!$isLogin) { ?>
                             <li class="list-group-item text-center">
