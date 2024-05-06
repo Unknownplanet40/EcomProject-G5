@@ -3,7 +3,7 @@
 ?>
 
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="light">
+<html lang="en" data-bs-theme="auto">
 
 <head>
     <meta charset="UTF-8">
@@ -50,44 +50,56 @@
     </div>
     <!-- Categories -->
     <div class="container mt-4 border border-3 rounded-2">
-        <div class="hstack gap-3 p-3 justify-content-center">
-            <a href="#" class="text-decoration-none text-body">
-                <div class="card">
-                    <div class="card-body">
-                        DBTK Logo
-                    </div>
+        <small class="text-body-secondary">*Note: For Brand Logo</small>
+        <div class="container text-center">
+            <div class="row align-items-center justify-content-between g-3">
+                <div class="col">
+                    <a href="#" class="text-decoration-none text-body">
+                        <div class="card border-0 bg-transparent">
+                            <div class="card-body">
+                                <img src="../../Assets/Images/Logo_1.png" alt="Category Icon" class="img-fluid" style="width: 32px;">
+                            </div>
+                        </div>
+                    </a>
                 </div>
-            </a>
-            <a href="#" class="text-decoration-none text-body">
-                <div class="card">
-                    <div class="card-body">
-                        UNDFTD Logo
-                    </div>
+                <div class="col">
+                    <a href="#" class="text-decoration-none text-body">
+                        <div class="card border-0 bg-transparent">
+                            <div class="card-body">
+                                <img src="../../Assets/Images/Logo_1.png" alt="Category Icon" class="img-fluid" style="width: 32px;">
+                            </div>
+                        </div>
+                    </a>
                 </div>
-            </a>
-            <a href="#" class="text-decoration-none text-body">
-                <div class="card">
-                    <div class="card-body">
-                        COZIEST Logo
-                    </div>
+                <div class="col">
+                    <a href="#" class="text-decoration-none text-body">
+                        <div class="card border-0 bg-transparent">
+                            <div class="card-body">
+                                <img src="../../Assets/Images/Logo_1.png" alt="Category Icon" class="img-fluid" style="width: 32px;">
+                            </div>
+                        </div>
+                    </a>
                 </div>
-            </a>
-            <a href="#" class="text-decoration-none text-body">
-                <div class="card">
-                    <div class="card-body">
-                        RICHBOYZ Logo
-                    </div>
+                <div class="col">
+                    <a href="#" class="text-decoration-none text-body">
+                        <div class="card border-0 bg-transparent">
+                            <div class="card-body">
+                                <img src="../../Assets/Images/Logo_1.png" alt="Category Icon" class="img-fluid" style="width: 32px;">
+                            </div>
+                        </div>
+                    </a>
                 </div>
-            </a>
-            <a href="#" class="text-decoration-none text-body">
-                <div class="card">
-                    <div class="card-body">
-                        MFCKN kids Logo
-                    </div>
+                <div class="col">
+                    <a href="#" class="text-decoration-none text-body">
+                        <div class="card border-0 bg-transparent">
+                            <div class="card-body">
+                                <img src="../../Assets/Images/Logo_1.png" alt="Category Icon" class="img-fluid" style="width: 32px;">
+                            </div>
+                        </div>
+                    </a>
                 </div>
-            </a>
+            </div>
         </div>
-
     </div>
     <!-- Product Cards -->
     <h1 class="text-center clamp m-5">ALL PRODUCTS</h1>
@@ -106,7 +118,7 @@
                 ?>
                     <div class="col">
                         <a class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#Product">
-                            <div class="card pop border-0">
+                            <div class="card pop border-0 bg-body-tertiary">
                                 <img src="<?php
                                             for ($j = 0; $j < 1; $j++) {
                                                 echo '../../Assets/Images/testing/temp' . $i . '.jpg';
