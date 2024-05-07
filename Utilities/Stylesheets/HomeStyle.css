@@ -5,20 +5,21 @@
 
 .link-hover {
     text-decoration: none;
-    transition: 300ms ease-in-out;
+    transition: 200ms ease-in-out;
     text-transform: uppercase;
     font-weight: 700;
     cursor: pointer;
 }
 
 .link-hover:hover {
-    transform: scale(1.1, 1.1);
+    transform: scale(1.2, 1.2);
     font-weight: 700;
-    color: #0d6efd !important;
 }
 
-.active-tab {
-    color: #dc3545 !important;
+.links:has(.link-hover:hover) .link-hover:not(:hover) {
+    transform: scale(0.9, 0.9);
+    opacity: 0.9;
+    filter: blur(2px);
 }
 
 .pop{

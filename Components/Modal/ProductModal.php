@@ -28,68 +28,68 @@
                                 <input type="hidden" id="ProductID" value="1">
                                 <h3 class="card-title text-body-emphasis">Product Name</h3>
                                 <h6 class="card-subtitle my-2 text-body-secondary">Brand Name</h6>
-                                <h6 class="card-subtitle mb-2 text-body-secondary">Availability: <span class="badge bg-success rounded-0">In Stock</span></h6>
-                                <div class="row row-cols-2 g-2 mb-2 visually-hidden">
-                                    <div class="col-4 py-1">
-                                        <h5 class="card-text">Color</h5>
-                                    </div>
-                                    <div class="col-8">
-                                        <select class="form-select form-select-sm bg-transparent" aria-label="Default select example">
-                                            <option selected>Choose...</option>
-                                            <option value="1">Black</option>
-                                            <option value="2">White</option>
-                                            <option value="3">Red</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row row-cols-2 g-2 mb-2">
-                                    <div class="col-4 py-1">
-                                        <h5 class="card-text">Size</h5>
-                                    </div>
-                                    <div class="col-8">
-                                        <select class="form-select form-select-sm
-                                        " aria-label="Default select example">
-                                            <option selected hidden>Choose...</option>
-                                            <option value="1">Small</option>
-                                            <option value="2">Medium</option>
-                                            <option value="3">Large</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row row-cols-2 g-2 mb-3">
-                                    <div class="col-4 py-1">
-                                        <h5 class="card-text">Price</h5>
-                                    </div>
-                                    <div class="col-8 py-1">
-                                        <h4 class="card-text fw-bold">₱ 100.00 <small class="text-muted text-decoration-line-through">₱ 200.00</small></h4>
-                                    </div>
-                                </div>
-                                <div class="row row-cols-2 g-2 disabled">
-                                    <div class="col-5">
-                                        <div class="input-group mb-3">
-                                            <button id="Qminus" class="btn btn-sm btn-outline-primary" type="button">
-                                                <svg class="bi" fill="currentColor" width="1.5em" height="1.5em">
-                                                    <use xlink:href="#Minus" />
-                                                </svg>
-                                            </button>
-                                            <input id="Qinput" type="text" class="form-control form-control-sm text-center border-1 border-primary bg-transparent" value="1" aria-label="Quantity" aria-describedby="button-addon1" readonly>
-                                            <button id="Qplus" class="btn btn-sm btn-outline-primary" type="button">
-                                                <svg class="bi" fill="currentColor" width="1.5em" height="1.5em">
-                                                    <use xlink:href="#Plus" />
-                                                </svg>
-                                            </button>
+                                <h6 class="card-subtitle mb-2 text-body-secondary">Availability: <span class="badge bg-success rounded-0">In Stock</span> | <span class="badge bg-danger rounded-0">-50% OFF</span></h6>
+                                    <div class="row row-cols-2 g-2 mb-2 visually-hidden">
+                                        <div class="col-4 py-1">
+                                            <h5 class="card-text">Color</h5>
+                                        </div>
+                                        <div class="col-8">
+                                            <select class="form-select form-select-sm bg-transparent" aria-label="Default select example">
+                                                <option selected>Choose...</option>
+                                                <option value="1">Black</option>
+                                                <option value="2">White</option>
+                                                <option value="3">Red</option>
+                                            </select>
                                         </div>
                                     </div>
-                                    <div class="col-7">
-                                        <a id="AddCart" class="btn btn-sm btn-primary w-100 rounded-0">
-                                            <svg class="bi" fill="currentColor" width="1.5em" height="1.5em">
-                                                <use xlink:href="#Cart" />
-                                            </svg>
-                                            Add to Cart
-                                        </a>
+                                    <div class="row row-cols-2 g-2 mb-2">
+                                        <div class="col-4 py-1">
+                                            <h5 class="card-text">Size</h5>
+                                        </div>
+                                        <div class="col-8">
+                                            <select class="form-select form-select-sm
+                                        " aria-label="Default select example">
+                                                <option selected hidden>Choose...</option>
+                                                <option value="1">Small</option>
+                                                <option value="2">Medium</option>
+                                                <option value="3">Large</option>
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
-                                <small class="text-muted">Please note: A maximum of 5 items per transaction is allowed. Thank you for your cooperation.</small>
+                                    <div class="row row-cols-2 g-2 mb-3">
+                                        <div class="col-4 py-1">
+                                            <h5 class="card-text">Price</h5>
+                                        </div>
+                                        <div class="col-8 py-1">
+                                            <h4 class="card-text fw-bold">₱ 100.00 <small class="text-muted text-decoration-line-through">₱ 200.00</small></h4>
+                                        </div>
+                                    </div>
+                                    <div class="row row-cols-2 g-2 disabled">
+                                        <div class="col-5">
+                                            <div class="input-group mb-3">
+                                                <button id="Qminus" class="btn btn-sm btn-outline-primary" type="button">
+                                                    <svg class="bi" fill="currentColor" width="1.5em" height="1.5em">
+                                                        <use xlink:href="#Minus" />
+                                                    </svg>
+                                                </button>
+                                                <input id="Qinput" type="text" class="form-control form-control-sm text-center border-1 border-primary bg-transparent" value="1" aria-label="Quantity" aria-describedby="button-addon1" readonly>
+                                                <button id="Qplus" class="btn btn-sm btn-outline-primary" type="button">
+                                                    <svg class="bi" fill="currentColor" width="1.5em" height="1.5em">
+                                                        <use xlink:href="#Plus" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-7">
+                                            <a id="AddCart" class="btn btn-sm btn-primary w-100 rounded-0">
+                                                <svg class="bi" fill="currentColor" width="1.5em" height="1.5em">
+                                                    <use xlink:href="#Cart" />
+                                                </svg>
+                                                Add to Cart
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">Please note: A maximum of 5 items per transaction is allowed. Thank you for your cooperation.</small>
                             </div>
                         </div>
                     </div>

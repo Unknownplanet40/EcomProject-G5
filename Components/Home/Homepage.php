@@ -106,11 +106,13 @@
                 $Item = 14;
 
                 for ($i = 1; $i < $Item; $i++) {
-                    $OP = rand(1, 500);
+                    $OP = rand(1, 1500);
                     $DP = rand(1, 99);
                     // convert to decimal
                     $DP = $OP - ($OP * ($DP / 100));
                     $percent = 100 - (($DP / $OP) * 100);
+                    // random number from 0 to 1
+                    $AD = rand(0, 1);
                 ?>
                     <div class="col">
                         <a class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#Product">
@@ -128,9 +130,16 @@
                                             <span class="text-decoration-line-through fw-bold">₱ <?php echo $OP; ?></span> - <span class="text-body-secondary"><?php echo intval($percent) . '%'; ?> off </span>
                                         </small>
                                     </div>
-                                    <div class="text-center">
-                                        <h5>₱ <?php echo intval($OP); ?></h5>
-                                    </div>
+                                    <?php
+                                    if ($AD == 1) { ?>
+                                        <div class="text-center">
+                                            <h5>₱ <?php echo intval($DP); ?> - <small class="text-muted text-decoration-line-through">₱<?php echo intval($OP); ?></small></h5>
+                                        </div>
+                                    <?php } else { ?>
+                                        <div class="text-center">
+                                            <h5>₱ <?php echo intval($OP); ?></h5>
+                                        </div>
+                                    <?php } ?>
                                 </div>
                             </div>
                         </a>

@@ -7,10 +7,10 @@
         </a>
 
         <ul class="nav col-md-4 justify-content-end">
-            <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Home</a></li>
+            <li class="nav-item"><a href="<?php echo $_SERVER['PHP_SELF']; ?>" class="nav-link px-2 text-body-secondary">Home</a></li>
             <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Shop All</a></li>
             <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Playaz Tees</a></li>
-            <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Size Guide</a></li>
+            <li class="nav-item"><a class="nav-link px-2 text-body-secondary" data-bs-target="#Sizechart" data-bs-toggle="modal" style="cursor: pointer;">Size Guide</a></li>
             <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">About Us</a></li>
         </ul>
     </footer>

@@ -9,20 +9,20 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-            <ul class="nav me-auto mb-2 mb-lg-0">
-                <li><a href="#" class="nav-link px-2 link-hover active-tab"><svg class="mb-1" width="16" height="16" role="img" aria-label="Home">
+            <ul class="nav me-auto mb-2 mb-lg-0 links">
+                <li><a class="nav-link px-2 link-hover text-body-emphasis border-bottom border-3 border-secondary"><svg class="mb-1" width="16" height="16" role="img" aria-label="Home">
                             <use xlink:href="#home" />
                         </svg> Home</a></li>
-                <li><a href="#" class="nav-link px-2 link-hover"><svg class="mb-1" width="16" height="16" role="img" aria-label="Shop">
+                <li><a href="#" class="nav-link px-2 link-hover text-body-emphasis"><svg class="mb-1" width="16" height="16" role="img" aria-label="Shop">
                             <use xlink:href="#Shop" />
                         </svg> Shop All</a></li>
-                <li><a href="#" class="nav-link px-2 link-hover"><svg class="mb-1" width="16" height="16" role="img" aria-label="Size">
+                <li><a href="#" class="nav-link px-2 link-hover text-body-emphasis"><svg class="mb-1" width="16" height="16" role="img" aria-label="Size">
                             <use xlink:href="#Cloth" />
                         </svg> Playaz Tees</a></li>
-                <li><a href="#" data-bs-target="#Sizechart" data-bs-toggle="modal" class="nav-link px-2 link-hover"><svg class="mb-1" width="16" height="16" role="img" aria-label="Size">
+                <li><a href="#" data-bs-target="#Sizechart" data-bs-toggle="modal" class="nav-link px-2 link-hover text-body-emphasis"><svg class="mb-1" width="16" height="16" role="img" aria-label="Size">
                             <use xlink:href="#Size" />
                         </svg> Size Guide</a></li>
-                <li><a id="Hsearch" href="#" data-bs-target="#searchModal" data-bs-toggle="modal" class="nav-link px-2 link-hover"><svg class="mb-1" width="18" height="18" role="img" aria-label="Search">
+                <li><a id="Hsearch" href="#" data-bs-target="#searchModal" data-bs-toggle="modal" class="nav-link px-2 link-hover text-body-emphasis"><svg class="mb-1" width="18" height="18" role="img" aria-label="Search">
                             <use xlink:href="#Search" />
                         </svg> Search</a></li>
             </ul>
@@ -32,7 +32,7 @@
                 <a href=" #" data-bs-target="#SignIN" data-bs-toggle="modal" class="d-block link-body-emphasis text-decoration-none" id="Log-In">
                     <svg class="bi mx-1" width="16" height="16" role="img" aria-label="Register">
                         <use xlink:href="#Login" />
-                    </svg> Sign In / Register
+                    </svg><span class="d-none d-sm-inline">Sign In / Register</span>
                 </a>
                 <div class="hstack gap-3 visually-hidden" id="Log-Out">
                     <div class="me-3" id="Cart-Empty" title="Cart is empty">
