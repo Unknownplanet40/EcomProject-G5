@@ -9,14 +9,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Third-party Stylesheet/Scripts -->
-    <link rel="stylesheet" href="../../Utilities/Third-party/bootstrap/css/bootstrap.css">
-    <link rel="stylesheet" href="../../Utilities/Third-party/sweetalert2/css/sweetalert2.min.css">
-    <script defer src="../../Utilities/Third-party/bootstrap/js/bootstrap.bundle.js"></script>
-    <script src="../../Utilities/Third-party/sweetalert2/js/sweetalert2.all.min.js"></script>
-    <script src="../../Utilities/Third-party/masonry/js/masonry.pkgd.js"></script>
+    <?php include_once('../../Utilities/Third-party/Import-ThirdParty.php'); ?>
     <!-- Main Stylesheet/Scripts -->
     <link rel="stylesheet" href="../../Utilities/Stylesheets/HomeStyle.css">
     <script defer src="../../Utilities/Scripts/HomeScript.js"></script>
+    <script defer src="../../Utilities/Scripts/ToggleSwitch.js"></script>
     <title>Ecommers</title>
 </head>
 
@@ -141,6 +138,22 @@
                     </div>
                 <?php } ?>
             </div>
+        </div>
+    </div>
+    <!-- Debugging Purposes -->
+    <div class="container mt-4 bg-body-secondary rounded-2 p-2">
+        <p class="text-center text-body-secondary">*Note: For UI testing purposes only until the backend is ready to be integrated</p>
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="light-dark">
+            <label class="form-check-label" for="light-dark" id="light-dark-label">Switch to Dark Mode - <small class="text-muted">*Note: This will be Included via Settings</small></label>
+        </div>
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="login-out">
+            <label class="form-check-label" for="login-out" id="login-out-label">Switch to Login Mode</label>
+        </div>
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="cart-status" disabled>
+            <label class="form-check-label" for="cart-status" id="cart-status-label">Switch to Cart Status</label>
         </div>
     </div>
     <!-- Footer -->

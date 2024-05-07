@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary bg-opacity-75 bg-blur border-bottom shadow-sm fixed-top">
+<nav class="navbar navbar-expand-lg bg-body-tertiary bg-opacity-50 bg-blur-3 border-bottom shadow-sm fixed-top">
     <div class="container-fluid">
         <div class="col-md-3 mb-2 mb-md-0">
             <a href="<?php echo $_SERVER['PHP_SELF']; ?>" class="d-inline-flex link-body-emphasis text-decoration-none">
@@ -27,7 +27,57 @@
                         </svg> Search</a></li>
             </ul>
 
+            <!-- For Testing Only -->
             <div class="d-flex justify-content-end">
+                <a href=" #" data-bs-target="#SignIN" data-bs-toggle="modal" class="d-block link-body-emphasis text-decoration-none" id="Log-In">
+                    <svg class="bi mx-1" width="16" height="16" role="img" aria-label="Register">
+                        <use xlink:href="#Login" />
+                    </svg> Sign In / Register
+                </a>
+                <div class="hstack gap-3 visually-hidden" id="Log-Out">
+                    <div class="me-3" id="Cart-Empty" title="Cart is empty">
+                        <a class="d-block link-body-emphasis text-decoration-none mt-1">
+                            <svg class="mb-1" width="24" height="24" role="img" aria-label="Cart is empty">
+                                <use xlink:href="#NoCart" />
+                            </svg>
+                        </a>
+                    </div>
+                    <div class="me-3 position-relative visually-hidden" id="Cart-Not-Empty">
+                        <a class="d-block link-body-emphasis text-decoration-none mt-1" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-2 text-bg-primary bg-opacity-75">
+                                99+
+                                <span class="visually-hidden">Items in cart</span>
+                            </span>
+                            <svg class="mb-1" width="24" height="24" role="img" aria-label="Cart">
+                                <use xlink:href="#Cart" />
+                            </svg>
+                        </a>
+                    </div>
+                    <div>
+                        <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+                            <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
+                        </a>
+                        <ul class="dropdown-menu text-small shadow dropdown-menu-end">
+                            <li>
+                                <p class="dropdown-header">Welcome,</p>
+                                <p class="dropdown-item-text px-2">Lorem Ipsum Dolor</p>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#">About Us</a></li>
+                            <li><a class="dropdown-item" href="#">Settings</a></li>
+                            <li><a class="dropdown-item" href="#">Profile</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#">Sign out</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end visually-hidden">
                 <?php
                 $isLogin = true; // true - if user is logged in
                 $haveCart = true; // true - if user have items in cart
@@ -90,7 +140,7 @@
         </div>
     </div>
 </nav>
-<div class="offcanvas-size offcanvas offcanvas-end bg-blur bg-opacity-50 bg-body-tertiary" data-bs-backdrop="static" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+<div class="offcanvas-size offcanvas offcanvas-end bg-blur-10 bg-opacity-50 bg-body-tertiary" data-bs-backdrop="static" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
     <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="offcanvasExampleLabel">Items in Cart</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>

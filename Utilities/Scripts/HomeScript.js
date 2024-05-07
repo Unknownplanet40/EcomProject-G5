@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // check if data-bs-theme in html tag is dark
   if (document.documentElement.getAttribute("data-bs-theme") == "dark") {
     document.getElementById("card-bg").classList.remove("bg-body-tertiary");
-    document.getElementById("card-bg").classList.remove("bg-opacity-75");
+    document.getElementById("card-bg").classList.remove("bg-opacity-50");
     document.getElementById("card-bg").classList.add("bg-transparent");
   }
 

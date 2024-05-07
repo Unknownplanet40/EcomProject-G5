@@ -1,8 +1,8 @@
 <div class="modal fade" id="Product" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content bg-body-tertiary bg-opacity-25 bg-blur">
+        <div class="modal-content bg-body-tertiary bg-opacity-25 bg-blur-5">
             <div class=" modal-body">
-                <div class="row row-cols-1 row-cols-md-2 g-3">
+                <div class="row row-cols-1 row-cols-lg-2 g-3">
                     <div class="col">
                         <!-- Product Image -->
                         <img id="Pic-main" src="../../Assets/Images/testing/temp1.jpg" class="rounded mx-auto d-block object-fit-contain w-100" alt="Product Image">
@@ -23,7 +23,7 @@
                         </div>
                     </div>
                     <div class="col">
-                        <div id="card-bg" class="card h-100 border-0 bg-body-tertiary bg-opacity-100">
+                        <div id="card-bg" class="card h-100 border-0 bg-body-tertiary bg-opacity-50 bg-blur-3">
                             <div class="card-body">
                                 <input type="hidden" id="ProductID" value="1">
                                 <h3 class="card-title text-body-emphasis">Product Name</h3>
@@ -64,7 +64,7 @@
                                         <h4 class="card-text fw-bold">₱ 100.00 <small class="text-muted text-decoration-line-through">₱ 200.00</small></h4>
                                     </div>
                                 </div>
-                                <div class="row row-cols-2 g-2">
+                                <div class="row row-cols-2 g-2 disabled">
                                     <div class="col-5">
                                         <div class="input-group mb-3">
                                             <button id="Qminus" class="btn btn-sm btn-outline-primary" type="button">
