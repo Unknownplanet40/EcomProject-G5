@@ -46,51 +46,50 @@
         <?php include_once('../Carousel/CarouselFrontPage.php'); ?>
     </div>
     <!-- Categories -->
-    <div class="container mt-4 border border-3 rounded-2">
-        <small class="text-body-secondary">*Note: For Brand Logo</small>
-        <div class="container text-center">
+    <div class="mt-4 bg-body-emphasis p-2">
+        <div class="container-lg text-center">
             <div class="row align-items-center justify-content-between g-3">
                 <div class="col">
-                    <a href="#" class="text-decoration-none text-body">
+                    <a class="text-decoration-none text-body">
                         <div class="card border-0 bg-transparent">
-                            <div class="card-body">
-                                <img src="../../Assets/Images/Logo_1.png" alt="Category Icon" class="img-fluid" style="width: 32px;">
+                            <div class="card-body ratio ratio-16x9">
+                                <img id="bimg-1" src="" alt="Category Icon" class="img-fluid object-fit-contain">
                             </div>
                         </div>
                     </a>
                 </div>
                 <div class="col">
-                    <a href="#" class="text-decoration-none text-body">
+                    <a class="text-decoration-none text-body">
                         <div class="card border-0 bg-transparent">
-                            <div class="card-body">
-                                <img src="../../Assets/Images/Logo_1.png" alt="Category Icon" class="img-fluid" style="width: 32px;">
+                            <div class="card-body ratio ratio-16x9">
+                                <img id="bimg-2" src="" alt="Category Icon" class="img-fluid object-fit-contain">
                             </div>
                         </div>
                     </a>
                 </div>
                 <div class="col">
-                    <a href="#" class="text-decoration-none text-body">
+                    <a class="text-decoration-none text-body">
                         <div class="card border-0 bg-transparent">
-                            <div class="card-body">
-                                <img src="../../Assets/Images/Logo_1.png" alt="Category Icon" class="img-fluid" style="width: 32px;">
+                            <div class="card-body ratio ratio-16x9">
+                                <img id="bimg-3" src="" alt="Category Icon" class="img-fluid object-fit-contain">
                             </div>
                         </div>
                     </a>
                 </div>
                 <div class="col">
-                    <a href="#" class="text-decoration-none text-body">
+                    <a class="text-decoration-none text-body">
                         <div class="card border-0 bg-transparent">
-                            <div class="card-body">
-                                <img src="../../Assets/Images/Logo_1.png" alt="Category Icon" class="img-fluid" style="width: 32px;">
+                            <div class="card-body ratio ratio-16x9">
+                                <img id="bimg-4" src="" alt="Category Icon" class="img-fluid object-fit-contain">
                             </div>
                         </div>
                     </a>
                 </div>
                 <div class="col">
-                    <a href="#" class="text-decoration-none text-body">
+                    <a class="text-decoration-none text-body">
                         <div class="card border-0 bg-transparent">
-                            <div class="card-body">
-                                <img src="../../Assets/Images/Logo_1.png" alt="Category Icon" class="img-fluid" style="width: 32px;">
+                            <div class="card-body ratio ratio-16x9">
+                                <img id="bimg-5" src="" alt="Category Icon" class="img-fluid object-fit-contain">
                             </div>
                         </div>
                     </a>

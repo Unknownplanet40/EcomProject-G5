@@ -1,3 +1,6 @@
+/*
+    This script is temporary and it will be removed.
+*/
 var themeToggle = document.getElementById("light-dark");
 var log_In_Out = document.getElementById("login-out");
 var Cart_stat = document.getElementById("cart-status");
@@ -5,6 +8,22 @@ var Cart_stat = document.getElementById("cart-status");
 themeToggle.addEventListener("change", function () {
   if (themeToggle.checked) {
     document.documentElement.setAttribute("data-bs-theme", "dark");
+
+    const imagePaths = [
+      "DBTK_Light.png",
+      "UND_Light.png",
+      "coziesrt_Light.png",
+      "Kids_Light.png",
+      "RichBoys_Light.png",
+    ];
+
+    // Loop through each image element and set the src attribute
+    for (let i = 1; i <= imagePaths.length; i++) {
+      const imgElement = document.getElementById(`bimg-${i}`);
+      imgElement.src = `../../Assets/Images/Brands_Assets/Light/${
+        imagePaths[i - 1]
+      }`;
+    }
 
     document.getElementById("card-bg").classList.remove("bg-body-tertiary");
     document.getElementById("card-bg").classList.remove("bg-opacity-50");
@@ -15,6 +34,22 @@ themeToggle.addEventListener("change", function () {
       "Switch to Light Mode - <small class='text-muted'>*Note: This will be Included via Settings</small>";
   } else {
     document.documentElement.setAttribute("data-bs-theme", "light");
+
+    const imagePaths = [
+      "DBTK_Dark.png",
+      "UND_Dark.png",
+      "coziesrt_dark.png",
+      "Kids_Dark.png",
+      "RichBoys_Dark.png",
+    ];
+
+    // Loop through each image element and set the src attribute
+    for (let i = 1; i <= imagePaths.length; i++) {
+      const imgElement = document.getElementById(`bimg-${i}`);
+      imgElement.src = `../../Assets/Images/Brands_Assets/Dark/${
+        imagePaths[i - 1]
+      }`;
+    }
 
     document.getElementById("card-bg").classList.add("bg-body-tertiary");
     document.getElementById("card-bg").classList.add("bg-opacity-50");
@@ -55,7 +90,9 @@ log_In_Out.addEventListener("click", function () {
 Cart_stat.addEventListener("click", function () {
   if (Cart_stat.checked) {
     document.getElementById("Cart-Empty").classList.add("visually-hidden");
-    document.getElementById("Cart-Not-Empty").classList.remove("visually-hidden");
+    document
+      .getElementById("Cart-Not-Empty")
+      .classList.remove("visually-hidden");
   } else {
     document.getElementById("Cart-Empty").classList.remove("visually-hidden");
     document.getElementById("Cart-Not-Empty").classList.add("visually-hidden");

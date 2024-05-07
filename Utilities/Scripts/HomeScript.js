@@ -38,6 +38,41 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  // Brands Logo [Light/Dark] Mode
+  if (document.documentElement.getAttribute("data-bs-theme") == "dark") {
+    const imagePaths = [
+      "DBTK_Light.png",
+      "UND_Light.png",
+      "coziesrt_Light.png",
+      "Kids_Light.png",
+      "RichBoys_Light.png",
+    ];
+
+    // Loop through each image element and set the src attribute
+    for (let i = 1; i <= imagePaths.length; i++) {
+      const imgElement = document.getElementById(`bimg-${i}`);
+      imgElement.src = `../../Assets/Images/Brands_Assets/Light/${
+        imagePaths[i - 1]
+      }`;
+    }
+  } else {
+    const imagePaths = [
+      "DBTK_Dark.png",
+      "UND_Dark.png",
+      "coziesrt_dark.png",
+      "Kids_Dark.png",
+      "RichBoys_Dark.png",
+    ];
+
+    // Loop through each image element and set the src attribute
+    for (let i = 1; i <= imagePaths.length; i++) {
+      const imgElement = document.getElementById(`bimg-${i}`);
+      imgElement.src = `../../Assets/Images/Brands_Assets/Dark/${
+        imagePaths[i - 1]
+      }`;
+    }
+  }
+
   var MainPic = document.getElementById("Pic-main");
   var Pic1 = document.getElementById("Pic-1");
   var Pic2 = document.getElementById("Pic-2");
