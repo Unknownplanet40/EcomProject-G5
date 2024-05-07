@@ -1,13 +1,13 @@
 <div class="modal" id="searchModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog modal-dialog-scrollable">
-        <div class="modal-content">
+        <div class="modal-content bg-body-tertiary bg-opacity-25 bg-blur-10">
             <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Search</h5>
+                <h5 class="modal-title text-light" id="staticBackdropLabel">Search</h5>
                 <button type="button" class="btn-close py-2" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-header border-0">
                 <div class="input-group flex-nowrap">
-                    <input type="text" class="form-control border-1 border-end-0 border-secondary
+                    <input type="text" class="form-control border-1 border-end-0 border-secondary bg-transparent text-body-trertiary fw-bold text-light
                     " id="search-bar" placeholder="Search here...">
                     <button class="btn btn-outline-secondary" type="button" id="search-btn">
                         <svg class="mb-1" width="16" height="16" role="img" aria-label="Search">
@@ -39,22 +39,24 @@
                             </li>
                         <?php
                         }
-
-                        $isLogin = false;
-
-                        if (!$isLogin) { ?>
+                        /* if (!$isLogin) { ?>
                             <li class="list-group-item text-center">
                                 <button class="btn btn-sm btn-outline-primary">Sign-in to view more</button>
                             </li>
-                        <?php } else
-                        if ($resultCount > 5) {
+                        <?php } else if ($resultCount > 5) {
                         ?>
                             <li class="list-group-item text-center">
                                 <button class="btn btn-sm btn-outline-primary">View More</button>
                             </li>
                         <?php
-                        }
+                        } */
                         ?>
+                        <li class="list-group-item text-center" id="islogin">
+                            <button class="btn btn-sm btn-outline-primary">Sign-in to view more</button>
+                        </li>
+                        <li class="list-group-item text-center visually-hidden" id="viewmore">
+                            <button class="btn btn-sm btn-outline-primary">View More</button>
+                        </li>
                     </ul>
                 </div>
             </div>
