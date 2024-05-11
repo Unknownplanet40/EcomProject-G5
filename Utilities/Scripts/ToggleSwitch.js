@@ -4,6 +4,7 @@
 var themeToggle = document.getElementById("light-dark");
 var log_In_Out = document.getElementById("login-out");
 var Cart_stat = document.getElementById("cart-status");
+var ViewToast = document.getElementById("ShowToast");
 
 themeToggle.addEventListener("change", function () {
   if (themeToggle.checked) {
@@ -97,4 +98,51 @@ Cart_stat.addEventListener("click", function () {
     document.getElementById("Cart-Empty").classList.remove("visually-hidden");
     document.getElementById("Cart-Not-Empty").classList.add("visually-hidden");
   }
+});
+
+ViewToast.addEventListener("click", function () {
+  // random number from 1 to 4 for the image
+  let randomNum = Math.floor(Math.random() * 4) + 1;
+  let Ticon = "";
+  let Ttitle = "";
+
+  switch (randomNum) {
+    case 1:
+      Ticon = "success";
+      Ttitle = "Input Validated!";
+      break;
+    case 2:
+      Ticon = "error";
+      Ttitle = "Something went wrong!";
+      break;
+    case 3:
+      Ticon = "warning";
+      Ttitle = "Please check your inputs!";
+      break;
+    case 4:
+      Ticon = "info";
+      Ttitle = "Information!";
+      break;
+    default:
+      Ticon = "success";
+      Ttitle = "Execute Successfully!";
+      break;
+  }
+
+  Swal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 1500,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener("mouseenter", Swal.stopTimer);
+      toast.addEventListener("mouseleave", Swal.resumeTimer);
+    },
+  })
+    .fire({
+      icon: Ticon,
+      title: Ttitle,
+    })
+    .then((result) => {});
 });

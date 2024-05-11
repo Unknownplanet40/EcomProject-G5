@@ -42,7 +42,7 @@
     ?>
 
     <!-- Carousel -->
-    <div class="container-responsive mt-3 mb-5 px-1">
+    <div class="container-xxl mt-3 mb-5 px-1">
         <?php include_once('../Carousel/CarouselFrontPage.php'); ?>
     </div>
     <!-- Categories -->
@@ -53,7 +53,7 @@
                     <a class="text-decoration-none text-body">
                         <div class="card border-0 bg-transparent">
                             <div class="card-body ratio ratio-16x9">
-                                <img id="bimg-1" src="" alt="Category Icon" class="img-fluid object-fit-contain">
+                                <img id="bimg-1" src="" alt="Category Icon" class="img-fluid object-fit-contain" loading="lazy">
                             </div>
                         </div>
                     </a>
@@ -62,7 +62,7 @@
                     <a class="text-decoration-none text-body">
                         <div class="card border-0 bg-transparent">
                             <div class="card-body ratio ratio-16x9">
-                                <img id="bimg-2" src="" alt="Category Icon" class="img-fluid object-fit-contain">
+                                <img id="bimg-2" src="" alt="Category Icon" class="img-fluid object-fit-contain" loading="lazy">
                             </div>
                         </div>
                     </a>
@@ -71,7 +71,7 @@
                     <a class="text-decoration-none text-body">
                         <div class="card border-0 bg-transparent">
                             <div class="card-body ratio ratio-16x9">
-                                <img id="bimg-3" src="" alt="Category Icon" class="img-fluid object-fit-contain">
+                                <img id="bimg-3" src="" alt="Category Icon" class="img-fluid object-fit-contain" loading="lazy">
                             </div>
                         </div>
                     </a>
@@ -80,7 +80,7 @@
                     <a class="text-decoration-none text-body">
                         <div class="card border-0 bg-transparent">
                             <div class="card-body ratio ratio-16x9">
-                                <img id="bimg-4" src="" alt="Category Icon" class="img-fluid object-fit-contain">
+                                <img id="bimg-4" src="" alt="Category Icon" class="img-fluid object-fit-contain" loading="lazy">
                             </div>
                         </div>
                     </a>
@@ -89,7 +89,7 @@
                     <a class="text-decoration-none text-body">
                         <div class="card border-0 bg-transparent">
                             <div class="card-body ratio ratio-16x9">
-                                <img id="bimg-5" src="" alt="Category Icon" class="img-fluid object-fit-contain">
+                                <img id="bimg-5" src="" alt="Category Icon" class="img-fluid object-fit-contain" loading="lazy">
                             </div>
                         </div>
                     </a>
@@ -121,7 +121,7 @@
                                             for ($j = 0; $j < 1; $j++) {
                                                 echo '../../Assets/Images/testing/temp' . $i . '.jpg';
                                             }
-                                            ?>" class="bd-placeholder-img card-img-top object-fit-cover" role="img" preserveAspectRatio="xMidYMid slice" focusable="false">
+                                            ?>" class="bd-placeholder-img card-img-top object-fit-cover rounded" role="img" preserveAspectRatio="xMidYMid slice" focusable="false" loading="lazy">
                                 <div class="card-body">
                                     <p class="card-title text-center">Product Name <?php echo $i; ?> - Black</p>
                                     <div class="d-flex justify-content-between align-items-center visually-hidden">
@@ -163,6 +163,9 @@
             <input class="form-check-input" type="checkbox" role="switch" id="cart-status" disabled>
             <label class="form-check-label" for="cart-status" id="cart-status-label">Switch to Cart Status</label>
         </div>
+        <button id="ShowToast" type="button" class="btn btn-primary btn-sm">Show Toast</button>
+        <label class="form-check-label" for="cart-status" id="ShowToast">Show SweetAlert2 Toast</label>
+
     </div>
     <!-- Footer -->
     <?php include_once('../Footer/Footer.php'); ?>
