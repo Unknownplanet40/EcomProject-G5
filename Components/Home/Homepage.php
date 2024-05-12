@@ -33,7 +33,7 @@
     <?php
     // Alert
     include_once('../SweetAlerts/Sweetalert.php');
-    
+
     // Header
     include_once('../Header/Header.php');
 
@@ -48,12 +48,12 @@
     <div class="container-xxl mt-3 mb-5 px-1">
         <?php include_once('../Carousel/CarouselFrontPage.php'); ?>
     </div>
-    <!-- Categories -->
+    <!-- Brands Icons -->
     <div class="mt-4 bg-body-emphasis p-2">
         <div class="container-lg text-center">
             <div class="row align-items-center justify-content-between g-3">
-                <?php
-                for ($i = 1; $i <= 5; $i++) { ?>
+                <!-- for Loop to remove repetitive code -->
+                <?php for ($i = 1; $i <= 5; $i++) { ?>
                     <div class="col">
                         <a class="text-decoration-none text-body">
                             <div class="card border-0 bg-transparent">
@@ -97,6 +97,11 @@
                     <?php }
                 } else {
                     for ($i = 0; $i < 5; $i++) { ?>
+                        <!-- 
+                            If No Products are Available or 
+                            the Database is Empty or 
+                            There is an Error 
+                        -->
                         <div class="col">
                             <a class="text-decoration-none">
                                 <div class="card border-0 bg-body-tertiary">
@@ -134,8 +139,8 @@
             <input class="form-check-input" type="checkbox" role="switch" id="cart-status" disabled>
             <label class="form-check-label" for="cart-status" id="cart-status-label">Switch to Cart Status</label>
         </div>
-        <button id="ShowToast" type="button" class="btn btn-primary btn-sm">Show Toast</button>
-        <label class="form-check-label" for="cart-status" id="ShowToast">Show SweetAlert2 Toast</label>
+        <button id="ShowToast" type="button" class="btn btn-sm btn-primary">Show Toast</button>
+        <label class="form-check-label mt-1" for="cart-status" id="ShowToast">Show SweetAlert2 Toast</label>
 
     </div>
     <!-- Footer -->
