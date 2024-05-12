@@ -5,6 +5,21 @@ if (!isChrome) {
   alert("Your not using Chrome Browser, some features may not work properly");
 }
 
+// Initialize Bootstrap Tooltip and Popover
+const tooltipTriggerList = document.querySelectorAll(
+  '[data-bs-toggle="tooltip"]'
+);
+const tooltipList = [...tooltipTriggerList].map(
+  (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
+);
+
+const popoverTriggerList = document.querySelectorAll(
+  '[data-bs-toggle="popover"]'
+);
+const popoverList = [...popoverTriggerList].map(
+  (popoverTriggerEl) => new bootstrap.Popover(popoverTriggerEl)
+);
+
 document.addEventListener("DOMContentLoaded", function () {
   // hide loader after fully load
   document.getElementById("loader").classList.remove("d-block");
@@ -128,7 +143,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // sweetalert 2 toast
     Swal.mixin({
       toast: true,
-      position: "top-end",
+      position: "top",
       showConfirmButton: false,
       timer: 1500,
       timerProgressBar: true,

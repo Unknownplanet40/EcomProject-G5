@@ -7,25 +7,48 @@
         </div>
         <button class="navbar-toggler nb-t" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
-
         </button>
-        <div class="collapse navbar-collapse " id="navbarTogglerDemo02">
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
             <ul class="nav me-auto mb-2 mb-lg-0 links">
-                <li><a class="nav-link px-2 link-hover text-body-emphasis border-bottom border-3 border-secondary"><svg class="mb-1" width="16" height="16" role="img" aria-label="Home">
+                <li data-bs-toggle="tooltip" data-bs-title="Home" data-bs-placement="bottom" data-bs-trigger="hover" <?php echo (strpos($_SERVER['PHP_SELF'], 'Homepage.php') !== false) ? 'class="visually-hidden"' : ''; ?>>
+                    <a class="nav-link px-2 link-hover text-body-emphasis" href="../../Components/Home/Homepage.php">
+                        <svg class="mb-1" width="16" height="16" role="img" aria-label="Home">
                             <use xlink:href="#home" />
-                        </svg> Home</a></li>
-                <li><a href="#" class="nav-link px-2 link-hover text-body-emphasis"><svg class="mb-1" width="16" height="16" role="img" aria-label="Shop">
+                        </svg>
+                        <span class="d-none d-sm-inline"> Home</span>
+                    </a>
+                </li>
+                <li data-bs-toggle="tooltip" data-bs-title="Shop All" data-bs-placement="bottom" data-bs-trigger="hover" <?php echo (strpos($_SERVER['PHP_SELF'], 'ShopAll.php') !== false) ? 'class="visually-hidden"' : ''; ?>>
+                    <a href="#" class="nav-link px-2 link-hover text-body-emphasis">
+                        <svg class="mb-1" width="16" height="16" role="img" aria-label="Shop">
                             <use xlink:href="#Shop" />
-                        </svg> Shop All</a></li>
-                <li><a href="#" class="nav-link px-2 link-hover text-body-emphasis"><svg class="mb-1" width="16" height="16" role="img" aria-label="Size">
+                        </svg>
+                        <span class="d-none d-sm-inline"> Shop All</span>
+                    </a>
+                </li>
+                <li data-bs-toggle="tooltip" data-bs-title="Playaz Tees" data-bs-placement="bottom" data-bs-trigger="hover" <?php echo (strpos($_SERVER['PHP_SELF'], 'PlayazTees.php') !== false) ? 'class="visually-hidden"' : ''; ?>>
+                    <a href="#" class="nav-link px-2 link-hover text-body-emphasis">
+                        <svg class="mb-1" width="16" height="16" role="img" aria-label="Size">
                             <use xlink:href="#Cloth" />
-                        </svg> Playaz Tees</a></li>
-                <li><a href="#" data-bs-target="#Sizechart" data-bs-toggle="modal" class="nav-link px-2 link-hover text-body-emphasis"><svg class="mb-1" width="16" height="16" role="img" aria-label="Size">
+                        </svg>
+                        <span class="d-none d-sm-inline"> Playaz Tees</span>
+                    </a>
+                </li>
+                <li data-bs-toggle="tooltip" data-bs-title="Size Guide" data-bs-placement="bottom" data-bs-trigger="hover">
+                    <a href="#" data-bs-target="#Sizechart" data-bs-toggle="modal" class="nav-link px-2 link-hover text-body-emphasis">
+                        <svg class="mb-1" width="16" height="16" role="img" aria-label="Size">
                             <use xlink:href="#Size" />
-                        </svg> Size Guide</a></li>
-                <li><a id="Hsearch" href="#" data-bs-target="#searchModal" data-bs-toggle="modal" class="nav-link px-2 link-hover text-body-emphasis"><svg class="mb-1" width="18" height="18" role="img" aria-label="Search">
+                        </svg>
+                        <span class="d-none d-sm-inline"> Size Guide</span>
+                    </a>
+                </li>
+                <li data-bs-toggle="tooltip" data-bs-title="Search Products" data-bs-placement="bottom" data-bs-trigger="hover"><a id="Hsearch" href="#" data-bs-target="#searchModal" data-bs-toggle="modal" class="nav-link px-2 link-hover text-body-emphasis">
+                        <svg class="mb-1" width="18" height="18" role="img" aria-label="Search">
                             <use xlink:href="#Search" />
-                        </svg> Search</a></li>
+                        </svg>
+                        <span class="d-none d-sm-inline"> Search</span>
+                    </a>
+                </li>
             </ul>
 
             <!-- For Testing Only -->
@@ -33,7 +56,7 @@
                 <a href=" #" data-bs-target="#SignIN" data-bs-toggle="modal" class="d-block link-body-emphasis text-decoration-none" id="Log-In">
                     <svg class="bi mx-1" width="16" height="16" role="img" aria-label="Register">
                         <use xlink:href="#Login" />
-                    </svg><span class="d-none d-sm-inline">Sign In / Register</span>
+                    </svg><span>Sign In / Register</span>
                 </a>
                 <div class="hstack gap-3 visually-hidden" id="Log-Out">
                     <div class="me-3" id="Cart-Empty" title="Cart is empty">
@@ -141,6 +164,7 @@
         </div>
     </div>
 </nav>
+<!-- Offcanvas Cart -->
 <div class="offcanvas-size offcanvas offcanvas-end bg-blur-10 bg-opacity-50 bg-body-tertiary" data-bs-backdrop="static" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
     <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="offcanvasExampleLabel">Your Shopping Cart <span class="badge bg-primary rounded-2">9 Items</span></h5>
