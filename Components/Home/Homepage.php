@@ -15,6 +15,14 @@
     <script defer src="../../Utilities/Scripts/HomeScript.js"></script>
     <script defer src="../../Utilities/Scripts/ToggleSwitch.js"></script>
     <title>Ecommers</title>
+    <script>
+        // clear specific local storage
+        localStorage.removeItem('FileName');
+        //get file mame and set it as the title
+        var FileName = document.location.pathname.split('/').slice(-1)[0];
+        // save to local storage
+        localStorage.setItem('FileName', FileName);
+    </script>
 </head>
 
 <?php include_once('../../Assets/Icons/Icon_Assets.php'); ?>
@@ -73,7 +81,7 @@
         <div class="container-lg">
             <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 row-col-xxl-6 g-3" data-masonry='{"percentPosition": true }'>
                 <?php
-                $Item = 0;
+                $Item = 14;
                 if ($Item > 0) {
                     for ($i = 1; $i < $Item; $i++) {
                         $OP = rand(1, 1500); ?>
