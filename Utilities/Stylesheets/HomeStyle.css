@@ -5,20 +5,21 @@
 
 .link-hover {
     text-decoration: none;
-    transition: 300ms ease-in-out;
+    transition: 200ms ease-in-out;
     text-transform: uppercase;
     font-weight: 700;
     cursor: pointer;
 }
 
 .link-hover:hover {
-    transform: scale(1.1, 1.1);
+    transform: scale(1.2, 1.2);
     font-weight: 700;
-    color: #0d6efd !important;
 }
 
-.active-tab {
-    color: #dc3545 !important;
+.links:has(.link-hover:hover) .link-hover:not(:hover) {
+    transform: scale(0.9, 0.9);
+    opacity: 0.9;
+    filter: blur(2px);
 }
 
 .pop{
@@ -28,6 +29,58 @@
 .pop:hover{
     transform: scale(1.1, 1.1);
     box-shadow: 0px 15px 15px 0px rgba(0, 0, 0, 0.5);
+}
+
+@media all and (max-width: 768px) {
+    .pop {
+        transition: 200ms ease-in-out;
+    }
+
+    .pop:hover {
+        transform: scale(0.9, 0.9);
+        box-shadow: 0px 43px 35px -16px rgba(0, 0, 0, 0.1);
+    }
+}
+
+.items-scroll{
+    max-height: 480px !important;
+}
+
+@media all and (min-width: 1440px) {
+    .items-scroll {
+        max-height: 470px !important;
+    }
+}
+
+@media all and (max-width: 1024px) {
+    .items-scroll {
+        max-height: 400px !important;
+    }
+}
+
+.items-scroll::-webkit-scrollbar {
+    width: 10px;
+}
+
+.items-scroll::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+.items-scroll::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.items-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.items-scroll::-webkit-scrollbar-thumb:vertical {
+    border-radius: 10px;
+}
+
+.items-scroll::-webkit-scrollbar-thumb:horizontal {
+    border-radius: 10px;
 }
 
 .clamp {
@@ -77,8 +130,6 @@
 .bg-blur-3{
     backdrop-filter: blur(3px) !important;
 }
-
-
 
 .Carousel-prev,
 .Carousel-next {
