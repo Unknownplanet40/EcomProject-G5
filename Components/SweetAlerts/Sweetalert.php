@@ -1,5 +1,5 @@
 <?php
-$ShowAlert = true;
+$ShowAlert = false;
 // if thier is a error or other user reminder to show
 if (isset($ShowAlert) && $ShowAlert) { ?>
     <script>

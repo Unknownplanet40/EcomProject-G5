@@ -174,9 +174,37 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("card-bg").classList.add("bg-transparent");
       }
 
+      document
+        .getElementById("Selectsize")
+        .addEventListener("change", function () {
+          var Size = document.getElementById("Selectsize");
+          let selectedSize = Size.options[Size.selectedIndex].dataset.qty;
+          document.getElementById("Qinput").max = selectedSize;
+          document.getElementById("Qinput").value = 1;
+          document.getElementById("AddCart").classList.remove("disabled");
+        });
+
       document.getElementById("Qplus").addEventListener("click", function () {
         var Qinput = document.getElementById("Qinput");
-        Qinput.value = parseInt(Qinput.value) + 1;
+        if (Qinput.value < parseInt(document.getElementById("Qinput").max)) {
+          Qinput.value = parseInt(Qinput.value) + 1;
+        } else {
+          // add is-invalid class to input for 1 sec then remove it
+          Qinput.classList.add("is-invalid");
+          setTimeout(function () {
+            Qinput.classList.remove("is-invalid");
+          }, 1500);
+
+          var chooseSize = document.getElementById("Selectsize");
+          if (chooseSize.value == "Choose Size") {
+            chooseSize.classList.add("is-invalid");
+            document.getElementById("reminder").textContent = "Please choose a size first.";
+            setTimeout(function () {
+              chooseSize.classList.remove("is-invalid");
+              document.getElementById("reminder").innerHTML = "&nbsp;";
+            }, 2000);
+          }
+        }
       });
 
       document.getElementById("Qminus").addEventListener("click", function () {
@@ -222,7 +250,6 @@ document.addEventListener("DOMContentLoaded", function () {
       });
       break;
     case "Checkout.php":
-      
       break;
     default:
       console.log("No script to run.");

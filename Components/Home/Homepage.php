@@ -1,4 +1,6 @@
 <?php
+session_start();
+include_once('../../Databases/DB_Configurations.php');
 
 ?>
 
@@ -81,27 +83,121 @@
         <div class="container-lg">
             <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 row-col-xxl-6 g-3" data-masonry='{"percentPosition": true }'>
                 <?php
-                $Item = 14;
+                $sql = "SELECT COUNT(id) AS Item FROM product";
+                $row = mysqli_fetch_assoc(mysqli_query($conn, $sql));
+                $Item = $row['Item'];
+
+                echo gethostbyname($_SERVER['REMOTE_ADDR']);
+
                 if ($Item > 0) {
-                    for ($i = 1; $i < $Item; $i++) {
-                        $OP = rand(1, 1500); ?>
+                    // get the product data
+                    $sql = "SELECT * FROM product";
+                    $result = mysqli_query($conn, $sql);
+
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        $ID = $row['UID'];
+                        $Name = $row['Prod_Name'];
+                        $Brand = $row['Brand'];
+                        $Price = $row['Price'];
+                        $Image = mysqli_fetch_assoc(mysqli_query($conn, "SELECT Image_File FROM product_image WHERE UID = '$ID' AND Image_Order = 1"))['Image_File'];
+
+                        function fetchImage($conn, $ID, $order)
+                        {
+                            $result = mysqli_query($conn, "SELECT Image_File FROM product_image WHERE UID = '$ID' AND Image_Order = $order");
+                            if ($result && mysqli_num_rows($result) > 0) {
+                                $imageFile = mysqli_fetch_assoc($result)['Image_File'];
+                                return "data:image/jpg;charset=utf8;base64," . base64_encode($imageFile);
+                            } else {
+                                return '../../Assets/Images/Alternative.gif';
+                            }
+                        }
+                        $Stock = "SELECT (S_Qty + M_Qty + L_Qty + XL_Qty) AS Stock FROM product_size WHERE UID = '$ID'";
+                        $Stock = mysqli_fetch_assoc(mysqli_query($conn, $Stock))['Stock']; ?>
+
                         <div class="col">
-                            <a class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#Product">
+                            <a class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#Product" id="Pmodal_<?php echo $ID; ?>">
                                 <div class="card pop border-0 bg-body-tertiary">
-                                    <img src="<?php
-                                                for ($j = 0; $j < 1; $j++) {
-                                                    echo '../../Assets/Images/testing/temp' . $i . '.jpg';
-                                                }
-                                                ?>" class="bd-placeholder-img card-img-top object-fit-cover rounded" role="img" preserveAspectRatio="xMidYMid slice" focusable="false" loading="lazy">
+                                    <img src="data:image/jpg;charset=utf8;base64,<?php echo base64_encode($Image); ?>" class="bd-placeholder-img card-img-top object-fit-cover rounded" role="img" preserveAspectRatio="xMidYMid slice" focusable="false" loading="lazy">
                                     <div class="card-body">
-                                        <p class="card-title text-center">Product Name <?php echo $i; ?> - Black</p>
+                                        <p class="card-title text-center"><?php echo $Name; ?> - <?php echo $Brand; ?></p>
                                         <div class="text-center">
-                                            <h5>₱ <?php echo intval($OP); ?></h5>
+                                            <h5>₱ <?php echo intval($Price); ?></h5>
                                         </div>
                                     </div>
                                 </div>
                             </a>
                         </div>
+
+                        <script>
+                            document.getElementById('Pmodal_<?php echo $ID; ?>').addEventListener('click', function() {
+                                var ID = '<?php echo $ID; ?>';
+                                var Name = '<?php echo $Name; ?>';
+                                var Brand = '<?php echo $Brand; ?>';
+                                var Price = '<?php echo $Price; ?>';
+
+                                document.getElementById('ProductID').value = ID;
+                                document.getElementById('Pic-main').src = '<?php echo fetchImage($conn, $ID, 1); ?>';
+                                document.getElementById('Pic-1').src = '<?php echo fetchImage($conn, $ID, 1); ?>';
+                                document.getElementById('Pic-2').src = '<?php echo fetchImage($conn, $ID, 2); ?>';
+                                document.getElementById('Pic-3').src = '<?php echo fetchImage($conn, $ID, 3); ?>';
+                                document.getElementById('Pic-4').src = '<?php echo fetchImage($conn, $ID, 4); ?>';
+
+                                document.getElementById('Pname').textContent = Name;
+                                document.getElementById('Pbrand').textContent = Brand;
+
+                                <?php if ($Stock > 0) { ?>
+                                    document.getElementById('AvailStat').textContent = 'In Stock';
+                                    document.getElementById('AvailStat').classList.add('bg-success');
+                                <?php } else { ?>
+                                    document.getElementById('AvailStat').textContent = 'Out of Stock';
+                                    document.getElementById('AvailStat').classList.add('bg-danger');
+                                <?php } ?>
+
+                                document.getElementById('Pprice').textContent = Price + '.00';
+                                document.getElementById('PriceItem').textContent = Price;
+
+                                <?php
+                                $size_query = "SELECT * FROM product_size WHERE UID = '$ID'";
+                                $size_result = mysqli_query($conn, $size_query);
+
+                                while ($row = mysqli_fetch_assoc($size_result)) {
+                                    // available sizes
+                                    $s = $row['S'];
+                                    $m = $row['M'];
+                                    $l = $row['L'];
+                                    $xl = $row['XL'];
+
+                                    // available quantities
+                                    $s_Q = $row['S_Qty'];
+                                    $m_Q = $row['M_Qty'];
+                                    $l_Q = $row['L_Qty'];
+                                    $xl_Q = $row['XL_Qty'];
+
+                                    if ($s != 0) { ?>
+                                        document.getElementById('SS').hidden = false;
+                                        document.getElementById('SS').setAttribute('data-Qty', '<?php echo $s_Q; ?>');
+                                    <?php } ?>
+
+                                    <?php if ($m != 0) { ?>
+                                        document.getElementById('SM').hidden = false;
+                                        document.getElementById('SM').setAttribute('data-Qty', '<?php echo $m_Q; ?>');
+                                    <?php } ?>
+
+                                    <?php if ($l != 0) { ?>
+                                        document.getElementById('SL').hidden = false;
+                                        document.getElementById('SL').setAttribute('data-Qty', '<?php echo $l_Q; ?>');
+                                    <?php } ?>
+
+                                    <?php if ($xl != 0) { ?>
+                                        document.getElementById('SXL').hidden = false;
+                                        document.getElementById('SXL').setAttribute('data-Qty', '<?php echo $xl_Q; ?>');
+                                        document.getElementById('SXL').textContent = 'Extra Large - (' + '<?php echo $xl_Q; ?>' + ' Available)';
+                                <?php }
+                                }
+                                ?>
+
+                            });
+                        </script>
                     <?php }
                 } else {
                     for ($i = 0; $i < 5; $i++) { ?>
@@ -128,7 +224,9 @@
                             </a>
                         </div>
                 <?php  }
-                } ?>
+                }
+                mysqli_close($conn);
+                ?>
             </div>
         </div>
     </div>
