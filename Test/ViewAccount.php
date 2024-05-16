@@ -2,9 +2,16 @@
 session_start();
 include '../Databases/DB_Configurations.php';
 
+if (isset($_POST['submit'])) {
+    $password = $_POST['password'];
+    $hash = password_hash($password, PASSWORD_DEFAULT);
+    echo $hash;
+}
+
 ?>
 
-<h1>View Account</h1>
-<p>User ID: <?php echo $_SESSION['User_ID']; ?></p>
-<p>Username: <?php echo $_SESSION['Username']; ?></p>
-<p>Password: <?php echo $_SESSION['Password']; ?></p>
+<form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+<p>Convert to Hash</p>
+<input type="text" name="password" placeholder="Password">
+<button type="submit" name="submit">Convert</button>
+</form>

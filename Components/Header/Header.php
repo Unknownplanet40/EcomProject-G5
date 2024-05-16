@@ -52,7 +52,7 @@
             </ul>
 
             <!-- For Testing Only -->
-            <div class="d-flex justify-content-end">
+            <div class="d-flex justify-content-end visually-hidden">
                 <a href=" #" data-bs-target="#SignIN" data-bs-toggle="modal" class="d-block link-body-emphasis text-decoration-none" id="Log-In">
                     <svg class="bi mx-1" width="16" height="16" role="img" aria-label="Register">
                         <use xlink:href="#Login" />
@@ -101,13 +101,13 @@
                 </div>
             </div>
 
-            <div class="d-flex justify-content-end visually-hidden">
+            <div class="d-flex justify-content-end">
                 <?php
-                $isLogin = true; // true - if user is logged in
+
                 $haveCart = true; // true - if user have items in cart
                 $CartItem = 5; // Number of items in cart
 
-                if (!$isLogin) { ?>
+                if (!$login) { ?>
                     <a href=" #" data-bs-target="#SignIN" data-bs-toggle="modal" class="d-block link-body-emphasis text-decoration-none">
                         <svg class="" width="16" height="16" role="img" aria-label="Register">
                             <use xlink:href="#Login" />
@@ -143,19 +143,42 @@
                             </a>
                             <ul class="dropdown-menu text-small shadow dropdown-menu-end">
                                 <li>
-                                    <p class="dropdown-header">Welcome,</p>
-                                    <p class="dropdown-item-text px-2">Lorem Ipsum Dolor</p>
+                                    <h3 class="dropdown-header">
+                                        <div class="d-flex justify-content-center">
+                                            <img src="https://github.com/mdo.png" alt="mdo" width="48" height="48" class="rounded-circle">
+                                        </div>
+                                        <div class="d-flex justify-content-center" style="max-width: 200px;">
+                                            <p class="dropdown-item-text px-2 text-truncate fw-bold fs-6" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover" data-bs-title="<?php echo $Username; ?>"><?php echo $Username; ?></p>
+                                        </div>
+                                        <?php if ($UserRole == "admin") { ?>
+                                            <div class="text-center" style="margin-top: -15px;">
+                                                <small class="text-muted">Administrator</small>
+                                            </div>
+                                        <?php } else { ?>
+                                            <div class="text-center" style="margin-top: -15px;">
+                                                <small class="text-muted">Last Login: <?php echo $Last_Login; ?></small>
+                                            </div>
+                                        <?php } ?>
+                                    </h3>
                                 </li>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
-                                <li><a class="dropdown-item" href="#">About Us</a></li>
-                                <li><a class="dropdown-item" href="#">Settings</a></li>
-                                <li><a class="dropdown-item" href="#">Profile</a></li>
+                                <li><a class="dropdown-item dropdown-item-text" href="#">Profile</a></li>
+                                <?php if ($UserRole == "admin") { ?>
+                                    <li><a class="dropdown-item dropdown-item-text" href="#">Dashboard</a></li>
+                                <?php } ?>
+                                <li><a class="dropdown-item dropdown-item-text" href="#">Settings</a></li>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
-                                <li><a class="dropdown-item" href="#">Sign out</a></li>
+                                <li>
+                                    <a class="dropdown-item dropdown-item-text text-center" href="../Signout/Logout.php">
+                                        <svg class="bi my-1" width="16" height="16" role="img" aria-label="Logout">
+                                            <use xlink:href="#Logout" />
+                                        </svg> Sign out
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     </div>

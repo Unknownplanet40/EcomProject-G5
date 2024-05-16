@@ -1,8 +1,5 @@
 <?php
-$dbhost = "localhost";
-$dbusername = "root";
-$dbpassword = "";
-$dbname = "playaz_db";
+@require_once 'Database_Credentials.php';
 
 try {
     $conn = mysqli_connect($dbhost, $dbusername, $dbpassword, $dbname);
@@ -16,6 +13,6 @@ try {
         </script>
 <?php }
 } catch (\Throwable $th) {
-    header("location: ErrorPage.php?error=500");
+    header("location: ../Exceptions/ErrorPage.php");
 }
 ?>

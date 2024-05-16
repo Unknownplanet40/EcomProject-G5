@@ -2,6 +2,19 @@
 session_start();
 include_once('../../Databases/DB_Configurations.php');
 
+$login = false;
+$Username = 'Undefined';
+$UserRole = 'Undefined';
+
+if (isset($_SESSION['User_Data'])) {
+    if ($_SESSION['User_Data']['Is_user_logged_in'] == 1) {
+        $login = true;
+        $Username = $_SESSION['User_Data']['First_Name'] . ' ' . $_SESSION['User_Data']['Last_Name'];  
+        // format last login date to this format "January 1, 2021"
+        $Last_Login = date('F j, Y', strtotime($_SESSION['User_Data']['Last_Login']));
+        $UserRole = $_SESSION['User_Data']['Role'];
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -16,6 +29,7 @@ include_once('../../Databases/DB_Configurations.php');
     <link rel="stylesheet" href="../../Utilities/Stylesheets/HomeStyle.css">
     <script defer src="../../Utilities/Scripts/HomeScript.js"></script>
     <script defer src="../../Utilities/Scripts/ToggleSwitch.js"></script>
+    <script defer src="../../Utilities/Scripts/LoginScript.js"></script>
     <title>Ecommers</title>
     <script>
         // clear specific local storage
@@ -86,8 +100,6 @@ include_once('../../Databases/DB_Configurations.php');
                 $sql = "SELECT COUNT(id) AS Item FROM product";
                 $row = mysqli_fetch_assoc(mysqli_query($conn, $sql));
                 $Item = $row['Item'];
-
-                echo gethostbyname($_SERVER['REMOTE_ADDR']);
 
                 if ($Item > 0) {
                     // get the product data

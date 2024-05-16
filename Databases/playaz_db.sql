@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 15, 2024 at 09:53 AM
+-- Generation Time: May 16, 2024 at 10:39 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -28,6 +28,9 @@ USE `playaz_db`;
 --
 -- Table structure for table `account`
 --
+-- Creation: May 15, 2024 at 07:47 AM
+-- Last update: May 16, 2024 at 05:37 AM
+--
 
 DROP TABLE IF EXISTS `account`;
 CREATE TABLE `account` (
@@ -35,7 +38,7 @@ CREATE TABLE `account` (
   `User_ID` varchar(255) NOT NULL,
   `Email_Address` varchar(255) NOT NULL,
   `Username` varchar(255) NOT NULL,
-  `Password` char(64) NOT NULL,
+  `Password` char(128) NOT NULL,
   `Created` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -48,12 +51,14 @@ CREATE TABLE `account` (
 --
 
 INSERT INTO `account` (`ID`, `User_ID`, `Email_Address`, `Username`, `Password`, `Created`) VALUES
-(1, 'f28342cc-11c3-11ef-ada7-2c600cc734ef', 'Ryan@gmail.com', 'Capadocia132', '$2y$10$YFpdtQBMEytMPQ42sqaTK.78lgUbZqBON9jK8aXX1wME3BVoao9om', '2024-05-15 11:37:45');
+(1, 'f28342cc-11c3-11ef-ada7-2c600cc734ef', 'Ryan@gmail.com', 'Capadocia132', '$2y$10$8joGKA0S33JpmcSn8CmFTuQ7Gcjgw8uDFvgE1zCld9JiZpPKJLJ3m', '2024-05-15 11:37:45');
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `product`
+--
+-- Creation: May 14, 2024 at 04:45 AM
 --
 
 DROP TABLE IF EXISTS `product`;
@@ -81,6 +86,8 @@ INSERT INTO `product` (`ID`, `UID`, `Prod_Name`, `Brand`, `Price`, `Created`) VA
 
 --
 -- Table structure for table `product_image`
+--
+-- Creation: May 14, 2024 at 05:20 AM
 --
 
 DROP TABLE IF EXISTS `product_image`;
@@ -115,6 +122,8 @@ INSERT INTO `product_image` (`ID`, `UID`, `Image_File`, `Image_Order`) VALUES
 --
 -- Table structure for table `product_size`
 --
+-- Creation: May 14, 2024 at 04:25 AM
+--
 
 DROP TABLE IF EXISTS `product_size`;
 CREATE TABLE `product_size` (
@@ -146,11 +155,68 @@ INSERT INTO `product_size` (`ID`, `UID`, `S`, `S_Qty`, `M`, `M_Qty`, `L`, `L_Qty
 -- --------------------------------------------------------
 
 --
--- Table structure for table `usercarts`
+-- Table structure for table `user_informations`
+--
+-- Creation: May 16, 2024 at 08:09 AM
+-- Last update: May 16, 2024 at 08:36 AM
 --
 
-DROP TABLE IF EXISTS `usercarts`;
-CREATE TABLE `usercarts` (
+DROP TABLE IF EXISTS `user_informations`;
+CREATE TABLE `user_informations` (
+  `ID` int(11) NOT NULL,
+  `User_ID` varchar(255) NOT NULL,
+  `First_Name` varchar(255) NOT NULL,
+  `Last_Name` varchar(255) NOT NULL,
+  `Role` varchar(32) NOT NULL DEFAULT 'user' COMMENT 'user, admin',
+  `Is_user_logged_in` tinyint(1) NOT NULL DEFAULT 0,
+  `Last_Login` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- RELATIONSHIPS FOR TABLE `user_informations`:
+--   `User_ID`
+--       `account` -> `User_ID`
+--
+
+--
+-- Dumping data for table `user_informations`
+--
+
+INSERT INTO `user_informations` (`ID`, `User_ID`, `First_Name`, `Last_Name`, `Role`, `Is_user_logged_in`, `Last_Login`) VALUES
+(1, 'f28342cc-11c3-11ef-ada7-2c600cc734ef', 'Ryan James', 'Capadocia', 'admin', 0, '2024-05-16 16:35:43');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_profile`
+--
+-- Creation: May 16, 2024 at 08:17 AM
+--
+
+DROP TABLE IF EXISTS `user_profile`;
+CREATE TABLE `user_profile` (
+  `ID` int(11) NOT NULL,
+  `User_ID` varchar(255) NOT NULL,
+  `Image_File` longblob NOT NULL,
+  `Created` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- RELATIONSHIPS FOR TABLE `user_profile`:
+--   `User_ID`
+--       `account` -> `User_ID`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_shoppingcart`
+--
+-- Creation: May 15, 2024 at 02:05 AM
+--
+
+DROP TABLE IF EXISTS `user_shoppingcart`;
+CREATE TABLE `user_shoppingcart` (
   `ID` bigint(20) NOT NULL,
   `UID` varchar(255) NOT NULL,
   `User_ID` varchar(255) NOT NULL COMMENT 'Items Added by User',
@@ -160,7 +226,9 @@ CREATE TABLE `usercarts` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- RELATIONSHIPS FOR TABLE `usercarts`:
+-- RELATIONSHIPS FOR TABLE `user_shoppingcart`:
+--   `User_ID`
+--       `account` -> `User_ID`
 --
 
 --
@@ -196,10 +264,25 @@ ALTER TABLE `product_size`
   ADD KEY `PSize_FK` (`UID`);
 
 --
--- Indexes for table `usercarts`
+-- Indexes for table `user_informations`
 --
-ALTER TABLE `usercarts`
-  ADD PRIMARY KEY (`ID`);
+ALTER TABLE `user_informations`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `UserDetails` (`User_ID`);
+
+--
+-- Indexes for table `user_profile`
+--
+ALTER TABLE `user_profile`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `Profile_Picture` (`User_ID`);
+
+--
+-- Indexes for table `user_shoppingcart`
+--
+ALTER TABLE `user_shoppingcart`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `User_Cart` (`User_ID`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -230,9 +313,21 @@ ALTER TABLE `product_size`
   MODIFY `ID` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `usercarts`
+-- AUTO_INCREMENT for table `user_informations`
 --
-ALTER TABLE `usercarts`
+ALTER TABLE `user_informations`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `user_profile`
+--
+ALTER TABLE `user_profile`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `user_shoppingcart`
+--
+ALTER TABLE `user_shoppingcart`
   MODIFY `ID` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
@@ -250,6 +345,24 @@ ALTER TABLE `product_image`
 --
 ALTER TABLE `product_size`
   ADD CONSTRAINT `PSize_FK` FOREIGN KEY (`UID`) REFERENCES `product` (`UID`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `user_informations`
+--
+ALTER TABLE `user_informations`
+  ADD CONSTRAINT `UserDetails` FOREIGN KEY (`User_ID`) REFERENCES `account` (`User_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `user_profile`
+--
+ALTER TABLE `user_profile`
+  ADD CONSTRAINT `Profile_Picture` FOREIGN KEY (`User_ID`) REFERENCES `account` (`User_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `user_shoppingcart`
+--
+ALTER TABLE `user_shoppingcart`
+  ADD CONSTRAINT `User_Cart` FOREIGN KEY (`User_ID`) REFERENCES `account` (`User_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
