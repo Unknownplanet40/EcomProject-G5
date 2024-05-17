@@ -80,7 +80,184 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // [teporary] search bar event listener
   document.getElementById("search-btn").addEventListener("click", function () {
-    document.getElementById("Sresult").classList.remove("d-none");
+    function dAlert(icon, title) {
+      Swal.mixin({
+        toast: true,
+        position: "top",
+        showConfirmButton: false,
+        timer: 1500,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", Swal.stopTimer);
+          toast.addEventListener("mouseleave", Swal.resumeTimer);
+        },
+      }).fire({
+        icon: icon,
+        title: title,
+      });
+    }
+
+    async function search(url) {
+      try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          dAlert("error", "An error occured while fetching data.");
+          return;
+        }
+
+        const data = await response.json();
+
+        console.log(url);
+
+        if (data.error) {
+          dAlert("error", data.error);
+          document.getElementById("ResultLabel").textContent = "No results found.";
+          var Sresult = document.getElementById("SresultList");
+          Sresult.innerHTML = "";
+          return;
+        } else if (data.info) {
+          document.getElementById("ResultLabel").textContent = "We Couldn't Find Any Results for: \"" + document.getElementById("search-bar").value + "\"";
+          var Sresult = document.getElementById("SresultList");
+          Sresult.innerHTML = "";
+          return;
+        } else {
+          document.getElementById("ResultLabel").textContent = "Search Results for: \"" + document.getElementById("search-bar").value + "\"";
+          // Clear the previous search result
+          var Sresult = document.getElementById("SresultList");
+          var limit = 0;
+          var count = 0;
+          Sresult.innerHTML = "";
+
+          if (data.length <= 2) {
+            limit = data.length;
+          } else {
+            limit = 5;
+          }
+
+          // Loop through each item in the data array
+          for (let i = 0; i < limit; i++) {
+            // Create a new list group item
+            var li = document.createElement("li");
+            li.classList.add("list-group-item", "list-group-item-action");
+
+            // Create a new anchor element
+            var a = document.createElement("a");
+            if (Is_User_Logged_In) {
+              a.href = "../../Pages/Product.php?prod_id=" + data[i].UID;
+            }
+            a.classList.add("text-decoration-none", "text-body");
+
+            // Create a new div element
+            var div = document.createElement("div");
+            div.classList.add("d-flex", "justify-content-between");
+
+            // Create a new div element
+            var div2 = document.createElement("div");
+            div2.classList.add("d-flex");
+
+            // Create a new image element
+            var img = document.createElement("img");
+            img.src = data[i]["Prod_Images"][0]["Img_Path"];
+            img.height = 40;
+            img.classList.add("me-3", "rounded-3");
+
+            // Create a new div element
+            var div3 = document.createElement("div");
+
+            // Create a new h5 element
+            var h5 = document.createElement("h5");
+            h5.classList.add("mb-0");
+            h5.textContent = data[i].Prod_Name + " - " + data[i].Prod_Color;
+
+            // Create a new p element
+            var p = document.createElement("p");
+            p.classList.add("mb-0");
+            // available sizes if value is 0 then don't display
+            // create a array of sizes
+            var sizes = [];
+
+            if (data[i].Prod_Sizes[0]["S"] != 0) {
+              sizes.push("S");
+            }
+            if (data[i].Prod_Sizes[0]["M"] != 0) {
+              sizes.push("M");
+            }
+
+            if (data[i].Prod_Sizes[0]["L"] != 0) {
+              sizes.push("L");
+            }
+
+            if (data[i].Prod_Sizes[0]["XL"] != 0) {
+              sizes.push("XL");
+            }
+
+            var size = "";
+            
+            // loop through the sizes array and append it to the p element
+            for (let j = 0; j < sizes.length; j++) {
+              if (j == sizes.length - 1) {
+                size += sizes[j] + " ";
+              } else {
+                size += sizes[j] + ", ";
+              }
+            }
+            p.innerHTML = 'Size: <strong class="text-primary">' + size + '</strong> <br>Price: <strong class="fw-bold">₱' + data[i].Prod_Price + '.00</strong>';
+
+            // Append the h5 and p elements to the div3 element
+            div3.appendChild(h5);
+            div3.appendChild(p);
+
+            // Append the img and div3 elements to the div2 element
+            div2.appendChild(img);
+            div2.appendChild(div3);
+
+            // Append the div2 element to the div element
+            div.appendChild(div2);
+
+            // Append the div element to the anchor element
+            a.appendChild(div);
+
+            // Append the anchor element to the list group item
+            li.appendChild(a);
+
+            // Append the list group item to the search result list
+            Sresult.appendChild(li);
+
+            count++;
+          }
+
+          if (count === 2){
+            var li = document.createElement("li");
+            li.classList.add("list-group-item", "list-group-item-action", "text-center");
+            if (Is_User_Logged_In) {
+              li.innerHTML =
+                '<a href="#" class="btn btn-sm btn-outline-primary">View all results</a>';
+            } else {
+              li.innerHTML =
+                '<a href="#" class="btn btn-sm btn-outline-primary">Login to view all results</a>';
+            }
+            Sresult.appendChild(li);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    var searchTxt = document.getElementById("search-bar").value;
+    if (searchTxt.length > 0) {
+      document.getElementById("Sresult").classList.remove("d-none");
+
+      search("../../Utilities/api/FetchSearchData.php?search=" + searchTxt);
+    } else {
+      document.getElementById("Sresult").classList.add("d-none");
+      document.getElementById("search-bar").classList.add("is-invalid");
+      setTimeout(function () {
+        document.getElementById("search-bar").classList.remove("is-invalid");
+        document.getElementById("search-bar").focus();
+      }, 1500);
+    }
   });
 
   // [teporary] search bar event listener
@@ -198,7 +375,8 @@ document.addEventListener("DOMContentLoaded", function () {
           var chooseSize = document.getElementById("Selectsize");
           if (chooseSize.value == "Choose Size") {
             chooseSize.classList.add("is-invalid");
-            document.getElementById("reminder").textContent = "Please choose a size first.";
+            document.getElementById("reminder").textContent =
+              "Please choose a size first.";
             setTimeout(function () {
               chooseSize.classList.remove("is-invalid");
               document.getElementById("reminder").innerHTML = "&nbsp;";

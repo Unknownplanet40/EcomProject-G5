@@ -60,6 +60,10 @@
     filter: blur(2px);
 }
 
+.hide-scrollbar::-webkit-scrollbar {
+    display: none !important;
+}
+
 
 .items-scroll{
     max-height: 480px !important;
