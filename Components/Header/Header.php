@@ -113,7 +113,7 @@
                     $haveCart = false;
                     $CartItem = 0;
 
-                    $stmt = $conn->prepare("SELECT * FROM user_shoppingcart WHERE User_ID = ? ");
+                    $stmt = $conn->prepare("SELECT * FROM user_shoppingcart WHERE User_ID = ? AND Status IS NULL");
                     $stmt->bind_param("s", $_SESSION['User_Data']['user_ID']);
                     $stmt->execute();
                     $result = $stmt->get_result();

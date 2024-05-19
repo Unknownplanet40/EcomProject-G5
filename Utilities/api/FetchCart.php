@@ -67,6 +67,7 @@ try {
                     'Prod_ID' => $row['UID'],
                     'Item_size' => $row['Size'],
                     'Item_Qty' => $row['Quantity'],
+                    'Unique_ID' => $row['UUID'],
                     'prod_Details' => $prod_Details,
                     'prod_Img' => $prod_Img,
                 ];

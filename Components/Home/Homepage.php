@@ -74,7 +74,7 @@ if (isset($_SESSION['User_Data'])) {
     ?>
 
     <!-- Carousel -->
-    <div class="container-xxl mt-3 mb-5 px-1 visually-hidden">
+    <div class="container-xxl mt-3 mb-5 px-1">
         <?php include_once('../Carousel/CarouselFrontPage.php'); ?>
     </div>
     <!-- Brands Icons -->

@@ -75,9 +75,26 @@ try {
             }
         } */
 
+        // generate 6-digit random number
+        $uuid = mt_rand(100000, 999999);
+        $UNIQUE_ID = true;
+
+        While ($UNIQUE_ID) {
+            $stmt_check = $conn->prepare("SELECT * FROM user_shoppingcart WHERE UUID = ?");
+            $stmt_check->bind_param("i", $uuid);
+            $stmt_check->execute();
+            $result_check = $stmt_check->get_result();
+
+            if ($result_check->num_rows > 0) {
+                $uuid = mt_rand(100000, 999999);
+            } else {
+                $UNIQUE_ID = false;
+            }
+        }
+
         // add to Database
-        $stmt = $conn->prepare("INSERT INTO user_shoppingcart (UID, User_ID, Size, Quantity) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("sssi", $prod_id, $user_id, $size, $qty);
+        $stmt = $conn->prepare("INSERT INTO user_shoppingcart (UID, User_ID, Size, Quantity, UUID) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssii", $prod_id, $user_id, $size, $qty, $uuid);
         $stmt->execute();
         if ($stmt->affected_rows > 0) {
             response(['status' => 'success', 'message' => 'Product added to cart']);

@@ -529,11 +529,37 @@ document.addEventListener("DOMContentLoaded", function () {
               } else {
                 var CartTotal = data.cart_items.length;
 
+                function updateCartCount(type) {
+                  if (type == "add") {
+                    document.getElementById("Cart-Items").textContent =
+                      parseInt(
+                        document.getElementById("Cart-Items").textContent
+                      ) + 1;
+                    document.getElementById("Ccount").textContent =
+                      parseInt(document.getElementById("Ccount").textContent) +
+                      1;
+                  } else if (type == "remove") {
+                    document.getElementById("Cart-Items").textContent =
+                      parseInt(
+                        document.getElementById("Cart-Items").textContent
+                      ) - 1;
+                    document.getElementById("Ccount").textContent =
+                      parseInt(document.getElementById("Ccount").textContent) -
+                      1;
+                  } else {
+                    document.getElementById("Cart-Items").textContent =
+                      CartTotal;
+                    document.getElementById("Ccount").textContent = CartTotal;
+                  }
+                }
+
                 if (CartTotal > 0) {
                   var UserCart = document.getElementById("UserCart");
                   UserCart.innerHTML = "";
 
                   for (let i = 0; i < CartTotal; i++) {
+                    updateCartCount();
+
                     var li = document.createElement("li");
                     li.classList.add(
                       "list-group-item",
@@ -579,6 +605,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     var a = document.createElement("a");
                     a.style.cursor = "pointer";
                     a.id = "Remove_" + i;
+                    a.setAttribute("pid", data.cart_items[i].Unique_ID);
                     a.classList.add("text-danger");
                     a.title = "Remove from cart";
                     a.innerHTML = `<svg class="bi" width="16" height="16" role="img" aria-label="Remove from cart"><use xlink:href="#Trash" /></svg>`;
@@ -643,35 +670,59 @@ document.addEventListener("DOMContentLoaded", function () {
                     document
                       .getElementById("Remove_" + i)
                       .addEventListener("click", function () {
-                        /* async function removeItem(url) {
-                      try {
-                        const response = await fetch(url);
 
-                        if (!response.ok) {
-                          throw new Error("An error occured while removing item.");
+                        function RToast(icon, title) {
+                          Swal.mixin({
+                            toast: true,
+                            position: "top",
+                            showConfirmButton: false,
+                            timer: 1500,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                              toast.addEventListener("mouseenter", Swal.stopTimer);
+                              toast.addEventListener("mouseleave", Swal.resumeTimer);
+                            },
+                          }).fire({
+                            icon: icon,
+                            title: title,
+                          });
                         }
 
-                        const data = await response.json();
+                        async function removeItem(url) {
+                          try {
+                            const response = await fetch(url);
 
-                        if (data.error) {
-                          CartToast("error", data.error);
-                        } else {
-                          if (data.status == "success") {
-                            CartToast(data.status, data.message);
-                            var cartCount = document.getElementById("Cart-Items").textContent;
-                            
-                          } else {
-                            CartToast(data.status, data.message);
+                            if (!response.ok) {
+                              throw new Error(
+                                "An error occured while removing item."
+                              );
+                            }
+
+                            const data = await response.json();
+
+                            if (data.error) {
+                              RToast("error", data.error);
+                            } else {
+                              if (data.status == "success") {
+                                console.log(data.message);
+                              } else {
+                                RToast("error", data.message);
+                              }
+                            }
+                          } catch (error) {
+                            console.error(error);
                           }
                         }
-                      } catch (error) {
-                        console.error(error);
-                      }
-                    } */
+
+                        var pid = this.getAttribute("pid");
+
+                        removeItem('../../Utilities/api/RemoveItem.php?uuid=' + pid);
 
                         UserCart.removeChild(
                           document.getElementById("Item-list_" + i)
                         );
+
+                        updateCartCount("remove");
 
                         // if thiere is no item in the cart
                         if (UserCart.childElementCount === 0) {
