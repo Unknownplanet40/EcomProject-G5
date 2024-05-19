@@ -13,7 +13,12 @@ if (isset($_SESSION['User_Data'])) {
         // format last login date to this format "January 1, 2021"
         $Last_Login = date('F j, Y', strtotime($_SESSION['User_Data']['Last_Login']));
         $UserRole = $_SESSION['User_Data']['Role'];
+        echo '<script>var Is_User_Logged_In = true;</script>';
+        echo '<script>var User_ID = "' . $_SESSION['User_Data']['user_ID'] . '";</script>';
     }
+} else {
+    echo '<script>var Is_User_Logged_In = false;</script>';
+    echo '<script>var User_ID = 0;</script>';
 }
 ?>
 
@@ -38,8 +43,6 @@ if (isset($_SESSION['User_Data'])) {
         var FileName = document.location.pathname.split('/').slice(-1)[0];
         // save to local storage
         localStorage.setItem('FileName', FileName);
-
-        var Is_User_Logged_In = <?php echo $login ? 'true' : 'false'; ?>;
     </script>
 </head>
 
@@ -71,7 +74,7 @@ if (isset($_SESSION['User_Data'])) {
     ?>
 
     <!-- Carousel -->
-    <div class="container-xxl mt-3 mb-5 px-1">
+    <div class="container-xxl mt-3 mb-5 px-1 visually-hidden">
         <?php include_once('../Carousel/CarouselFrontPage.php'); ?>
     </div>
     <!-- Brands Icons -->
@@ -84,7 +87,7 @@ if (isset($_SESSION['User_Data'])) {
                         <a class="text-decoration-none text-body">
                             <div class="card border-0 bg-transparent">
                                 <div class="card-body ratio ratio-16x9">
-                                    <img id="bimg-<?php echo $i; ?>" src="https://ssl.gstatic.com/accounts/ui/progress_spinner_color_20dp_4x.gif" alt="Category Icon" class="img-fluid object-fit-contain" loading="lazy">
+                                    <img id="bimg-<?php echo $i; ?>" src="../../Assets/Images/Alternative.gif" alt="Category Icon" class="img-fluid object-fit-contain" loading="lazy">
                                 </div>
                             </div>
                         </a>

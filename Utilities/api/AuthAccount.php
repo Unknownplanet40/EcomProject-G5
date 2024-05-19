@@ -39,6 +39,16 @@ try {
 
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
+        // status: Active, Pending, Archived, Suspended
+        $status = array("Active", "Pending", "Archived", "Suspended");
+        if ($row['Status'] == $status[2]) {
+            response(['status' => 'warning', 'message' => 'Sorry, We could not find your account']);
+        } else if ($row['Status'] == $status[3]) {
+            response(['status' => 'info', 'message' => '<b>Your account is suspended</b>, please check your email for more information.']);
+        }
+
+
+        // Check if the password is correct
         if (password_verify($password, $row['Password'])) {
             $_SESSION['User_ID'] = $row['User_ID'];
 
@@ -49,18 +59,18 @@ try {
             $update_result = $update_stmt->execute();
 
             if (!$update_result) {
-                response(['status' => 'error', 'message' => 'Failed to update user information']);
+                response(['status' => 'error', 'message' => 'Something went wrong. Please try again later']);
             } else {
-                response(['status' => 'success', 'message' => 'Logging you in. Please wait...']);
+                response(['status' => 'success', 'message' => '<b>Logging you in</b>. Please wait...']);
             }
 
             // Close the update statement
             $update_stmt->close();
         } else {
-            response(['status' => 'error', 'message' => 'Your password is incorrect']);
+            response(['status' => 'error', 'message' => 'Your <b>password</b> is incorrect']);
         }
     } else {
-        response(['status' => 'info', 'message' => 'Email or password is incorrect']);
+        response(['status' => 'info', 'message' => '<b>Email</b> or <b>password</b> is incorrect']);
     }
 
     // Close the select statement and connection

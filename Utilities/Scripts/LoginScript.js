@@ -114,8 +114,6 @@ document.getElementById("btn-Sub").addEventListener("click", function () {
     // async makes a function return a Promise
     // await makes a function wait for a Promise
 
-
-
     async function AuthAccount(url) {
       try {
         const response = await fetch(url, {

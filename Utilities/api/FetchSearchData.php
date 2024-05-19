@@ -14,10 +14,15 @@ function response($data)
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'GET') {
     $search = $_GET['search'];
     $search = '%' . $search . '%';
-    $stmt = $conn->prepare("SELECT * FROM product WHERE Prod_Name LIKE ?");
-    $stmt->bind_param("s", $search);
+    $stmt = $conn->prepare("
+    SELECT * FROM product 
+    WHERE Prod_Name LIKE ? 
+    OR Color LIKE ? 
+    OR Brand LIKE ?");
+    $stmt->bind_param("sss", $search, $search, $search);
     $stmt->execute();
     $result = $stmt->get_result();
+
 
     if ($result->num_rows > 0) {
         $products = [];

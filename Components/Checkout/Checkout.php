@@ -1,3 +1,27 @@
+<?php
+session_start();
+include_once('../../Databases/DB_Configurations.php');
+
+$login = false;
+$Username = 'Undefined';
+$UserRole = 'Undefined';
+
+if (isset($_SESSION['User_Data'])) {
+    if ($_SESSION['User_Data']['Is_user_logged_in'] == 1) {
+        $login = true;
+        $Username = $_SESSION['User_Data']['First_Name'] . ' ' . $_SESSION['User_Data']['Last_Name'];
+        // format last login date to this format "January 1, 2021"
+        $Last_Login = date('F j, Y', strtotime($_SESSION['User_Data']['Last_Login']));
+        $UserRole = $_SESSION['User_Data']['Role'];
+        echo '<script>var Is_User_Logged_In = true;</script>';
+        echo '<script>var User_ID = "' . $_SESSION['User_Data']['user_ID'] . '";</script>';
+    }
+} else {
+    echo '<script>var Is_User_Logged_In = false;</script>';
+    echo '<script>var User_ID = 0;</script>';
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="auto">
 

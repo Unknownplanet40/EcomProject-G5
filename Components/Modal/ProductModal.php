@@ -25,8 +25,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6">
-                        <div id="card-bg" class="card border-0 bg-body-tertiary bg-opacity-10 bg-blur-3">
+                    <div class="col-lg-6 d-flex align-items-center">
+                        <div id="card-bg" class="card border-0 bg-transparent">
                             <div class="card-body w-100 h-auto">
                                 <input type="hidden" id="ProductID" value="">
                                 <p class="card-title text-body-emphasis fw-bold fs-4 text-truncate" id="Pname"></p>

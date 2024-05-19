@@ -103,40 +103,33 @@
 
             <div class="d-flex justify-content-end">
                 <?php
-
-                $haveCart = true; // true - if user have items in cart
-                $CartItem = 5; // Number of items in cart
-
                 if (!$login) { ?>
                     <a href=" #" data-bs-target="#SignIN" data-bs-toggle="modal" class="d-block link-body-emphasis text-decoration-none">
                         <svg class="" width="16" height="16" role="img" aria-label="Register">
                             <use xlink:href="#Login" />
                         </svg> Sign In / Register
                     </a>
-                <?php } else { ?>
-                    <!-- If Login-->
+                <?php } else {
+                    $haveCart = false;
+                    $CartItem = 0;
+
+                    $stmt = $conn->prepare("SELECT * FROM user_shoppingcart WHERE User_ID = ? ");
+                    $stmt->bind_param("s", $_SESSION['User_Data']['user_ID']);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    $CartItem = $result->num_rows;?>
                     <div class="hstack gap-3">
-                        <?php if ($haveCart) { ?>
-                            <div class="me-3 position-relative">
-                                <a class="d-block link-body-emphasis text-decoration-none mt-1" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">
-                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-2 text-bg-primary bg-opacity-75">
-                                        99+
-                                        <span class="visually-hidden">Items in cart</span>
-                                    </span>
-                                    <svg class="mb-1" width="24" height="24" role="img" aria-label="Cart">
-                                        <use xlink:href="#Cart" />
-                                    </svg>
-                                </a>
-                            </div>
-                        <?php } else { ?>
-                            <div class="me-3" title="Cart is empty">
-                                <a href="#" class="d-block link-body-emphasis text-decoration-none mt-1">
-                                    <svg class="mb-1" width="24" height="24" role="img" aria-label="Cart is empty">
-                                        <use xlink:href="#Cart" />
-                                    </svg>
-                                </a>
-                            </div>
-                        <?php } ?>
+                        <div class="me-3 position-relative" id="cart-btn">
+                            <a class="d-block link-body-emphasis text-decoration-none mt-1" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-2 text-bg-primary bg-opacity-75">
+                                    <span id="Cart-Items"><?php echo $CartItem; ?></span>
+                                    <span class="visually-hidden">Items in cart</span>
+                                </span>
+                                <svg class="mb-1" width="24" height="24" role="img" aria-label="Cart">
+                                    <use xlink:href="#Cart" />
+                                </svg>
+                            </a>
+                        </div>
                         <div>
                             <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
                                 <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
@@ -190,62 +183,29 @@
 <!-- Offcanvas Cart -->
 <div class="offcanvas-size offcanvas offcanvas-end bg-blur-10 bg-opacity-50 bg-body-tertiary" data-bs-backdrop="static" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
     <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Your Shopping Cart <span class="badge bg-primary rounded-2">9 Items</span></h5>
+        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Your Shopping Cart <span class="badge bg-primary rounded-2"><span id="Ccount"><?php echo $CartItem; ?></span> Items</span></h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body overflow-auto rounded-2 items-scroll">
         <div class="row">
             <div class="col-12">
                 <div>
-                    <div class="list-group list-group-flush rounded-2">
-                        <?php
-                        $CartItem = 9; // Number of items in cart
-                        if ($CartItem == 0) { ?>
+                    <ul class="list-group list-group-flush rounded-2 bg-transparent" id="UserCart">
+                        <li class="list-group-item bg-transparent border-0">
                             <a class="list-group-item list-group-item-action bg-transparent border-0 text-body-emphasis" aria-current="true">
                                 <div class="d-flex w-100 justify-content-center">
                                     <h5 class=" text-body-emphasis text-center">Your cart is empty</h5>
                                 </div>
                             </a>
-                            <?php } else {
-                            for ($i = 0; $i < $CartItem; $i++) { ?>
-                                <a class="list-group-item list-group-item-action bg-transparent border-0 text-body-emphasis" aria-current="true">
-                                    <div class="row">
-                                        <div class="col-4">
-                                            <img src="../../Assets/Images/testing/temp<?php echo $i + 1; ?>.jpg" class="img-thumbnail" alt="DBTK LOG TEE - BLACK">
-                                        </div>
-                                        <div class="col-8">
-                                            <div class="d-flex w-100 justify-content-between">
-                                                <h6 class="mb-1 text-truncate" style="max-width: 200px;" title="DBTK LOG TEE - BLACK">DBTK LOG TEE - BLACK</h6>
-                                                <span class="text-danger" title="Remove item" style="cursor: pointer;" id="RemoveItem<?php echo $i + 1; ?>">
-                                                    <svg class="bi" width="16" height="16" role="img" aria-label="Close">
-                                                        <use xlink:href="#Trash" />
-                                                    </svg>
-                                                </span>
-                                            </div>
-                                            <hr class="my-1">
-                                            <div class="d-flex w-100 justify-content-between">
-                                                <p class="mb-1">Small - <span class="fw-bold">₱ 1,000.00</span></p>
-                                                <small>Qty: 1</small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                                <script>
-                                    document.getElementById("RemoveItem<?php echo $i + 1; ?>").addEventListener("click", function() {
-                                        document.getElementById("RemoveItem<?php echo $i + 1; ?>").closest(".list-group-item").remove();
-                                        console.log("Item <?php echo $i + 1; ?> removed");
-                                    });
-                                </script>
-                        <?php }
-                        } ?>
-                    </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
     <div class="offcanvas-footer my-3">
         <div class=" vstack gap-2 col-10 mx-auto">
-            <button type="button" class="btn btn-primary">Checkout</button>
+            <button type="button" class="btn btn-primary" <?php echo ($CartItem == 0) ? 'disabled' : ''; ?> onclick="window.location.href='../../Components/Checkout/Checkout.php';">Proceed to Checkout</button>
             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">Continue Shopping</button>
         </div>
     </div>
