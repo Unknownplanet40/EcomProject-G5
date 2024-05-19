@@ -1,0 +1,175 @@
+<li class="list-group-item bg-transparent" id="MainCart_<?php echo $obj->id; ?>">
+                                    <div class="input-group">
+                                        <div class="input-group-text mx-2 bg-transparent border-0">
+                                            <input class="form-check-input mt-0" type="checkbox" value="" aria-label="Checkbox for following text input" id="Check<?php echo $obj->id; ?>">
+                                            <input type="hidden" value="<?php echo $obj->id; ?>" id="ProductID<?php echo $obj->id; ?>">
+                                        </div>
+                                        <div class="card w-75 border-0 bg-transparent">
+                                            <div class="row g-0">
+                                                <div class="col-4 d-flex align-items-center">
+                                                    <img src="../<?php echo $obj->product_Image; ?>" class="img-fluid object-fit-cover w-100 rounded" alt="...">
+                                                </div>
+                                                <div class="col-8">
+                                                    <div class="card-body">
+                                                        <div class="d-flex justify-content-between">
+                                                            <h5 class="card-title text-truncate" id="ProductName<?php echo $obj->id; ?>"><?php echo $obj->product_Name; ?></h5>
+                                                            <div class="text-body-secondary">
+                                                                &#8369;
+                                                                <span class="text-body-secondary fs-5 fw-bold" id="Price<?php echo $obj->id; ?>"><?php echo $obj->Price; ?></span>
+                                                            </div>
+                                                            <a class="text-danger" id="Remove<?php echo $obj->id; ?>" style="cursor: pointer;">
+                                                                <span class="text-danger">
+                                                                    <svg fill="currentColor" class="bi" width="1em" height="1em">
+                                                                        <use xlink:href="#Trash" />
+                                                                    </svg>
+                                                                </span>
+                                                            </a>
+                                                        </div>
+                                                        <div class="vstack gap-3">
+                                                            <div class="d-flex align-items-center">
+                                                                <span class="text-body-secondary me-2">Size: </span>
+                                                                <select class="form-select form-select-sm w-50" id="Size<?php echo $obj->id; ?>">
+                                                                    <option <?php if ($obj->Size != 'S' && $obj->Size != 'M' && $obj->Size != 'L' && $obj->Size != 'XL') echo 'selected'; ?> hidden>Choose...</option>
+                                                                    <option <?php if ($obj->Size == 'S') echo 'selected'; ?>>S</option>
+                                                                    <option <?php if ($obj->Size == 'M') echo 'selected'; ?>>M</option>
+                                                                    <option <?php if ($obj->Size == 'L') echo 'selected'; ?>>L</option>
+                                                                    <option <?php if ($obj->Size == 'XL') echo 'selected'; ?>>XL</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="d-flex align-items-center">
+                                                                <span class="text-body- me-2">Quantity: </span>
+                                                                <div class="btn-group btn-group-sm w-50" role="group">
+                                                                    <a class="btn btn-sm btn-outline-secondary" id="Qminus<?php echo $obj->id; ?>">&minus;</a>
+                                                                    <input type="text" class="form-control form-control-sm text-center" min="1" value="<?php echo $obj->Quantity; ?>" id="Q<?php echo $obj->id; ?>">
+                                                                    <a class="btn btn-sm btn-outline-secondary" id="Qplus<?php echo $obj->id; ?>">&plus;</a>
+                                                                </div>
+                                                                <script>
+                                                                    // Quantity minus
+                                                                    document.getElementById('Qminus<?php echo $obj->id; ?>').addEventListener('click', function() {
+                                                                        var Q = document.getElementById('Q<?php echo $obj->id; ?>');
+                                                                        if (Q.value > 1) {
+                                                                            Q.value--;
+                                                                        }
+                                                                    });
+
+                                                                    // Quantity plus
+                                                                    document.getElementById('Qplus<?php echo $obj->id; ?>').addEventListener('click', function() {
+                                                                        var Q = document.getElementById('Q<?php echo $obj->id; ?>');
+                                                                        Q.value++;
+                                                                    });
+
+                                                                    // Remove item
+                                                                    document.getElementById('Remove<?php echo $obj->id; ?>').addEventListener('click', function() {
+
+
+
+                                                                        /* // check if checkbox is checked
+                                                                        if (document.getElementById('Check<?php echo $obj->id; ?>').checked) {
+                                                                            // remove Item From Checkout List
+                                                                            var Item = document.getElementById('Item_<?php echo $obj->id; ?>');
+                                                                            Item.remove();
+
+                                                                            // decrement totalCartItem
+                                                                            document.getElementById('totalCartItem').value = parseInt(document.getElementById('totalCartItem').value) - 1;
+
+                                                                            // check if totalCartItem is 0
+                                                                            if (document.getElementById('totalCartItem').value == 0) {
+                                                                                let li = document.createElement('li');
+                                                                                li.className = 'list-group-item d-flex justify-content-center';
+                                                                                li.id = 'NoItem';
+                                                                                li.innerHTML = `<p class="text-body-secondary text-center">No items in cart</p>`;
+                                                                                document.getElementById('CheckoutList').appendChild(li);
+                                                                            }
+
+                                                                            // decrement total price
+                                                                            let total_Price = document.getElementById('totalPrice').value;
+                                                                            let total = parseInt(total_Price) - parseInt(document.getElementById('Price<?php echo $obj->id; ?>').textContent);
+                                                                            document.getElementById('totalPrice').value = total;
+                                                                            document.getElementById('total').textContent = total;
+
+                                                                            // Main Cart List
+                                                                            var MainCart = document.getElementById('MainCart_<?php echo $obj->id; ?>');
+                                                                            MainCart.remove();
+                                                                        } */
+                                                                    });
+
+
+                                                                    // When checkbox is checked
+                                                                    document.getElementById('Check<?php echo $obj->id; ?>').addEventListener('click', function() {
+
+                                                                        //check if totalCartItem is 0
+                                                                        if (document.getElementById('totalCartItem').value == 0) {
+                                                                            //remove no item in cart
+                                                                            document.getElementById('NoItem').remove();
+                                                                        }
+
+                                                                        if (document.getElementById('Check<?php echo $obj->id; ?>').checked) {
+                                                                            var Size = document.getElementById('Size<?php echo $obj->id; ?>').value;
+                                                                            var ProductID = document.getElementById('ProductID<?php echo $obj->id; ?>').value;
+                                                                            var ProductName = document.getElementById('ProductName<?php echo $obj->id; ?>').textContent;
+                                                                            var Quantity = document.getElementById('Q<?php echo $obj->id; ?>').value;
+                                                                            var Price = document.getElementById('Price<?php echo $obj->id; ?>').textContent;
+
+                                                                            var data = {
+                                                                                id: ProductID,
+                                                                                product_Name: ProductName,
+                                                                                Size: Size,
+                                                                                Quantity: Quantity,
+                                                                                Price: Price
+                                                                            };
+
+                                                                            //increment totalCartItem
+                                                                            document.getElementById('totalCartItem').value = parseInt(document.getElementById('totalCartItem').value) + 1;
+
+                                                                            let Checklist = document.getElementById('CheckoutList');
+                                                                            let li = document.createElement('li');
+
+                                                                            //Create a new list item
+                                                                            li.className = 'list-group-item d-flex justify-content-between lh-sm';
+                                                                            li.id = `Item_${ProductID}`;
+                                                                            li.innerHTML = `<div>
+                                                                                    <h6 class="my-0 text-truncate" style="max-width: 200px" data-bs-toggle="tooltip" data-bs-placement="left" title="${ProductName}">${ProductName}</h6>
+                                                                                    <small class="text-body-secondary">Size: <span class="text-body fw-bold">${Size}</span> Qty: <span class="text-body fw-bold">${Quantity}</span></small>
+                                                                                </div>
+                                                                                <div class="hstack gap-3">
+                                                                                    <span class="text-body-secondary">
+                                                                                        &#8369;
+                                                                                        <span class="text-body-secondary fs-5 fw-bold">${Price}</span>
+                                                                                    </span>
+                                                                                </div>`;
+                                                                            Checklist.appendChild(li);
+
+                                                                            let total_Price = document.getElementById('totalPrice').value;
+                                                                            let total = parseInt(total_Price) + parseInt(Price);
+                                                                            document.getElementById('totalPrice').value = total;
+                                                                            document.getElementById('total').textContent = total;
+                                                                        } else {
+                                                                            var Item = document.getElementById('Item_<?php echo $obj->id; ?>');
+                                                                            Item.remove();
+
+                                                                            document.getElementById('totalCartItem').value = parseInt(document.getElementById('totalCartItem').value) - 1;
+
+
+                                                                            if (document.getElementById('totalCartItem').value == 0) {
+                                                                                let li = document.createElement('li');
+                                                                                li.className = 'list-group-item d-flex justify-content-center';
+                                                                                li.id = 'NoItem';
+                                                                                li.innerHTML = `<p class="text-body-secondary text-center">No items in cart</p>`;
+                                                                                document.getElementById('CheckoutList').appendChild(li);
+                                                                            }
+
+                                                                            let total_Price = document.getElementById('totalPrice').value;
+                                                                            let total = parseInt(total_Price) - parseInt(document.getElementById('Price<?php echo $obj->id; ?>').textContent);
+                                                                            document.getElementById('totalPrice').value = total;
+                                                                            document.getElementById('total').textContent = total;
+                                                                        }
+                                                                    });
+                                                                </script>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>

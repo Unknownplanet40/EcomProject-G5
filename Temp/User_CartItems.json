@@ -1,0 +1,82 @@
+[
+  {
+    "id": 1,
+    "product_Name": "Cotton T-Shirt",
+    "product_Image": "../Assets/Images/testing/temp1.jpg",
+    "Size": "M",
+    "Quantity": 50,
+    "Price": 20
+  },
+  {
+    "id": 2,
+    "product_Name": "Denim Jeans",
+    "product_Image": "../Assets/Images/testing/temp2.jpg",
+    "Size": "M",
+    "Quantity": 20,
+    "Price": 50
+  },
+  {
+    "id": 3,
+    "product_Name": "Hooded Sweatshirt",
+    "product_Image": "../Assets/Images/testing/temp3.jpg",
+    "Size": "L",
+    "Quantity": 30,
+    "Price": 40
+  },
+  {
+    "id": 4,
+    "product_Name": "Leather Jacket",
+    "product_Image": "../Assets/Images/testing/temp4.jpg",
+    "Size": "XL",
+    "Quantity": 15,
+    "Price": 100
+  },
+  {
+    "id": 5,
+    "product_Name": "Sports Leggings",
+    "product_Image": "../Assets/Images/testing/temp5.jpg",
+    "Size": "S",
+    "Quantity": 40,
+    "Price": 30
+  },
+  {
+    "id": 6,
+    "product_Name": "Formal Dress Shirt",
+    "product_Image": "../Assets/Images/testing/temp6.jpg",
+    "Size": "S",
+    "Quantity": 25,
+    "Price": 25
+  },
+  {
+    "id": 7,
+    "product_Name": "Wool Sweater",
+    "product_Image": "../Assets/Images/testing/temp7.jpg",
+    "Size": "M",
+    "Quantity": 35,
+    "Price": 45
+  },
+  {
+    "id": 8,
+    "product_Name": "Cargo Shorts",
+    "product_Image": "../Assets/Images/testing/temp8.jpg",
+    "Size": "L",
+    "Quantity": 10,
+    "Price": 35
+  },
+  {
+    "id": 9,
+    "product_Name": "Rain Jacket",
+    "product_Image": "../Assets/Images/testing/temp9.jpg",
+    "Size": "L",
+    "Quantity": 20,
+    "Price": 60
+  },
+  {
+    "id": 10,
+    "product_Name": "Yoga Pants",
+    "product_Image": "../Assets/Images/testing/temp10.jpg",
+    "Size": "S",
+    "Quantity": 30,
+    "Price": 25
+  }
+]

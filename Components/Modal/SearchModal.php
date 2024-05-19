@@ -18,45 +18,9 @@
             </div>
             <div class="modal-body">
                 <div class="d-none" id="Sresult">
-                    <h5 class="modal-title text-center pt-0">Search Results</h5>
-                    <ul class="list-group list-group-flush rounded-3 shadow">
-                        <?php
-                        $resultCount = 6;
-                        for ($i = 1; $i < $resultCount; $i++) {
-                        ?>
-                            <li class="list-group-item list-group-item-action">
-                                <a href="#" class="text-decoration-none text-body">
-                                    <div class="d-flex justify-content-between">
-                                        <div class="d-flex">
-                                            <img src="../../Assets/Images/testing/temp<?php echo $i; ?>.jpg" height="40" class="me-3 rounded-3">
-                                            <div>
-                                                <h5 class="mb-0">List group item heading</h5>
-                                                <p class="mb-0">Some placeholder content in a paragraph.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                        <?php
-                        }
-                        /* if (!$isLogin) { ?>
-                            <li class="list-group-item text-center">
-                                <button class="btn btn-sm btn-outline-primary">Sign-in to view more</button>
-                            </li>
-                        <?php } else if ($resultCount > 5) {
-                        ?>
-                            <li class="list-group-item text-center">
-                                <button class="btn btn-sm btn-outline-primary">View More</button>
-                            </li>
-                        <?php
-                        } */
-                        ?>
-                        <li class="list-group-item text-center" id="islogin">
-                            <button class="btn btn-sm btn-outline-primary">Sign-in to view more</button>
-                        </li>
-                        <li class="list-group-item text-center visually-hidden" id="viewmore">
-                            <button class="btn btn-sm btn-outline-primary">View More</button>
-                        </li>
+                    <h5 class="modal-title text-center pt-0 mb-2" id="ResultLabel">Search Results</h5>
+                    <ul class="list-group list-group-flush rounded-3 shadow" id="SresultList">
+                       
                     </ul>
                 </div>
             </div>

@@ -7,7 +7,7 @@
             </div>
             <div class="modal-body p-5 pt-0">
                 <div class="form-floating mb-3">
-                    <input type="email" class="form-control rounded-3" id="floatingInput" placeholder="name@example.com">
+                    <input type="email" class="form-control rounded-3" id="MailAddress" placeholder="name@example.com">
                     <label for="floatingInput">Email address</label>
                 </div>
 
@@ -24,18 +24,7 @@
                     </div>
                     <a href="#" class="link-body-emphasis link-offset-2 link-underline-opacity-25 link-underline-opacity-75-hover ms-auto">Forgot Password?</a>
                 </div>
-                <script>
-                    const SPword = document.getElementById('SPword');
-                    const Pword = document.getElementById('Pword');
-                    SPword.addEventListener('change', () => {
-                        if (SPword.checked) {
-                            Pword.type = 'text';
-                        } else {
-                            Pword.type = 'password';
-                        }
-                    });
-                </script>
-                <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Sign in</button>
+                <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit" id="btn-Sub">Sign in</button>
                 <small class="text-body-secondary">By clicking Sign up, you agree to the terms of use.</small>
                 <hr class="my-4">
                 <h3 class="fs-5 fw-bold mb-3">Don't have an account?</h3>

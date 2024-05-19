@@ -1,5 +1,25 @@
 <?php
+session_start();
+include_once('../../Databases/DB_Configurations.php');
 
+$login = false;
+$Username = 'Undefined';
+$UserRole = 'Undefined';
+
+if (isset($_SESSION['User_Data'])) {
+    if ($_SESSION['User_Data']['Is_user_logged_in'] == 1) {
+        $login = true;
+        $Username = $_SESSION['User_Data']['First_Name'] . ' ' . $_SESSION['User_Data']['Last_Name'];
+        // format last login date to this format "January 1, 2021"
+        $Last_Login = date('F j, Y', strtotime($_SESSION['User_Data']['Last_Login']));
+        $UserRole = $_SESSION['User_Data']['Role'];
+        echo '<script>var Is_User_Logged_In = true;</script>';
+        echo '<script>var User_ID = "' . $_SESSION['User_Data']['user_ID'] . '";</script>';
+    }
+} else {
+    echo '<script>var Is_User_Logged_In = false;</script>';
+    echo '<script>var User_ID = 0;</script>';
+}
 ?>
 
 <!DOCTYPE html>
@@ -14,7 +34,16 @@
     <link rel="stylesheet" href="../../Utilities/Stylesheets/HomeStyle.css">
     <script defer src="../../Utilities/Scripts/HomeScript.js"></script>
     <script defer src="../../Utilities/Scripts/ToggleSwitch.js"></script>
+    <script defer src="../../Utilities/Scripts/LoginScript.js"></script>
     <title>Ecommers</title>
+    <script>
+        // clear specific local storage
+        localStorage.removeItem('FileName');
+        //get file mame and set it as the title
+        var FileName = document.location.pathname.split('/').slice(-1)[0];
+        // save to local storage
+        localStorage.setItem('FileName', FileName);
+    </script>
 </head>
 
 <?php include_once('../../Assets/Icons/Icon_Assets.php'); ?>
@@ -58,7 +87,7 @@
                         <a class="text-decoration-none text-body">
                             <div class="card border-0 bg-transparent">
                                 <div class="card-body ratio ratio-16x9">
-                                    <img id="bimg-<?php echo $i; ?>" src="https://ssl.gstatic.com/accounts/ui/progress_spinner_color_20dp_4x.gif" alt="Category Icon" class="img-fluid object-fit-contain" loading="lazy">
+                                    <img id="bimg-<?php echo $i; ?>" src="../../Assets/Images/Alternative.gif" alt="Category Icon" class="img-fluid object-fit-contain" loading="lazy">
                                 </div>
                             </div>
                         </a>
@@ -73,27 +102,119 @@
         <div class="container-lg">
             <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 row-col-xxl-6 g-3" data-masonry='{"percentPosition": true }'>
                 <?php
-                $Item = 0;
+                $sql = "SELECT COUNT(id) AS Item FROM product";
+                $row = mysqli_fetch_assoc(mysqli_query($conn, $sql));
+                $Item = $row['Item'];
+
                 if ($Item > 0) {
-                    for ($i = 1; $i < $Item; $i++) {
-                        $OP = rand(1, 1500); ?>
+                    // get the product data
+                    $sql = "SELECT * FROM product";
+                    $result = mysqli_query($conn, $sql);
+
+                    function fetchImage($conn, $ID, $order)
+                    {
+                        $result = mysqli_query($conn, "SELECT Image_File FROM product_image WHERE UID = '$ID' AND Image_Order = $order");
+                        if ($result && mysqli_num_rows($result) > 0) {
+                            $imageFile = mysqli_fetch_assoc($result)['Image_File'];
+                            return "data:image/jpg;charset=utf8;base64," . base64_encode($imageFile);
+                        } else {
+                            return '../../Assets/Images/Alternative.gif';
+                        }
+                    }
+
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        $ID = $row['UID'];
+                        $Name = $row['Prod_Name'];
+                        $Brand = $row['Brand'];
+                        $Price = $row['Price'];
+                        $Color = $row['Color'];
+                        $Image = mysqli_fetch_assoc(mysqli_query($conn, "SELECT Image_File FROM product_image WHERE UID = '$ID' AND Image_Order = 1"))['Image_File'];
+
+                        $Stock = "SELECT (S_Qty + M_Qty + L_Qty + XL_Qty) AS Stock FROM product_size WHERE UID = '$ID'";
+                        $Stock = mysqli_fetch_assoc(mysqli_query($conn, $Stock))['Stock']; ?>
+
                         <div class="col">
-                            <a class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#Product">
+                            <a class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#Product" id="Pmodal_<?php echo $ID; ?>">
                                 <div class="card pop border-0 bg-body-tertiary">
-                                    <img src="<?php
-                                                for ($j = 0; $j < 1; $j++) {
-                                                    echo '../../Assets/Images/testing/temp' . $i . '.jpg';
-                                                }
-                                                ?>" class="bd-placeholder-img card-img-top object-fit-cover rounded" role="img" preserveAspectRatio="xMidYMid slice" focusable="false" loading="lazy">
+                                    <img src="data:image/jpg;charset=utf8;base64,<?php echo base64_encode($Image); ?>" class="bd-placeholder-img card-img-top object-fit-cover rounded" role="img" preserveAspectRatio="xMidYMid slice" focusable="false" loading="lazy">
                                     <div class="card-body">
-                                        <p class="card-title text-center">Product Name <?php echo $i; ?> - Black</p>
+                                        <p class="card-title text-center"><?php echo $Name; ?></p>
                                         <div class="text-center">
-                                            <h5>₱ <?php echo intval($OP); ?></h5>
+                                            <h5>₱ <?php echo intval($Price); ?></h5>
                                         </div>
                                     </div>
                                 </div>
                             </a>
                         </div>
+
+                        <script>
+                            document.getElementById('Pmodal_<?php echo $ID; ?>').addEventListener('click', function() {
+                                var ID = '<?php echo $ID; ?>';
+                                var Name = '<?php echo $Name; ?>';
+                                var Brand = '<?php echo $Brand; ?>';
+                                var Price = '<?php echo $Price; ?>';
+
+                                // reset the modal before opening
+                                document.getElementById('ProductID').value = '';
+                                document.getElementById('SS').hidden = true;
+                                document.getElementById('SM').hidden = true;
+                                document.getElementById('SL').hidden = true;
+                                document.getElementById('SXL').hidden = true;
+                                document.getElementById('Selectsize').selectedIndex = 0;
+                                document.getElementById('Qinput').value = 1;
+                                document.getElementById('Qinput').setAttribute('max', 1);
+                                document.getElementById('AvailStat').classList.remove('bg-success', 'bg-danger');
+                                document.getElementById('AddCart').classList.add('disabled');
+
+                                // set the values
+                                document.getElementById('ProductID').value = ID;
+                                document.getElementById('Pic-main').src = '<?php echo fetchImage($conn, $ID, 1); ?>';
+                                document.getElementById('Pic-1').src = '<?php echo fetchImage($conn, $ID, 1); ?>';
+                                document.getElementById('Pic-2').src = '<?php echo fetchImage($conn, $ID, 2); ?>';
+                                document.getElementById('Pic-3').src = '<?php echo fetchImage($conn, $ID, 3); ?>';
+                                document.getElementById('Pic-4').src = '<?php echo fetchImage($conn, $ID, 4); ?>';
+
+                                document.getElementById('Pname').textContent = Name;
+                                document.getElementById('Pbrand').textContent = Brand;
+
+                                <?php if ($Stock > 0) { ?> document.getElementById('AvailStat').textContent = 'In Stock';
+                                    document.getElementById('AvailStat').classList.add('bg-success');
+                                <?php } else { ?> document.getElementById('AvailStat').textContent = 'Out of Stock';
+                                    document.getElementById('AvailStat').classList.add('bg-danger');
+                                <?php } ?>
+
+                                document.getElementById('Pprice').textContent = Price + '.00';
+                                document.getElementById('PriceItem').textContent = Price;
+
+                                <?php
+                                $size_result = mysqli_query($conn, "SELECT * FROM product_size WHERE UID = '$ID'");
+                                while ($row = mysqli_fetch_assoc($size_result)) {
+                                    // available quantities
+                                    $s_Q = $row['S_Qty'];
+                                    $m_Q = $row['M_Qty'];
+                                    $l_Q = $row['L_Qty'];
+                                    $xl_Q = $row['XL_Qty'];
+
+                                    if ($s_Q != 0) { ?> document.getElementById('SS').hidden = false;
+                                        document.getElementById('SS').setAttribute('data-Qty', '<?php echo $s_Q; ?>');
+                                    <?php } ?>
+
+                                    <?php if ($m_Q != 0) { ?> document.getElementById('SM').hidden = false;
+                                        document.getElementById('SM').setAttribute('data-Qty', '<?php echo $m_Q; ?>');
+                                    <?php } ?>
+
+                                    <?php if ($l_Q != 0) { ?> document.getElementById('SL').hidden = false;
+                                        document.getElementById('SL').setAttribute('data-Qty', '<?php echo $l_Q; ?>');
+                                    <?php } ?>
+
+                                    <?php if ($xl_Q != 0) { ?> document.getElementById('SXL').hidden = false;
+                                        document.getElementById('SXL').setAttribute('data-Qty', '<?php echo $xl_Q; ?>');
+                                <?php }
+                                }
+                                ?>
+
+                            });
+                        </script>
                     <?php }
                 } else {
                     for ($i = 0; $i < 5; $i++) { ?>
@@ -120,7 +241,9 @@
                             </a>
                         </div>
                 <?php  }
-                } ?>
+                }
+                mysqli_close($conn);
+                ?>
             </div>
         </div>
     </div>

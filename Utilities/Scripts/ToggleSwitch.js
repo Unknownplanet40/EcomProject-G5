@@ -102,7 +102,7 @@ Cart_stat.addEventListener("click", function () {
 
 ViewToast.addEventListener("click", function () {
   // random number from 1 to 4 for the image
-  let randomNum = Math.floor(Math.random() * 4) + 1;
+  let randomNum = Math.floor(Math.random() * 5) + 1;
   let Ticon = "";
   let Ttitle = "";
 
@@ -122,6 +122,10 @@ ViewToast.addEventListener("click", function () {
     case 4:
       Ticon = "info";
       Ttitle = "Information!";
+      break;
+    case 5:
+      Ticon = "question";
+      Ttitle = "Are you sure?";
       break;
     default:
       Ticon = "success";
