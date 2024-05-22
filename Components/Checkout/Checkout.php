@@ -114,16 +114,13 @@ if (isset($_SESSION['User_Data'])) {
                         </ul>
                     </div>
                     <div class="d-grid gap-2 m-3">
-                        <div class="d-flex justify-content-between">
-                            <span>Total Items</span>
-                            <strong class="fs-5 fw-bold"><span id="CartCount">0</span></strong>
-                        </div>
+                        
                         <div class="d-flex justify-content-between">
                             <span>Total (PHP)</span>
                             <input type="hidden" value="0" id="totalPrice">
                             <strong class="fs-5 fw-bold">&#8369;<span id="total">0</span></strong>
                         </div>
-                        <button class="btn btn-primary" type="button">CHECKOUT</button>
+                        <button class="btn btn-primary" type="button">CHECKOUT ( <span class="fw-bold" id="CartCount">0</span> )</button>
                     </div>
                 </div>
             </div>

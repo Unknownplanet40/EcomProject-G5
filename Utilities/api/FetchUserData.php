@@ -16,13 +16,33 @@ if (isset($_SESSION['User_ID'])) {
 
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
+
+        // User Configuration
+        $stmt_Uconfig = $conn->prepare("SELECT * FROM user_settings WHERE User_ID = ?");
+        $stmt_Uconfig->bind_param("s", $user_id);
+        $stmt_Uconfig->execute();
+        $result_Uconfig = $stmt_Uconfig->get_result();
+        $Uconfig_Data = [];
+
+        if ($result_Uconfig->num_rows > 0) {
+            $row_Uconfig = $result_Uconfig->fetch_assoc();
+
+            if ($row_Uconfig['User_ID'] == $user_id) {
+                $Uconfig_Data = [
+                    'Theme' => $row_Uconfig['Theme'],
+                ];
+            }
+        }
+
+
         $data = [
             'user_ID' => $row['User_ID'],
             'First_Name' => $row['First_Name'],
             'Last_Name' => $row['Last_Name'],
             'Role' => $row['Role'],
             'Is_user_logged_in' => $row['Is_user_logged_in'],
-            'Last_Login' => $row['Last_Login']
+            'Last_Login' => $row['Last_Login'],
+            'User_Settings' => $Uconfig_Data,
         ];
         // clear session
         session_destroy();

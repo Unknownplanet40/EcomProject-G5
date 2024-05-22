@@ -18,7 +18,8 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'GET') {
     SELECT * FROM product 
     WHERE Prod_Name LIKE ? 
     OR Color LIKE ? 
-    OR Brand LIKE ?");
+    OR Brand LIKE ? 
+    AND Status = 0");
     $stmt->bind_param("sss", $search, $search, $search);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -79,6 +80,3 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'GET') {
 } else {
     response(['error' => 'Cannot process request']);
 }
-
-
-?>
