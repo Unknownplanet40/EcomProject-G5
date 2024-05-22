@@ -5,14 +5,15 @@ include_once('../../Databases/DB_Configurations.php');
 $login = false;
 $Username = 'Undefined';
 $UserRole = 'Undefined';
+$Theme = 'light';
 
 if (isset($_SESSION['User_Data'])) {
     if ($_SESSION['User_Data']['Is_user_logged_in'] == 1) {
         $login = true;
         $Username = $_SESSION['User_Data']['First_Name'] . ' ' . $_SESSION['User_Data']['Last_Name'];
-        // format last login date to this format "January 1, 2021"
         $Last_Login = date('F j, Y', strtotime($_SESSION['User_Data']['Last_Login']));
         $UserRole = $_SESSION['User_Data']['Role'];
+        $Theme = $_SESSION['User_Data']['User_Settings']['Theme'];
         echo '<script>var Is_User_Logged_In = true;</script>';
         echo '<script>var User_ID = "' . $_SESSION['User_Data']['user_ID'] . '";</script>';
     }
@@ -23,7 +24,7 @@ if (isset($_SESSION['User_Data'])) {
 ?>
 
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="auto">
+<html lang="en" data-bs-theme="<?php echo $Theme; ?>">
 
 <head>
     <meta charset="UTF-8">
@@ -33,7 +34,7 @@ if (isset($_SESSION['User_Data'])) {
     <!-- Main Stylesheet/Scripts -->
     <link rel="stylesheet" href="../../Utilities/Stylesheets/HomeStyle.css">
     <script defer src="../../Utilities/Scripts/HomeScript.js"></script>
-    <script defer src="../../Utilities/Scripts/ToggleSwitch.js"></script>
+    <!-- <script defer src="../../Utilities/Scripts/ToggleSwitch.js"></script> -->
     <script defer src="../../Utilities/Scripts/LoginScript.js"></script>
     <title>Ecommers</title>
     <script>
@@ -74,7 +75,7 @@ if (isset($_SESSION['User_Data'])) {
     ?>
 
     <!-- Carousel -->
-    <div class="container-xxl mt-3 mb-5 px-1">
+    <div class="container-xxl mt-3 mb-5 px-1 d-none d-md-block">
         <?php include_once('../Carousel/CarouselFrontPage.php'); ?>
     </div>
     <!-- Brands Icons -->
@@ -97,20 +98,20 @@ if (isset($_SESSION['User_Data'])) {
         </div>
     </div>
     <!-- Product Cards -->
-    <h1 class="text-center clamp m-5">ALL PRODUCTS</h1>
+    <h1 class="text-center clamp m-5">Most Popular Products</h1>
     <div class="album bg-body-tertiary pt-1">
         <div class="container-lg">
             <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 row-col-xxl-6 g-3" data-masonry='{"percentPosition": true }'>
                 <?php
-                $sql = "SELECT COUNT(id) AS Item FROM product";
-                $row = mysqli_fetch_assoc(mysqli_query($conn, $sql));
-                $Item = $row['Item'];
+
+                $stmt_count = $conn->prepare("SELECT COUNT(id) AS Item FROM product WHERE Status = 0");
+                $stmt_count->execute();
+                $stmt_count->store_result();
+                $stmt_count->bind_result($Item);
+                $stmt_count->fetch();
+                $stmt_count->close();
 
                 if ($Item > 0) {
-                    // get the product data
-                    $sql = "SELECT * FROM product";
-                    $result = mysqli_query($conn, $sql);
-
                     function fetchImage($conn, $ID, $order)
                     {
                         $result = mysqli_query($conn, "SELECT Image_File FROM product_image WHERE UID = '$ID' AND Image_Order = $order");
@@ -121,8 +122,13 @@ if (isset($_SESSION['User_Data'])) {
                             return '../../Assets/Images/Alternative.gif';
                         }
                     }
+                    
+                    // change popularity to [100] to show the most popular products
+                    $stmt_prod = $conn->prepare("SELECT * FROM product WHERE Status = 0 AND Popularity = 0 ORDER BY Popularity ASC LIMIT 30");
+                    $stmt_prod->execute();
+                    $result = $stmt_prod->get_result();
 
-                    while ($row = mysqli_fetch_assoc($result)) {
+                    while ($row = $result->fetch_assoc()) {
                         $ID = $row['UID'];
                         $Name = $row['Prod_Name'];
                         $Brand = $row['Brand'];
@@ -153,6 +159,7 @@ if (isset($_SESSION['User_Data'])) {
                                 var Name = '<?php echo $Name; ?>';
                                 var Brand = '<?php echo $Brand; ?>';
                                 var Price = '<?php echo $Price; ?>';
+                                var Color = '<?php echo $Color; ?>';
 
                                 // reset the modal before opening
                                 document.getElementById('ProductID').value = '';
@@ -176,6 +183,7 @@ if (isset($_SESSION['User_Data'])) {
 
                                 document.getElementById('Pname').textContent = Name;
                                 document.getElementById('Pbrand').textContent = Brand;
+                                document.getElementById('Pcolor').textContent = Color;
 
                                 <?php if ($Stock > 0) { ?> document.getElementById('AvailStat').textContent = 'In Stock';
                                     document.getElementById('AvailStat').classList.add('bg-success');
@@ -183,7 +191,7 @@ if (isset($_SESSION['User_Data'])) {
                                     document.getElementById('AvailStat').classList.add('bg-danger');
                                 <?php } ?>
 
-                                document.getElementById('Pprice').textContent = Price + '.00';
+                                document.getElementById('Pprice').textContent = Price;
                                 document.getElementById('PriceItem').textContent = Price;
 
                                 <?php
@@ -242,13 +250,13 @@ if (isset($_SESSION['User_Data'])) {
                         </div>
                 <?php  }
                 }
-                mysqli_close($conn);
+
                 ?>
             </div>
         </div>
     </div>
     <!-- Debugging Purposes -->
-    <div class="container mt-4 bg-body-secondary rounded-2 p-2">
+    <div class="container mt-4 bg-body-secondary rounded-2 p-2 visually-hidden">
         <p class="text-center text-body-secondary">*Note: For UI testing purposes only until the backend is ready to be integrated</p>
         <div class="form-check form-switch">
             <input class="form-check-input" type="checkbox" role="switch" id="light-dark">

@@ -15,15 +15,15 @@
                         <svg class="mb-1" width="16" height="16" role="img" aria-label="Home">
                             <use xlink:href="#home" />
                         </svg>
-                        <span class="d-none d-sm-inline"> Home</span>
+                        <span> Home</span>
                     </a>
                 </li>
-                <li data-bs-toggle="tooltip" data-bs-title="Shop All" data-bs-placement="bottom" data-bs-trigger="hover" <?php echo (strpos($_SERVER['PHP_SELF'], 'ShopAll.php') !== false) ? 'class="visually-hidden"' : ''; ?>>
-                    <a href="#" class="nav-link px-2 link-hover text-body-emphasis">
+                <li data-bs-toggle="tooltip" data-bs-title="Shop All" data-bs-placement="bottom" data-bs-trigger="hover" <?php echo (strpos($_SERVER['PHP_SELF'], 'Products.php') !== false) ? 'class="visually-hidden"' : ''; ?>>
+                    <a href="../../Components/Products/Products.php" class="nav-link px-2 link-hover text-body-emphasis">
                         <svg class="mb-1" width="16" height="16" role="img" aria-label="Shop">
                             <use xlink:href="#Shop" />
                         </svg>
-                        <span class="d-none d-sm-inline"> Shop All</span>
+                        <span> Shop All</span>
                     </a>
                 </li>
                 <li data-bs-toggle="tooltip" data-bs-title="Playaz Tees" data-bs-placement="bottom" data-bs-trigger="hover" <?php echo (strpos($_SERVER['PHP_SELF'], 'PlayazTees.php') !== false) ? 'class="visually-hidden"' : ''; ?>>
@@ -31,7 +31,7 @@
                         <svg class="mb-1" width="16" height="16" role="img" aria-label="Size">
                             <use xlink:href="#Cloth" />
                         </svg>
-                        <span class="d-none d-sm-inline"> Playaz Tees</span>
+                        <span> Playaz Tees</span>
                     </a>
                 </li>
                 <li data-bs-toggle="tooltip" data-bs-title="Size Guide" data-bs-placement="bottom" data-bs-trigger="hover">
@@ -39,14 +39,14 @@
                         <svg class="mb-1" width="16" height="16" role="img" aria-label="Size">
                             <use xlink:href="#Size" />
                         </svg>
-                        <span class="d-none d-sm-inline"> Size Guide</span>
+                        <span> Size Guide</span>
                     </a>
                 </li>
-                <li data-bs-toggle="tooltip" data-bs-title="Search Products" data-bs-placement="bottom" data-bs-trigger="hover"><a id="Hsearch" href="#" data-bs-target="#searchModal" data-bs-toggle="modal" class="nav-link px-2 link-hover text-body-emphasis">
+                <li data-bs-toggle="tooltip" data-bs-title="Search Products" data-bs-placement="bottom" data-bs-trigger="hover"><a id="Hsearch" href="#" data-bs-target="#searchModal" data-bs-toggle="modal" class="nav-link px-2 link-hover text-body-emphasis <?php echo (strpos($_SERVER['PHP_SELF'], 'Products.php') !== false) ? 'visually-hidden' : ''; ?>">
                         <svg class="mb-1" width="18" height="18" role="img" aria-label="Search">
                             <use xlink:href="#Search" />
                         </svg>
-                        <span class="d-none d-sm-inline"> Search</span>
+                        <span> Search</span>
                     </a>
                 </li>
             </ul>

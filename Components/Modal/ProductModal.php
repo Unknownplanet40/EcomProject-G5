@@ -1,6 +1,9 @@
 <div class="modal fade" id="Product" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content bg-body-tertiary bg-opacity-25 bg-blur-5">
+            <div class="modal-header border-0 pb-0">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
             <div class=" modal-body">
                 <div class="row row-cols-1 row-cols-lg-2 g-3">
                     <div class="col-lg-6">
@@ -8,20 +11,20 @@
                         <!-- <div data-bs-toggle="modal" data-bs-target="#ImageView" style="cursor: pointer;" id="Inlarge">
                             <img id="Pic-main" src="" class="rounded mx-auto d-block object-fit-cover align-self-center w-100 h-auto" style="width: 750px;" alt="...">
                         </div> -->
-                        <img id="Pic-main" src="" class="rounded mx-auto d-block object-fit-cover align-self-center w-100 h-auto" style="width: 750px;" alt="...">
+                        <img id="Pic-main" src="../../Assets/Images/Alternative.gif" class="rounded mx-auto d-block object-fit-cover align-self-center w-100 h-auto" style="width: 750px;" alt="...">
                         <!-- Product Other Images -->
                         <div class="row row-cols-4 g-1 p-2 HImage" style="cursor: pointer;">
                             <div class="col HImage-col">
-                                <img id="Pic-1" src="" class="rounded-1 mx-auto d-block object-fit-contain w-75" alt="...">
+                                <img id="Pic-1" src="../../Assets/Images/Alternative.gif" class="rounded-1 mx-auto d-block object-fit-contain w-75" alt="...">
                             </div>
                             <div class="col HImage-col">
-                                <img id="Pic-2" src="" class="rounded-1 mx-auto d-block object-fit-contain w-75" alt="...">
+                                <img id="Pic-2" src="../../Assets/Images/Alternative.gif" class="rounded-1 mx-auto d-block object-fit-contain w-75" alt="...">
                             </div>
                             <div class="col HImage-col">
-                                <img id="Pic-3" src="" class="rounded-1 mx-auto d-block object-fit-contain w-75" alt="...">
+                                <img id="Pic-3" src="../../Assets/Images/Alternative.gif" class="rounded-1 mx-auto d-block object-fit-contain w-75" alt="...">
                             </div>
                             <div class="col HImage-col">
-                                <img id="Pic-4" src="" class="rounded-1 mx-auto d-block object-fit-contain w-75" alt="...">
+                                <img id="Pic-4" src="../../Assets/Images/Alternative.gif" class="rounded-1 mx-auto d-block object-fit-contain w-75" alt="...">
                             </div>
                         </div>
                     </div>
@@ -46,7 +49,7 @@
                                         <p class="card-text">Color</p>
                                     </div>
                                     <div class="col-8">
-                                        <h5 class="card-text" id="Pcolor">Navy Blue</h5>
+                                        <h5 class="card-text" id="Pcolor"></h5>
                                     </div>
                                 </div>
                                 <div class="row row-cols-2 g-2 mb-2">
@@ -68,7 +71,7 @@
                                         <h5 class="card-text">Price</h5>
                                     </div>
                                     <div class="col-6 py-1">
-                                        <h4 class="card-text fw-bold">₱ <span id="Pprice">0.00</span><small class="visually-hidden" id="PriceItem"></small></h4>
+                                        <h4 class="card-text fw-bold">₱ <span id="Pprice"></span>.00<small class="visually-hidden" id="PriceItem"></small></h4>
                                     </div>
                                 </div>
                                 <div class="row row-cols-2 g-2">

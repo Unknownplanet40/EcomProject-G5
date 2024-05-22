@@ -88,7 +88,13 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-  // [teporary] search bar event listener
+  // every keyup on the search bar
+  /* document.getElementById("search-bar").addEventListener("keyup", function () {
+    if (document.getElementById("search-bar").value.length > 0) {
+      document.getElementById("search-btn").click();
+    }
+  }); */
+
   document.getElementById("search-btn").addEventListener("click", function () {
     function dAlert(icon, title) {
       Swal.mixin({
@@ -107,6 +113,62 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     }
 
+    async function getProductImages(ProductID) {
+      var MainPic = document.getElementById("Pic-main");
+      var Pic1 = document.getElementById("Pic-1");
+      var Pic2 = document.getElementById("Pic-2");
+      var Pic3 = document.getElementById("Pic-3");
+      var Pic4 = document.getElementById("Pic-4");
+      var alternate = "../../Assets/Images/Alternative.gif";
+
+      try {
+        const response = await fetch(
+          "../../Utilities/api/ProductImage.php?prod_id=" + ProductID
+        );
+
+        if (!response.ok) {
+          MainPic.src = alternate;
+          Pic1.src = alternate;
+          Pic2.src = alternate;
+          Pic3.src = alternate;
+          Pic4.src = alternate;
+        }
+
+        const data = await response.json();
+
+        if (data.error) {
+          MainPic.src = alternate;
+          Pic1.src = alternate;
+          Pic2.src = alternate;
+          Pic3.src = alternate;
+          Pic4.src = alternate;
+        }
+
+        if (data.length > 0) {
+          for (let i = 0; i < data.length; i++) {
+            if (data[i].order == 1) {
+              MainPic.src = data[i].Img_Path;
+              Pic1.src = data[i].Img_Path;
+            }
+
+            if (data[i].order == 2) {
+              Pic2.src = data[i].Img_Path;
+            }
+
+            if (data[i].order == 3) {
+              Pic3.src = data[i].Img_Path;
+            }
+
+            if (data[i].order == 4) {
+              Pic4.src = data[i].Img_Path;
+            }
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
     async function search(url) {
       try {
         const response = await fetch(url);
@@ -117,8 +179,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         const data = await response.json();
-
-        console.log(url);
 
         if (data.error) {
           dAlert("error", data.error);
@@ -146,7 +206,7 @@ document.addEventListener("DOMContentLoaded", function () {
           var count = 0;
           Sresult.innerHTML = "";
 
-          if (data.length <= 2) {
+          if (data.length <= 5) {
             limit = data.length;
           } else {
             limit = 5;
@@ -160,8 +220,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Create a new anchor element
             var a = document.createElement("a");
-            a.href = "../../Pages/Product.php?prod_id=" + data[i].UID;
             a.classList.add("text-decoration-none", "text-body");
+            a.setAttribute("data-bs-toggle", "modal");
+            a.setAttribute("data-bs-target", "#Product");
+            a.style.cursor = "pointer";
+            a.id = "Prod_" + data[i].UID;
 
             // Create a new div element
             var div = document.createElement("div");
@@ -236,19 +299,101 @@ document.addEventListener("DOMContentLoaded", function () {
             Sresult.appendChild(li);
 
             count++;
+
+            document
+              .getElementById("Prod_" + data[i].UID)
+              .addEventListener("click", function () {
+                document.getElementById("ProductID").value = "";
+                document.getElementById("SS").hidden = true;
+                document.getElementById("SM").hidden = true;
+                document.getElementById("SL").hidden = true;
+                document.getElementById("SXL").hidden = true;
+                document.getElementById("Selectsize").selectedIndex = 0;
+                document.getElementById("Qinput").value = 1;
+                document.getElementById("Qinput").setAttribute("max", 1);
+                document
+                  .getElementById("AvailStat")
+                  .classList.remove("bg-success", "bg-danger");
+                document.getElementById("AddCart").classList.add("disabled");
+
+                getProductImages(data[i].UID);
+
+                document.getElementById("ProductID").value = data[i].UID;
+                document.getElementById("Pname").textContent =
+                  data[i].Prod_Name;
+                document.getElementById("Pcolor").textContent =
+                  data[i].Prod_Color;
+                document.getElementById("Pbrand").textContent =
+                  data[i].Prod_Brand;
+
+                if (data[i].Prod_Sizes[0]["S"] != 0) {
+                  document.getElementById("SS").hidden = false;
+                  document.getElementById("SS").dataset.qty =
+                    data[i].Prod_Sizes[0]["S"];
+                }
+
+                if (data[i].Prod_Sizes[0]["M"] != 0) {
+                  document.getElementById("SM").hidden = false;
+                  document.getElementById("SM").dataset.qty =
+                    data[i].Prod_Sizes[0]["M"];
+                }
+
+                if (data[i].Prod_Sizes[0]["L"] != 0) {
+                  document.getElementById("SL").hidden = false;
+                  document.getElementById("SL").dataset.qty =
+                    data[i].Prod_Sizes[0]["L"];
+                }
+
+                if (data[i].Prod_Sizes[0]["XL"] != 0) {
+                  document.getElementById("SXL").hidden = false;
+                  document.getElementById("SXL").dataset.qty =
+                    data[i].Prod_Sizes[0]["XL"];
+                }
+
+                var stock =
+                  data[i].Prod_Sizes[0]["S"] +
+                  data[i].Prod_Sizes[0]["M"] +
+                  data[i].Prod_Sizes[0]["L"] +
+                  data[i].Prod_Sizes[0]["XL"];
+
+                document.getElementById("Pprice").textContent =
+                  data[i].Prod_Price;
+                document.getElementById("PriceItem").textContent =
+                  data[i].Prod_Price;
+
+                document.getElementById("AvailStat").textContent =
+                  stock > 0 ? "In Stock" : "Out of Stock";
+                document
+                  .getElementById("AvailStat")
+                  .classList.add(stock > 0 ? "bg-success" : "bg-danger");
+              });
           }
 
-          if (count === 2) {
+          if (count === 5) {
             var li = document.createElement("li");
             li.classList.add(
               "list-group-item",
               "list-group-item-action",
               "text-center"
             );
-            li.innerHTML =
-              '<a href="#" class="btn btn-sm btn-outline-primary">View all results</a>';
+            var a = document.createElement("a");
+            a.id = "VA_" + document.getElementById("search-bar").value;
+            a.classList.add("btn", "btn-sm", "btn-outline-primary");
+            a.textContent = "View all results";
+            li.appendChild(a);
             Sresult.appendChild(li);
           }
+
+          document
+            .getElementById("VA_" + document.getElementById("search-bar").value)
+            .addEventListener("click", function () {
+              localStorage.removeItem("SearchValue");
+              localStorage.setItem(
+                "SearchValue",
+                document.getElementById("search-bar").value
+              );
+              window.location.href = "../../Components/Products/Products.php";
+            });
         }
       } catch (error) {
         console.error(error);
@@ -296,6 +441,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const fileName = localStorage.getItem("FileName");
   switch (fileName) {
     case "Homepage.php":
+    case "Products.php":
       // Brands Logo [Light/Dark] Mode
       if (document.documentElement.getAttribute("data-bs-theme") == "dark") {
         const imagePaths = [
@@ -478,280 +624,295 @@ document.addEventListener("DOMContentLoaded", function () {
         //data to be sent
 
         var prod_id = document.getElementById("ProductID").value;
-        var Size =
-          document.getElementById("Selectsize").options[
-            document.getElementById("Selectsize").selectedIndex
-          ].value;
+        var Size = document.getElementById("Selectsize").options[document.getElementById("Selectsize").selectedIndex].value;
         var Qty = document.getElementById("Qinput").value;
-
+        var InStock = document.getElementById("AvailStat").textContent;
+        
         if (Is_User_Logged_In) {
-          addToCart(
-            `../../Utilities/api/AddToCart.php?prod_id=${prod_id}&user_id=${User_ID}&size=${Size}&qty=${Qty}`
-          );
+          if (InStock == "In Stock" || Size != "Choose Size") {
+            addToCart(
+              `../../Utilities/api/AddToCart.php?prod_id=${prod_id}&user_id=${User_ID}&size=${Size}&qty=${Qty}`
+            );
+          } else {
+            DToast("info", "Sorry, this item is out of stock.");
+          }
         } else {
           DToast("info", "Sorry, you need to login first.");
         }
       });
 
-      document
-        .getElementById("cart-btn")
-        .addEventListener("click", function () {
-          function CartToast(icon, title) {
-            Swal.mixin({
-              toast: true,
-              position: "top",
-              showConfirmButton: false,
-              timer: 1500,
-              timerProgressBar: true,
-              didOpen: (toast) => {
-                toast.addEventListener("mouseenter", Swal.stopTimer);
-                toast.addEventListener("mouseleave", Swal.resumeTimer);
-              },
-            });
-          }
+      if (Is_User_Logged_In) {
+        document
+          .getElementById("cart-btn")
+          .addEventListener("click", function () {
+            function CartToast(icon, title) {
+              Swal.mixin({
+                toast: true,
+                position: "top",
+                showConfirmButton: false,
+                timer: 1500,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                  toast.addEventListener("mouseenter", Swal.stopTimer);
+                  toast.addEventListener("mouseleave", Swal.resumeTimer);
+                },
+              });
+            }
 
-          async function fetchCart(url) {
-            try {
-              const response = await fetch(url);
+            async function fetchCart(url) {
+              try {
+                const response = await fetch(url);
 
-              if (!response.ok) {
-                throw new Error("An error occured while fetching data.");
-              }
-
-              const data = await response.json();
-
-              if (data.error) {
-                CartToast("error", data.error);
-                return;
-              } else if (data.info) {
-                CartToast("info", data.info);
-                return;
-              } else {
-                var CartTotal = data.cart_items.length;
-
-                function updateCartCount(type) {
-                  if (type == "add") {
-                    document.getElementById("Cart-Items").textContent =
-                      parseInt(
-                        document.getElementById("Cart-Items").textContent
-                      ) + 1;
-                    document.getElementById("Ccount").textContent =
-                      parseInt(document.getElementById("Ccount").textContent) +
-                      1;
-                  } else if (type == "remove") {
-                    document.getElementById("Cart-Items").textContent =
-                      parseInt(
-                        document.getElementById("Cart-Items").textContent
-                      ) - 1;
-                    document.getElementById("Ccount").textContent =
-                      parseInt(document.getElementById("Ccount").textContent) -
-                      1;
-                  } else {
-                    document.getElementById("Cart-Items").textContent =
-                      CartTotal;
-                    document.getElementById("Ccount").textContent = CartTotal;
-                  }
+                if (!response.ok) {
+                  throw new Error("An error occured while fetching data.");
                 }
 
-                if (CartTotal > 0) {
-                  var UserCart = document.getElementById("UserCart");
-                  UserCart.innerHTML = "";
+                const data = await response.json();
 
-                  for (let i = 0; i < CartTotal; i++) {
-                    updateCartCount();
+                if (data.error) {
+                  CartToast("error", data.error);
+                  return;
+                } else if (data.info) {
+                  CartToast("info", data.info);
+                  return;
+                } else {
+                  var CartTotal = data.cart_items.length;
 
-                    var li = document.createElement("li");
-                    li.classList.add(
-                      "list-group-item",
-                      "bg-transparent",
-                      "border-0"
-                    );
-                    li.id = "Item-list_" + i;
+                  function updateCartCount(type) {
+                    if (type == "add") {
+                      document.getElementById("Cart-Items").textContent =
+                        parseInt(
+                          document.getElementById("Cart-Items").textContent
+                        ) + 1;
+                      document.getElementById("Ccount").textContent =
+                        parseInt(
+                          document.getElementById("Ccount").textContent
+                        ) + 1;
+                    } else if (type == "remove") {
+                      document.getElementById("Cart-Items").textContent =
+                        parseInt(
+                          document.getElementById("Cart-Items").textContent
+                        ) - 1;
+                      document.getElementById("Ccount").textContent =
+                        parseInt(
+                          document.getElementById("Ccount").textContent
+                        ) - 1;
+                    } else {
+                      document.getElementById("Cart-Items").textContent =
+                        CartTotal;
+                      document.getElementById("Ccount").textContent = CartTotal;
+                    }
+                  }
 
-                    var div1 = document.createElement("div");
-                    div1.classList.add(
-                      "list-group-item",
-                      "bg-transparent",
-                      "border-0"
-                    );
+                  if (CartTotal > 0) {
+                    var UserCart = document.getElementById("UserCart");
+                    UserCart.innerHTML = "";
 
-                    var div2 = document.createElement("div");
-                    div2.classList.add("row");
+                    for (let i = 0; i < CartTotal; i++) {
+                      updateCartCount();
 
-                    var div3 = document.createElement("div");
-                    div3.classList.add("col-3");
+                      var li = document.createElement("li");
+                      li.classList.add(
+                        "list-group-item",
+                        "bg-transparent",
+                        "border-0"
+                      );
+                      li.id = "Item-list_" + i;
 
-                    var img = document.createElement("img");
-                    img.src = data.cart_items[i].prod_Img.Image;
-                    img.classList.add("img-thumbnail");
-                    img.alt = data.cart_items[i].prod_Details.Prod_Name;
+                      var div1 = document.createElement("div");
+                      div1.classList.add(
+                        "list-group-item",
+                        "bg-transparent",
+                        "border-0"
+                      );
 
-                    var div4 = document.createElement("div");
-                    div4.classList.add("col-9");
+                      var div2 = document.createElement("div");
+                      div2.classList.add("row");
 
-                    var div5 = document.createElement("div");
-                    div5.classList.add(
-                      "d-flex",
-                      "w-100",
-                      "justify-content-between"
-                    );
+                      var div3 = document.createElement("div");
+                      div3.classList.add("col-3");
 
-                    var h5 = document.createElement("h5");
-                    h5.classList.add("mb-1");
-                    h5.textContent = data.cart_items[i].prod_Details.Prod_Name;
+                      var img = document.createElement("img");
+                      img.src = data.cart_items[i].prod_Img.Image;
+                      img.classList.add("img-thumbnail");
+                      img.alt = data.cart_items[i].prod_Details.Prod_Name;
 
-                    var small = document.createElement("small");
+                      var div4 = document.createElement("div");
+                      div4.classList.add("col-9");
 
-                    var a = document.createElement("a");
-                    a.style.cursor = "pointer";
-                    a.id = "Remove_" + i;
-                    a.setAttribute("pid", data.cart_items[i].Unique_ID);
-                    a.classList.add("text-danger");
-                    a.title = "Remove from cart";
-                    a.innerHTML = `<svg class="bi" width="16" height="16" role="img" aria-label="Remove from cart"><use xlink:href="#Trash" /></svg>`;
+                      var div5 = document.createElement("div");
+                      div5.classList.add(
+                        "d-flex",
+                        "w-100",
+                        "justify-content-between"
+                      );
 
-                    var div6 = document.createElement("div");
-                    div6.classList.add(
-                      "d-flex",
-                      "w-100",
-                      "justify-content-between"
-                    );
+                      var h5 = document.createElement("h5");
+                      h5.classList.add("mb-1");
+                      h5.textContent =
+                        data.cart_items[i].prod_Details.Prod_Name;
 
-                    var p1 = document.createElement("p");
-                    p1.classList.add("mb-1");
-                    p1.textContent = "Size: " + data.cart_items[i].Item_size;
+                      var small = document.createElement("small");
 
-                    var p2 = document.createElement("p");
-                    p2.classList.add("mb-1");
-                    p2.textContent = "Qty: " + data.cart_items[i].Item_Qty;
+                      var a = document.createElement("a");
+                      a.style.cursor = "pointer";
+                      a.id = "Remove_" + i;
+                      a.setAttribute("pid", data.cart_items[i].Unique_ID);
+                      a.classList.add("text-danger");
+                      a.title = "Remove from cart";
+                      a.innerHTML = `<svg class="bi" width="16" height="16" role="img" aria-label="Remove from cart"><use xlink:href="#Trash" /></svg>`;
 
-                    var div7 = document.createElement("div");
-                    div7.classList.add(
-                      "d-flex",
-                      "w-100",
-                      "justify-content-between"
-                    );
+                      var div6 = document.createElement("div");
+                      div6.classList.add(
+                        "d-flex",
+                        "w-100",
+                        "justify-content-between"
+                      );
 
-                    var p3 = document.createElement("p");
-                    p3.classList.add("mb-1");
-                    p3.textContent =
-                      "Price: ₱ " + data.cart_items[i].prod_Details.Prod_Price;
+                      var p1 = document.createElement("p");
+                      p1.classList.add("mb-1");
+                      p1.textContent = "Size: " + data.cart_items[i].Item_size;
 
-                    var p4 = document.createElement("p");
-                    p4.classList.add("mb-1");
-                    p4.textContent =
-                      "Subtotal: ₱ " +
-                      data.cart_items[i].prod_Details.Prod_Price *
-                        data.cart_items[i].Item_Qty;
+                      var p2 = document.createElement("p");
+                      p2.classList.add("mb-1");
+                      p2.textContent = "Qty: " + data.cart_items[i].Item_Qty;
 
-                    // Append in the correct order
-                    small.appendChild(a);
-                    div5.appendChild(h5);
-                    div5.appendChild(small);
+                      var div7 = document.createElement("div");
+                      div7.classList.add(
+                        "d-flex",
+                        "w-100",
+                        "justify-content-between"
+                      );
 
-                    div6.appendChild(p1);
-                    div6.appendChild(p2);
+                      var p3 = document.createElement("p");
+                      p3.classList.add("mb-1");
+                      p3.textContent =
+                        "Price: ₱ " +
+                        data.cart_items[i].prod_Details.Prod_Price;
 
-                    div7.appendChild(p3);
-                    div7.appendChild(p4);
+                      var p4 = document.createElement("p");
+                      p4.classList.add("mb-1");
+                      p4.textContent =
+                        "Subtotal: ₱ " +
+                        data.cart_items[i].prod_Details.Prod_Price *
+                          data.cart_items[i].Item_Qty;
 
-                    div4.appendChild(div5);
-                    div4.appendChild(div6);
-                    div4.appendChild(div7);
+                      // Append in the correct order
+                      small.appendChild(a);
+                      div5.appendChild(h5);
+                      div5.appendChild(small);
 
-                    div3.appendChild(img);
-                    div2.appendChild(div3);
-                    div2.appendChild(div4);
-                    div1.appendChild(div2);
-                    li.appendChild(div1);
+                      div6.appendChild(p1);
+                      div6.appendChild(p2);
 
-                    UserCart.appendChild(li);
+                      div7.appendChild(p3);
+                      div7.appendChild(p4);
 
-                    document
-                      .getElementById("Remove_" + i)
-                      .addEventListener("click", function () {
+                      div4.appendChild(div5);
+                      div4.appendChild(div6);
+                      div4.appendChild(div7);
 
-                        function RToast(icon, title) {
-                          Swal.mixin({
-                            toast: true,
-                            position: "top",
-                            showConfirmButton: false,
-                            timer: 1500,
-                            timerProgressBar: true,
-                            didOpen: (toast) => {
-                              toast.addEventListener("mouseenter", Swal.stopTimer);
-                              toast.addEventListener("mouseleave", Swal.resumeTimer);
-                            },
-                          }).fire({
-                            icon: icon,
-                            title: title,
-                          });
-                        }
+                      div3.appendChild(img);
+                      div2.appendChild(div3);
+                      div2.appendChild(div4);
+                      div1.appendChild(div2);
+                      li.appendChild(div1);
 
-                        async function removeItem(url) {
-                          try {
-                            const response = await fetch(url);
+                      UserCart.appendChild(li);
 
-                            if (!response.ok) {
-                              throw new Error(
-                                "An error occured while removing item."
-                              );
-                            }
-
-                            const data = await response.json();
-
-                            if (data.error) {
-                              RToast("error", data.error);
-                            } else {
-                              if (data.status == "success") {
-                                console.log(data.message);
-                              } else {
-                                RToast("error", data.message);
-                              }
-                            }
-                          } catch (error) {
-                            console.error(error);
+                      document
+                        .getElementById("Remove_" + i)
+                        .addEventListener("click", function () {
+                          function RToast(icon, title) {
+                            Swal.mixin({
+                              toast: true,
+                              position: "top",
+                              showConfirmButton: false,
+                              timer: 1500,
+                              timerProgressBar: true,
+                              didOpen: (toast) => {
+                                toast.addEventListener(
+                                  "mouseenter",
+                                  Swal.stopTimer
+                                );
+                                toast.addEventListener(
+                                  "mouseleave",
+                                  Swal.resumeTimer
+                                );
+                              },
+                            }).fire({
+                              icon: icon,
+                              title: title,
+                            });
                           }
-                        }
 
-                        var pid = this.getAttribute("pid");
+                          async function removeItem(url) {
+                            try {
+                              const response = await fetch(url);
 
-                        removeItem('../../Utilities/api/RemoveItem.php?uuid=' + pid);
+                              if (!response.ok) {
+                                throw new Error(
+                                  "An error occured while removing item."
+                                );
+                              }
 
-                        UserCart.removeChild(
-                          document.getElementById("Item-list_" + i)
-                        );
+                              const data = await response.json();
 
-                        updateCartCount("remove");
+                              if (data.error) {
+                                RToast("error", data.error);
+                              } else {
+                                if (data.status == "success") {
+                                  console.log(data.message);
+                                } else {
+                                  RToast("error", data.message);
+                                }
+                              }
+                            } catch (error) {
+                              console.error(error);
+                            }
+                          }
 
-                        // if thiere is no item in the cart
-                        if (UserCart.childElementCount === 0) {
-                          var li = document.createElement("li");
-                          li.classList.add(
-                            "list-group-item",
-                            "bg-transparent",
-                            "border-0"
+                          var pid = this.getAttribute("pid");
+
+                          removeItem(
+                            "../../Utilities/api/RemoveItem.php?uuid=" + pid
                           );
-                          li.innerHTML = `<a class="list-group-item list-group-item-action bg-transparent border-0 text-body-emphasis" aria-current="true">
+
+                          UserCart.removeChild(
+                            document.getElementById("Item-list_" + i)
+                          );
+
+                          updateCartCount("remove");
+
+                          // if thiere is no item in the cart
+                          if (UserCart.childElementCount === 0) {
+                            var li = document.createElement("li");
+                            li.classList.add(
+                              "list-group-item",
+                              "bg-transparent",
+                              "border-0"
+                            );
+                            li.innerHTML = `<a class="list-group-item list-group-item-action bg-transparent border-0 text-body-emphasis" aria-current="true">
                         <div class="d-flex w-100 justify-content-center">
                             <h5 class=" text-body-emphasis text-center">Your cart is empty</h5>
                         </div>
                       </a>`;
-                          UserCart.appendChild(li);
-                        }
-                      });
+                            UserCart.appendChild(li);
+                          }
+                        });
+                    }
                   }
                 }
+              } catch (error) {
+                console.error(error);
               }
-            } catch (error) {
-              console.error(error);
             }
-          }
 
-          if (Is_User_Logged_In) {
-            fetchCart(`../../Utilities/api/FetchCart.php?user_id=${User_ID}`);
-          }
-        });
+            if (Is_User_Logged_In) {
+              fetchCart(`../../Utilities/api/FetchCart.php?user_id=${User_ID}`);
+            }
+          });
+      }
       break;
     case "Checkout.php":
       document.getElementById("cart-btn").classList.add("visually-hidden");
