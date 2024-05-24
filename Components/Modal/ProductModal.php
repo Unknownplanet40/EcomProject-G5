@@ -57,13 +57,14 @@
                                         <p class="card-text">Available Sizes</p>
                                     </div>
                                     <div class="col-8">
-                                        <select class="form-select form-select-sm text-uppercase fw-bold w-auto" id="Selectsize">
+                                        <select class="form-select form-select-sm text-uppercase fw-bold w-auto" id="Selectsize" required>
                                             <option id="SD" selected hidden>Choose Size</option>
                                             <option id="SS" hidden value="S" data-Qty="0" class="text-uppercase">Small</option>
                                             <option id="SM" hidden value="M" data-Qty="0" class="text-uppercase">Medium</option>
                                             <option id="SL" hidden value="L" data-Qty="0" class="text-uppercase">Large</option>
                                             <option id="SXL" hidden value="XL" data-Qty="0" class="text-uppercase">Extra Large</option>
                                         </select>
+                                        <small class="invalid-feedback" id="SizeError"></small>
                                     </div>
                                 </div>
                                 <div class="row row-cols-2 g-2 mb-3">
@@ -110,29 +111,3 @@
         </div>
     </div>
 </div>
-
-<!-- View Image -->
-
-<div class="modal" id="ImageView" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-md-down modal-dialog-scrollable hide-scrollbar">
-        <div class="modal-content bg-body-tertiary bg-opacity-25 bg-blur-5">
-            <div class="modal-body">
-                <img id="Pic-View" src="../../Assets/Images/testing/temp1.jpg" class="rounded mx-auto d-block object-fit-cover align-self-center w-auto h-auto" alt="...">
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- <script>
-    document.getElementById('Inlarge').addEventListener('click', function() {
-        var img = document.getElementById('Pic-main').src;
-        document.getElementById('Pic-View').src = img;
-    });
-
-    // if ImageView is closed, Product Modal will show
-    var myModal = document.getElementById('ImageView');
-    myModal.addEventListener('hidden.bs.modal', function() {
-        var myModal = new bootstrap.Modal(document.getElementById('Product'));
-        myModal.show();
-    });
-</script> -->

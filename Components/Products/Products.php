@@ -97,14 +97,17 @@ if (isset($_SESSION['User_Data'])) {
     </div>
 
     <div class="container-md mt-4">
-        <div class="input-group mb-3">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" id="SearchInput">
-            <button class="btn btn-outline-success" id="SearchBtn" type="button">
-                    <svg class="bi" width="24" height="24" fill="currentColor">
-                        <use xlink:href="#Search" />
-                    </svg>
-                    <span>Search</span>
+        <div class="input-group mb-3 has-validation">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" id="SearchInput" aria-describedby="SearchBtn validationServer03Feedback">
+            <button class="btn btn-outline-success d-flex align-items-center" id="SearchBtn" type="button">
+                <svg class="bi me-1" width="24" height="24" fill="currentColor">
+                    <use xlink:href="#Search" />
+                </svg>
+                <span>Search</span>
             </button>
+            <div id="validationServer03Feedback" class="invalid-feedback">
+                Please provide a valid search query.
+            </div>
         </div>
     </div>
     <h1 class="text-center clamp m-5" id="title"><?php echo $Title; ?></h1>

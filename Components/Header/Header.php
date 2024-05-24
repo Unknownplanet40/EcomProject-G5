@@ -159,7 +159,7 @@
                                 </li>
                                 <li><a class="dropdown-item dropdown-item-text" href="#">Profile</a></li>
                                 <?php if ($UserRole == "admin") { ?>
-                                    <li><a class="dropdown-item dropdown-item-text" href="#">Dashboard</a></li>
+                                    <li><a class="dropdown-item dropdown-item-text" href="../Admin/Dashboard/Dashboard.php">Dashboard</a></li>
                                 <?php } ?>
                                 <li><a class="dropdown-item dropdown-item-text" href="#">Settings</a></li>
                                 <li>
