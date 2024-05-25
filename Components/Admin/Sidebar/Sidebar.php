@@ -206,7 +206,7 @@ switch ($Filename) {
             <hr>
             <ul class="nav nav-pills flex-column mb-auto">
                 <li class="nav-item">
-                    <a href="<?php echo $Dashboard; ?>" class="nav-link <?php echo $Title == 'Dashboard' ? 'active' : 'link-body-emphasis'; ?>" aria-current="page">
+                    <a href="<?php echo $Dashboard; ?>" class="nav-link <?php echo $Title == 'Dashboard' ? 'side-active' : 'link-body-emphasis'; ?>" aria-current="page">
                         <svg class="bi pe-none me-2" width="16" height="16">
                             <use xlink:href="#Dashboard" />
                         </svg>
@@ -214,7 +214,7 @@ switch ($Filename) {
                     </a>
                 </li>
                 <li>
-                    <a href="<?php echo $Products; ?>" class="nav-link <?php echo $Title == 'Products' ? 'active' : 'link-body-emphasis'; ?>">
+                    <a href="<?php echo $Products; ?>" class="nav-link <?php echo $Title == 'Products' ? 'side-active' : 'link-body-emphasis'; ?>">
                         <svg class="bi pe-none me-2" width="16" height="16">
                             <use xlink:href="#Products" />
                         </svg>
@@ -237,7 +237,7 @@ switch ($Filename) {
                         <ul class="nav nav-pills flex-column mb-auto list-unstyled fw-normal">
                             <li class="border-top"></li>
                             <li>
-                                <a href="#" class="nav-link <?php echo $Title == 'Status1' ? 'active' : 'link-body-emphasis'; ?>">
+                                <a href="#" class="nav-link <?php echo $Title == 'Status1' ? 'side-active' : 'link-body-emphasis'; ?>">
                                     <svg class="bi pe-none me-2" width="16" height="16">
                                         <use xlink:href="#grid" />
                                     </svg>
@@ -245,7 +245,7 @@ switch ($Filename) {
                                 </a>
                             </li>
                             <li>
-                                <a href="#" class="nav-link <?php echo $Title == 'Status2' ? 'active' : 'link-body-emphasis'; ?>">
+                                <a href="#" class="nav-link <?php echo $Title == 'Status2' ? 'side-active' : 'link-body-emphasis'; ?>">
                                     <svg class="bi pe-none me-2" width="16" height="16">
                                         <use xlink:href="#grid" />
                                     </svg>
@@ -253,7 +253,7 @@ switch ($Filename) {
                                 </a>
                             </li>
                             <li>
-                                <a href="#" class="nav-link <?php echo $Title == 'Status3' ? 'active' : 'link-body-emphasis'; ?>">
+                                <a href="#" class="nav-link <?php echo $Title == 'Status3' ? 'side-active' : 'link-body-emphasis'; ?>">
                                     <svg class="bi pe-none me-2" width="16" height="16">
                                         <use xlink:href="#grid" />
                                     </svg>
@@ -265,7 +265,7 @@ switch ($Filename) {
                     </div>
                 </li>
                 <li>
-                    <a href="#" class="nav-link <?php echo $Title == 'Customers' ? 'active' : 'link-body-emphasis'; ?>">
+                    <a href="#" class="nav-link <?php echo $Title == 'Customers' ? 'side-active' : 'link-body-emphasis'; ?>">
                         <svg class="bi pe-none me-2" width="16" height="16">
                             <use xlink:href="#Customers" />
                         </svg>
@@ -288,7 +288,7 @@ switch ($Filename) {
                         <ul class="nav nav-pills flex-column mb-auto list-unstyled fw-normal">
                             <li class="border-top"></li>
                             <li>
-                                <a href="#" class="nav-link <?php echo $Title == 'Admin' ? 'active' : 'link-body-emphasis'; ?>">
+                                <a href="#" class="nav-link <?php echo $Title == 'Admin' ? 'side-active' : 'link-body-emphasis'; ?>">
                                     <svg class="bi pe-none me-2" width="16" height="16">
                                         <use xlink:href="#grid" />
                                     </svg>
@@ -296,7 +296,7 @@ switch ($Filename) {
                                 </a>
                             </li>
                             <li>
-                                <a href="#" class="nav-link <?php echo $Title == 'Moderators' ? 'active' : 'link-body-emphasis'; ?>">
+                                <a href="#" class="nav-link <?php echo $Title == 'Moderators' ? 'side-active' : 'link-body-emphasis'; ?>">
                                     <svg class="bi pe-none me-2" width="16" height="16">
                                         <use xlink:href="#grid" />
                                     </svg>
@@ -304,7 +304,7 @@ switch ($Filename) {
                                 </a>
                             </li>
                             <li>
-                                <a href="#" class="nav-link <?php echo $Title == 'Customers' ? 'active' : 'link-body-emphasis'; ?>">
+                                <a href="#" class="nav-link <?php echo $Title == 'Customers' ? 'side-active' : 'link-body-emphasis'; ?>">
                                     <svg class="bi pe-none me-2" width="16" height="16">
                                         <use xlink:href="#grid" />
                                     </svg>
@@ -316,7 +316,7 @@ switch ($Filename) {
                     </div>
                 </li>
                 <li>
-                    <a href="#" class="nav-link <?php echo $Title == 'Reports' ? 'active' : 'link-body-emphasis'; ?>">
+                    <a href="#" class="nav-link <?php echo $Title == 'Reports' ? 'side-active' : 'link-body-emphasis'; ?>">
                         <svg class="bi pe-none me-2" width="16" height="16">
                             <use xlink:href="#Reports" />
                         </svg>
