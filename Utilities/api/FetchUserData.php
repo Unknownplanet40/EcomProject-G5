@@ -10,7 +10,7 @@ if (isset($_SESSION['User_ID'])) {
     $user_id = $_SESSION['User_ID'];
 
     $stmt = $conn->prepare("SELECT * FROM user_informations WHERE User_ID = ?");
-    $stmt->bind_param("i", $user_id);
+    $stmt->bind_param("s", $user_id);
     $stmt->execute();
     $result = $stmt->get_result();
 

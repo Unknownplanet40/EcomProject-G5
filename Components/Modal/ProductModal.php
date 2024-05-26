@@ -11,20 +11,20 @@
                         <!-- <div data-bs-toggle="modal" data-bs-target="#ImageView" style="cursor: pointer;" id="Inlarge">
                             <img id="Pic-main" src="" class="rounded mx-auto d-block object-fit-cover align-self-center w-100 h-auto" style="width: 750px;" alt="...">
                         </div> -->
-                        <img id="Pic-main" src="../../Assets/Images/Alternative.gif" class="rounded mx-auto d-block object-fit-cover align-self-center w-100 h-auto" style="width: 750px;" alt="...">
+                        <img id="Pic-main" src="../../Assets/Images/Alternative.gif" class="rounded mx-auto d-block object-fit-cover align-self-center w-100" style="width: 750px; height: 350px;" alt="...">
                         <!-- Product Other Images -->
                         <div class="row row-cols-4 g-1 p-2 HImage" style="cursor: pointer;">
                             <div class="col HImage-col">
-                                <img id="Pic-1" src="../../Assets/Images/Alternative.gif" class="rounded-1 mx-auto d-block object-fit-contain w-75" alt="...">
+                                <img id="Pic-1" src="../../Assets/Images/Alternative.gif" class="rounded-1 mx-auto d-block object-fit-cover" style="width: 75px; height: 75px;">
                             </div>
                             <div class="col HImage-col">
-                                <img id="Pic-2" src="../../Assets/Images/Alternative.gif" class="rounded-1 mx-auto d-block object-fit-contain w-75" alt="...">
+                                <img id="Pic-2" src="../../Assets/Images/Alternative.gif" class="rounded-1 mx-auto d-block object-fit-cover" style="width: 75px; height: 75px;">
                             </div>
                             <div class="col HImage-col">
-                                <img id="Pic-3" src="../../Assets/Images/Alternative.gif" class="rounded-1 mx-auto d-block object-fit-contain w-75" alt="...">
+                                <img id="Pic-3" src="../../Assets/Images/Alternative.gif" class="rounded-1 mx-auto d-block object-fit-cover" style="width: 75px; height: 75px;">
                             </div>
                             <div class="col HImage-col">
-                                <img id="Pic-4" src="../../Assets/Images/Alternative.gif" class="rounded-1 mx-auto d-block object-fit-contain w-75" alt="...">
+                                <img id="Pic-4" src="../../Assets/Images/Alternative.gif" class="rounded-1 mx-auto d-block object-fit-cover" style="width: 75px; height: 75px;">
                             </div>
                         </div>
                     </div>
@@ -102,6 +102,7 @@
                                 </div>
                                 <div class="text-center">
                                     <small class="text-muted user-select-none" id="reminder">&nbsp;</small>
+                                    <p class="text-muted text-center user-select-none">Estimated Delivery Time: 3-5 days</p>
                                 </div>
                             </div>
                         </div>

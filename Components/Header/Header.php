@@ -167,7 +167,7 @@
                                 </li>
                                 <li>
                                     <a class="dropdown-item dropdown-item-text text-center" href="../Signout/Logout.php">
-                                        <svg class="bi my-1" width="16" height="16" role="img" aria-label="Logout">
+                                        <svg class="my-1" width="16" height="16" role="img" aria-label="Logout">
                                             <use xlink:href="#Logout" />
                                         </svg> Sign out
                                     </a>

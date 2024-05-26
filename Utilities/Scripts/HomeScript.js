@@ -624,10 +624,13 @@ document.addEventListener("DOMContentLoaded", function () {
         //data to be sent
 
         var prod_id = document.getElementById("ProductID").value;
-        var Size = document.getElementById("Selectsize").options[document.getElementById("Selectsize").selectedIndex].value;
+        var Size =
+          document.getElementById("Selectsize").options[
+            document.getElementById("Selectsize").selectedIndex
+          ].value;
         var Qty = document.getElementById("Qinput").value;
         var InStock = document.getElementById("AvailStat").textContent;
-        
+
         if (Is_User_Logged_In) {
           if (InStock == "In Stock" || Size != "Choose Size") {
             addToCart(
@@ -676,230 +679,234 @@ document.addEventListener("DOMContentLoaded", function () {
                   CartToast("info", data.info);
                   return;
                 } else {
-                  var CartTotal = data.cart_items.length;
+                  if (data.status == "success") {
+                    var CartTotal = data.cart_items.length;
 
-                  function updateCartCount(type) {
-                    if (type == "add") {
-                      document.getElementById("Cart-Items").textContent =
-                        parseInt(
-                          document.getElementById("Cart-Items").textContent
-                        ) + 1;
-                      document.getElementById("Ccount").textContent =
-                        parseInt(
-                          document.getElementById("Ccount").textContent
-                        ) + 1;
-                    } else if (type == "remove") {
-                      document.getElementById("Cart-Items").textContent =
-                        parseInt(
-                          document.getElementById("Cart-Items").textContent
-                        ) - 1;
-                      document.getElementById("Ccount").textContent =
-                        parseInt(
-                          document.getElementById("Ccount").textContent
-                        ) - 1;
-                    } else {
-                      document.getElementById("Cart-Items").textContent =
-                        CartTotal;
-                      document.getElementById("Ccount").textContent = CartTotal;
+                    function updateCartCount(type) {
+                      if (type == "add") {
+                        document.getElementById("Cart-Items").textContent =
+                          parseInt(
+                            document.getElementById("Cart-Items").textContent
+                          ) + 1;
+                        document.getElementById("Ccount").textContent =
+                          parseInt(
+                            document.getElementById("Ccount").textContent
+                          ) + 1;
+                      } else if (type == "remove") {
+                        document.getElementById("Cart-Items").textContent =
+                          parseInt(
+                            document.getElementById("Cart-Items").textContent
+                          ) - 1;
+                        document.getElementById("Ccount").textContent =
+                          parseInt(
+                            document.getElementById("Ccount").textContent
+                          ) - 1;
+                      } else {
+                        document.getElementById("Cart-Items").textContent =
+                          CartTotal;
+                        document.getElementById("Ccount").textContent =
+                          CartTotal;
+                      }
                     }
-                  }
 
-                  if (CartTotal > 0) {
-                    var UserCart = document.getElementById("UserCart");
-                    UserCart.innerHTML = "";
+                    if (CartTotal > 0) {
+                      var UserCart = document.getElementById("UserCart");
+                      UserCart.innerHTML = "";
 
-                    for (let i = 0; i < CartTotal; i++) {
-                      updateCartCount();
+                      for (let i = 0; i < CartTotal; i++) {
+                        updateCartCount();
 
-                      var li = document.createElement("li");
-                      li.classList.add(
-                        "list-group-item",
-                        "bg-transparent",
-                        "border-0"
-                      );
-                      li.id = "Item-list_" + i;
+                        var li = document.createElement("li");
+                        li.classList.add(
+                          "list-group-item",
+                          "bg-transparent",
+                          "border-0"
+                        );
+                        li.id = "Item-list_" + i;
 
-                      var div1 = document.createElement("div");
-                      div1.classList.add(
-                        "list-group-item",
-                        "bg-transparent",
-                        "border-0"
-                      );
+                        var div1 = document.createElement("div");
+                        div1.classList.add(
+                          "list-group-item",
+                          "bg-transparent",
+                          "border-0"
+                        );
 
-                      var div2 = document.createElement("div");
-                      div2.classList.add("row");
+                        var div2 = document.createElement("div");
+                        div2.classList.add("row");
 
-                      var div3 = document.createElement("div");
-                      div3.classList.add("col-3");
+                        var div3 = document.createElement("div");
+                        div3.classList.add("col-3");
 
-                      var img = document.createElement("img");
-                      img.src = data.cart_items[i].prod_Img.Image;
-                      img.classList.add("img-thumbnail");
-                      img.alt = data.cart_items[i].prod_Details.Prod_Name;
+                        var img = document.createElement("img");
+                        img.src = data.cart_items[i].prod_Img.Image;
+                        img.classList.add("img-thumbnail");
+                        img.alt = data.cart_items[i].prod_Details.Prod_Name;
 
-                      var div4 = document.createElement("div");
-                      div4.classList.add("col-9");
+                        var div4 = document.createElement("div");
+                        div4.classList.add("col-9");
 
-                      var div5 = document.createElement("div");
-                      div5.classList.add(
-                        "d-flex",
-                        "w-100",
-                        "justify-content-between"
-                      );
+                        var div5 = document.createElement("div");
+                        div5.classList.add(
+                          "d-flex",
+                          "w-100",
+                          "justify-content-between"
+                        );
 
-                      var h5 = document.createElement("h5");
-                      h5.classList.add("mb-1");
-                      h5.textContent =
-                        data.cart_items[i].prod_Details.Prod_Name;
+                        var h5 = document.createElement("h5");
+                        h5.classList.add("mb-1");
+                        h5.textContent =
+                          data.cart_items[i].prod_Details.Prod_Name;
 
-                      var small = document.createElement("small");
+                        var small = document.createElement("small");
 
-                      var a = document.createElement("a");
-                      a.style.cursor = "pointer";
-                      a.id = "Remove_" + i;
-                      a.setAttribute("pid", data.cart_items[i].Unique_ID);
-                      a.classList.add("text-danger");
-                      a.title = "Remove from cart";
-                      a.innerHTML = `<svg class="bi" width="16" height="16" role="img" aria-label="Remove from cart"><use xlink:href="#Trash" /></svg>`;
+                        var a = document.createElement("a");
+                        a.style.cursor = "pointer";
+                        a.id = "Remove_" + i;
+                        a.setAttribute("pid", data.cart_items[i].Unique_ID);
+                        a.classList.add("text-danger");
+                        a.title = "Remove from cart";
+                        a.innerHTML = `<svg class="bi" width="16" height="16" role="img" aria-label="Remove from cart"><use xlink:href="#Trash" /></svg>`;
 
-                      var div6 = document.createElement("div");
-                      div6.classList.add(
-                        "d-flex",
-                        "w-100",
-                        "justify-content-between"
-                      );
+                        var div6 = document.createElement("div");
+                        div6.classList.add(
+                          "d-flex",
+                          "w-100",
+                          "justify-content-between"
+                        );
 
-                      var p1 = document.createElement("p");
-                      p1.classList.add("mb-1");
-                      p1.textContent = "Size: " + data.cart_items[i].Item_size;
+                        var p1 = document.createElement("p");
+                        p1.classList.add("mb-1");
+                        p1.textContent =
+                          "Size: " + data.cart_items[i].Item_size;
 
-                      var p2 = document.createElement("p");
-                      p2.classList.add("mb-1");
-                      p2.textContent = "Qty: " + data.cart_items[i].Item_Qty;
+                        var p2 = document.createElement("p");
+                        p2.classList.add("mb-1");
+                        p2.textContent = "Qty: " + data.cart_items[i].Item_Qty;
 
-                      var div7 = document.createElement("div");
-                      div7.classList.add(
-                        "d-flex",
-                        "w-100",
-                        "justify-content-between"
-                      );
+                        var div7 = document.createElement("div");
+                        div7.classList.add(
+                          "d-flex",
+                          "w-100",
+                          "justify-content-between"
+                        );
 
-                      var p3 = document.createElement("p");
-                      p3.classList.add("mb-1");
-                      p3.textContent =
-                        "Price: ₱ " +
-                        data.cart_items[i].prod_Details.Prod_Price;
+                        var p3 = document.createElement("p");
+                        p3.classList.add("mb-1");
+                        p3.textContent =
+                          "Price: ₱ " +
+                          data.cart_items[i].prod_Details.Prod_Price;
 
-                      var p4 = document.createElement("p");
-                      p4.classList.add("mb-1");
-                      p4.textContent =
-                        "Subtotal: ₱ " +
-                        data.cart_items[i].prod_Details.Prod_Price *
-                          data.cart_items[i].Item_Qty;
+                        var p4 = document.createElement("p");
+                        p4.classList.add("mb-1");
+                        p4.textContent =
+                          "Subtotal: ₱ " +
+                          data.cart_items[i].prod_Details.Prod_Price *
+                            data.cart_items[i].Item_Qty;
 
-                      // Append in the correct order
-                      small.appendChild(a);
-                      div5.appendChild(h5);
-                      div5.appendChild(small);
+                        // Append in the correct order
+                        small.appendChild(a);
+                        div5.appendChild(h5);
+                        div5.appendChild(small);
 
-                      div6.appendChild(p1);
-                      div6.appendChild(p2);
+                        div6.appendChild(p1);
+                        div6.appendChild(p2);
 
-                      div7.appendChild(p3);
-                      div7.appendChild(p4);
+                        div7.appendChild(p3);
+                        div7.appendChild(p4);
 
-                      div4.appendChild(div5);
-                      div4.appendChild(div6);
-                      div4.appendChild(div7);
+                        div4.appendChild(div5);
+                        div4.appendChild(div6);
+                        div4.appendChild(div7);
 
-                      div3.appendChild(img);
-                      div2.appendChild(div3);
-                      div2.appendChild(div4);
-                      div1.appendChild(div2);
-                      li.appendChild(div1);
+                        div3.appendChild(img);
+                        div2.appendChild(div3);
+                        div2.appendChild(div4);
+                        div1.appendChild(div2);
+                        li.appendChild(div1);
 
-                      UserCart.appendChild(li);
+                        UserCart.appendChild(li);
 
-                      document
-                        .getElementById("Remove_" + i)
-                        .addEventListener("click", function () {
-                          function RToast(icon, title) {
-                            Swal.mixin({
-                              toast: true,
-                              position: "top",
-                              showConfirmButton: false,
-                              timer: 1500,
-                              timerProgressBar: true,
-                              didOpen: (toast) => {
-                                toast.addEventListener(
-                                  "mouseenter",
-                                  Swal.stopTimer
-                                );
-                                toast.addEventListener(
-                                  "mouseleave",
-                                  Swal.resumeTimer
-                                );
-                              },
-                            }).fire({
-                              icon: icon,
-                              title: title,
-                            });
-                          }
-
-                          async function removeItem(url) {
-                            try {
-                              const response = await fetch(url);
-
-                              if (!response.ok) {
-                                throw new Error(
-                                  "An error occured while removing item."
-                                );
-                              }
-
-                              const data = await response.json();
-
-                              if (data.error) {
-                                RToast("error", data.error);
-                              } else {
-                                if (data.status == "success") {
-                                  console.log(data.message);
-                                } else {
-                                  RToast("error", data.message);
-                                }
-                              }
-                            } catch (error) {
-                              console.error(error);
+                        document
+                          .getElementById("Remove_" + i)
+                          .addEventListener("click", function () {
+                            function RToast(icon, title) {
+                              Swal.mixin({
+                                toast: true,
+                                position: "top",
+                                showConfirmButton: false,
+                                timer: 1500,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                  toast.addEventListener(
+                                    "mouseenter",
+                                    Swal.stopTimer
+                                  );
+                                  toast.addEventListener(
+                                    "mouseleave",
+                                    Swal.resumeTimer
+                                  );
+                                },
+                              }).fire({
+                                icon: icon,
+                                title: title,
+                              });
                             }
-                          }
 
-                          var pid = this.getAttribute("pid");
+                            async function removeItem(url) {
+                              try {
+                                const response = await fetch(url);
 
-                          removeItem(
-                            "../../Utilities/api/RemoveItem.php?uuid=" + pid
-                          );
+                                if (!response.ok) {
+                                  throw new Error(
+                                    "An error occured while removing item."
+                                  );
+                                }
 
-                          UserCart.removeChild(
-                            document.getElementById("Item-list_" + i)
-                          );
+                                const data = await response.json();
 
-                          updateCartCount("remove");
+                                if (data.error) {
+                                  RToast("error", data.error);
+                                } else {
+                                  if (data.status == "success") {
+                                    console.log(data.message);
+                                  } else {
+                                    RToast("error", data.message);
+                                  }
+                                }
+                              } catch (error) {
+                                console.error(error);
+                              }
+                            }
 
-                          // if thiere is no item in the cart
-                          if (UserCart.childElementCount === 0) {
-                            var li = document.createElement("li");
-                            li.classList.add(
-                              "list-group-item",
-                              "bg-transparent",
-                              "border-0"
+                            var pid = this.getAttribute("pid");
+
+                            removeItem(
+                              "../../Utilities/api/RemoveItem.php?uuid=" + pid
                             );
-                            li.innerHTML = `<a class="list-group-item list-group-item-action bg-transparent border-0 text-body-emphasis" aria-current="true">
+
+                            UserCart.removeChild(
+                              document.getElementById("Item-list_" + i)
+                            );
+
+                            updateCartCount("remove");
+
+                            // if thiere is no item in the cart
+                            if (UserCart.childElementCount === 0) {
+                              var li = document.createElement("li");
+                              li.classList.add(
+                                "list-group-item",
+                                "bg-transparent",
+                                "border-0"
+                              );
+                              li.innerHTML = `<a class="list-group-item list-group-item-action bg-transparent border-0 text-body-emphasis" aria-current="true">
                         <div class="d-flex w-100 justify-content-center">
                             <h5 class=" text-body-emphasis text-center">Your cart is empty</h5>
                         </div>
                       </a>`;
-                            UserCart.appendChild(li);
-                          }
-                        });
+                              UserCart.appendChild(li);
+                            }
+                          });
+                      }
                     }
                   }
                 }

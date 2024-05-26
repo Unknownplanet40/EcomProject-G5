@@ -50,9 +50,9 @@ switch ($Filename) {
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nlinks link-body-emphasis collapsed" data-bs-toggle="collapse" data-bs-target="#orders-collapse">
+                    <a href="#" class="nlinks active collapsed" data-bs-toggle="collapse" data-bs-target="#orders-collapse">
                         <svg class="bi pe-none me-2" width="16" height="16">
-                            <use xlink:href="#Cart" />
+                            <use xlink:href="#Order" />
                         </svg>
                         <span class="d-inline-flex">
                             Orders
@@ -157,7 +157,7 @@ switch ($Filename) {
                 <a href="#" class="d-flex align-items-center link-body-emphasis text-decoration-none dropdown-toggle 
                         " data-bs-toggle="dropdown" aria-expanded="false">
                     <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
-                    <strong>mdo</strong>
+                    <strong><?php echo $Username; ?></strong>
                 </a>
                 <ul class="dropdown-menu text-small shadow">
                     <h3 class="dropdown-header">
@@ -165,7 +165,7 @@ switch ($Filename) {
                             <img src="https://github.com/mdo.png" alt="mdo" width="48" height="48" class="rounded-circle">
                         </div>
                         <div class="d-flex justify-content-center" style="max-width: 200px;">
-                            <p class="dropdown-item-text px-2 text-truncate fw-bold fs-6" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover" data-bs-title="Username">mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm</p>
+                            <p class="dropdown-item-text px-2 text-truncate fw-bold fs-6" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover" data-bs-title="Username"><?php echo $Username; ?></p>
                         </div>
                         <div class="text-center" style="margin-top: -15px;">
                             <small class="text-muted">Administrator</small>
@@ -224,7 +224,7 @@ switch ($Filename) {
                 <li>
                     <a href="#" class="nav-link link-body-emphasis collapsed" data-bs-toggle="collapse" data-bs-target="#orders-collapse">
                         <svg class="bi pe-none me-2" width="16" height="16">
-                            <use xlink:href="#Cart" />
+                            <use xlink:href="#Order" />
                         </svg>
                         <span class="d-inline-flex">
                             Orders
@@ -329,7 +329,7 @@ switch ($Filename) {
                 <a href="#" class="d-flex align-items-center link-body-emphasis text-decoration-none dropdown-toggle 
                         " data-bs-toggle="dropdown" aria-expanded="false">
                     <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
-                    <strong>mdo</strong>
+                    <strong><?php echo $Username; ?></strong>
                 </a>
                 <ul class="dropdown-menu text-small shadow">
                     <h3 class="dropdown-header">
@@ -337,7 +337,7 @@ switch ($Filename) {
                             <img src="https://github.com/mdo.png" alt="mdo" width="48" height="48" class="rounded-circle">
                         </div>
                         <div class="d-flex justify-content-center" style="max-width: 200px;">
-                            <p class="dropdown-item-text px-2 text-truncate fw-bold fs-6" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover" data-bs-title="Username">mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm</p>
+                            <p class="dropdown-item-text px-2 text-truncate fw-bold fs-6" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover" data-bs-title="Username"><?php echo $Username; ?></p>
                         </div>
                         <div class="text-center" style="margin-top: -15px;">
                             <small class="text-muted">Administrator</small>
