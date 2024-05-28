@@ -40,6 +40,14 @@ try {
                 }
                 break;
             case 'sendOTP':
+                $stmt_get_Key = $conn->prepare("SELECT Credential FROM secret_keys WHERE Key_Name = 'SMTP_Pass'");
+                $stmt_get_Key->execute();
+                $result = $stmt_get_Key->get_result();
+                $row = $result->fetch_assoc();
+                $SMTP_Pass = $row['Credential'];
+                $stmt_get_Key->close();
+
+
                 $Email = $_GET['email'];
                 $Email = strtolower($Email);
                 $OTP = $_GET['otp'];
@@ -50,7 +58,7 @@ try {
                 $mail->Host = 'smtp.gmail.com';
                 $mail->SMTPAuth = true;
                 $mail->Username = 'ryanjamesc4@gmail.com';
-                $mail->Password = 'jsggrmothmnkdmqb';
+                $mail->Password = $SMTP_Pass;
                 $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                 $mail->Port = 587;
 
