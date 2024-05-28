@@ -29,7 +29,7 @@
                         </div>
                     </div>
                     <div class="col-lg-6 d-flex align-items-center">
-                        <div id="card-bg" class="card border-0 bg-transparent">
+                        <div id="card-bg" class="card border-0 shadow-sm w-100 h-auto">
                             <div class="card-body w-100 h-auto">
                                 <input type="hidden" id="ProductID" value="">
                                 <p class="card-title text-body-emphasis fw-bold fs-4 text-truncate" id="Pname"></p>

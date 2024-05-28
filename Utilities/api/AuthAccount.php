@@ -31,6 +31,8 @@ try {
     $email = $data['email'];
     $password = $data['password'];
 
+    $email = strtolower($email);
+
     // Prepare the SQL statement to prevent SQL injection
     $stmt = $conn->prepare("SELECT * FROM Account WHERE Email_Address = ?");
     $stmt->bind_param("s", $email);
