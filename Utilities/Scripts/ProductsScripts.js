@@ -11,8 +11,17 @@ window.onload = function () {
 };
 
 document.getElementById("SearchBtn").addEventListener("click", function () {
-  AllProducts("../../Utilities/api/AllProduct.php?search=" + document.getElementById("SearchInput").value);
-  document.getElementById("title").textContent = 'Results for: "' + document.getElementById("SearchInput").value + '"';
+  var SearchValue = document.getElementById("SearchInput").value;
+  if (SearchValue != "") {
+    AllProducts("../../Utilities/api/AllProduct.php?search=" + document.getElementById("SearchInput").value);
+    document.getElementById("title").textContent = 'Results for: "' + document.getElementById("SearchInput").value + '"';
+  } else {
+    document.getElementById("SearchInput").classList.add("is-invalid");
+    setTimeout(function () {
+      document.getElementById("SearchInput").focus();
+      document.getElementById("SearchInput").classList.remove("is-invalid");
+    }, 1500);
+  }
 });
 
 // if search is empty show all products

@@ -3,6 +3,11 @@
     padding: 0;
 }
 
+.bi {
+    vertical-align: -.125em;
+    fill: currentColor;
+}
+
 .link-hover {
     text-decoration: none;
     transition: 200ms ease-in-out;

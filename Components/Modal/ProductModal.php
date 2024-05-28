@@ -11,25 +11,25 @@
                         <!-- <div data-bs-toggle="modal" data-bs-target="#ImageView" style="cursor: pointer;" id="Inlarge">
                             <img id="Pic-main" src="" class="rounded mx-auto d-block object-fit-cover align-self-center w-100 h-auto" style="width: 750px;" alt="...">
                         </div> -->
-                        <img id="Pic-main" src="../../Assets/Images/Alternative.gif" class="rounded mx-auto d-block object-fit-cover align-self-center w-100 h-auto" style="width: 750px;" alt="...">
+                        <img id="Pic-main" src="../../Assets/Images/Alternative.gif" class="rounded mx-auto d-block object-fit-cover align-self-center w-100" style="width: 750px; height: 350px;" alt="...">
                         <!-- Product Other Images -->
                         <div class="row row-cols-4 g-1 p-2 HImage" style="cursor: pointer;">
                             <div class="col HImage-col">
-                                <img id="Pic-1" src="../../Assets/Images/Alternative.gif" class="rounded-1 mx-auto d-block object-fit-contain w-75" alt="...">
+                                <img id="Pic-1" src="../../Assets/Images/Alternative.gif" class="rounded-1 mx-auto d-block object-fit-cover" style="width: 75px; height: 75px;">
                             </div>
                             <div class="col HImage-col">
-                                <img id="Pic-2" src="../../Assets/Images/Alternative.gif" class="rounded-1 mx-auto d-block object-fit-contain w-75" alt="...">
+                                <img id="Pic-2" src="../../Assets/Images/Alternative.gif" class="rounded-1 mx-auto d-block object-fit-cover" style="width: 75px; height: 75px;">
                             </div>
                             <div class="col HImage-col">
-                                <img id="Pic-3" src="../../Assets/Images/Alternative.gif" class="rounded-1 mx-auto d-block object-fit-contain w-75" alt="...">
+                                <img id="Pic-3" src="../../Assets/Images/Alternative.gif" class="rounded-1 mx-auto d-block object-fit-cover" style="width: 75px; height: 75px;">
                             </div>
                             <div class="col HImage-col">
-                                <img id="Pic-4" src="../../Assets/Images/Alternative.gif" class="rounded-1 mx-auto d-block object-fit-contain w-75" alt="...">
+                                <img id="Pic-4" src="../../Assets/Images/Alternative.gif" class="rounded-1 mx-auto d-block object-fit-cover" style="width: 75px; height: 75px;">
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-6 d-flex align-items-center">
-                        <div id="card-bg" class="card border-0 bg-transparent">
+                        <div id="card-bg" class="card border-0 shadow-sm w-100 h-auto">
                             <div class="card-body w-100 h-auto">
                                 <input type="hidden" id="ProductID" value="">
                                 <p class="card-title text-body-emphasis fw-bold fs-4 text-truncate" id="Pname"></p>
@@ -57,13 +57,14 @@
                                         <p class="card-text">Available Sizes</p>
                                     </div>
                                     <div class="col-8">
-                                        <select class="form-select form-select-sm text-uppercase fw-bold w-auto" id="Selectsize">
+                                        <select class="form-select form-select-sm text-uppercase fw-bold w-auto" id="Selectsize" required>
                                             <option id="SD" selected hidden>Choose Size</option>
                                             <option id="SS" hidden value="S" data-Qty="0" class="text-uppercase">Small</option>
                                             <option id="SM" hidden value="M" data-Qty="0" class="text-uppercase">Medium</option>
                                             <option id="SL" hidden value="L" data-Qty="0" class="text-uppercase">Large</option>
                                             <option id="SXL" hidden value="XL" data-Qty="0" class="text-uppercase">Extra Large</option>
                                         </select>
+                                        <small class="invalid-feedback" id="SizeError"></small>
                                     </div>
                                 </div>
                                 <div class="row row-cols-2 g-2 mb-3">
@@ -101,6 +102,7 @@
                                 </div>
                                 <div class="text-center">
                                     <small class="text-muted user-select-none" id="reminder">&nbsp;</small>
+                                    <p class="text-muted text-center user-select-none">Estimated Delivery Time: 3-5 days</p>
                                 </div>
                             </div>
                         </div>
@@ -110,29 +112,3 @@
         </div>
     </div>
 </div>
-
-<!-- View Image -->
-
-<div class="modal" id="ImageView" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-md-down modal-dialog-scrollable hide-scrollbar">
-        <div class="modal-content bg-body-tertiary bg-opacity-25 bg-blur-5">
-            <div class="modal-body">
-                <img id="Pic-View" src="../../Assets/Images/testing/temp1.jpg" class="rounded mx-auto d-block object-fit-cover align-self-center w-auto h-auto" alt="...">
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- <script>
-    document.getElementById('Inlarge').addEventListener('click', function() {
-        var img = document.getElementById('Pic-main').src;
-        document.getElementById('Pic-View').src = img;
-    });
-
-    // if ImageView is closed, Product Modal will show
-    var myModal = document.getElementById('ImageView');
-    myModal.addEventListener('hidden.bs.modal', function() {
-        var myModal = new bootstrap.Modal(document.getElementById('Product'));
-        myModal.show();
-    });
-</script> -->

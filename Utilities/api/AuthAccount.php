@@ -31,6 +31,8 @@ try {
     $email = $data['email'];
     $password = $data['password'];
 
+    $email = strtolower($email);
+
     // Prepare the SQL statement to prevent SQL injection
     $stmt = $conn->prepare("SELECT * FROM Account WHERE Email_Address = ?");
     $stmt->bind_param("s", $email);
@@ -55,7 +57,7 @@ try {
             // Prepare the update statement to prevent SQL injection
             $update_stmt = $conn->prepare("UPDATE user_informations SET Is_user_logged_in = 1, Last_Login = ? WHERE User_ID = ?");
             $current_time = date('Y-m-d H:i:s');
-            $update_stmt->bind_param("si", $current_time, $row['User_ID']);
+            $update_stmt->bind_param("ss", $current_time, $row['User_ID']);
             $update_result = $update_stmt->execute();
 
             if (!$update_result) {
