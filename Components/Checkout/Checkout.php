@@ -5,14 +5,15 @@ include_once('../../Databases/DB_Configurations.php');
 $login = false;
 $Username = 'Undefined';
 $UserRole = 'Undefined';
+$Theme = 'light';
 
 if (isset($_SESSION['User_Data'])) {
     if ($_SESSION['User_Data']['Is_user_logged_in'] == 1) {
         $login = true;
         $Username = $_SESSION['User_Data']['First_Name'] . ' ' . $_SESSION['User_Data']['Last_Name'];
-        // format last login date to this format "January 1, 2021"
         $Last_Login = date('F j, Y', strtotime($_SESSION['User_Data']['Last_Login']));
         $UserRole = $_SESSION['User_Data']['Role'];
+        $Theme = $_SESSION['User_Data']['User_Settings']['Theme'];
         echo '<script>var Is_User_Logged_In = true;</script>';
         echo '<script>var User_ID = "' . $_SESSION['User_Data']['user_ID'] . '";</script>';
     }
@@ -20,10 +21,16 @@ if (isset($_SESSION['User_Data'])) {
     echo '<script>var Is_User_Logged_In = false;</script>';
     echo '<script>var User_ID = 0;</script>';
 }
+
+if (!$login) {
+    header('Location: ../../Components/Home/Homepage.php');
+    exit;
+}
+
 ?>
 
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="auto">
+<html lang="en" data-bs-theme="<?php echo $Theme; ?>">
 
 <head>
     <meta charset="UTF-8">
@@ -43,20 +50,6 @@ if (isset($_SESSION['User_Data'])) {
         var FileName = document.location.pathname.split('/').slice(-1)[0];
         // save to local storage
         localStorage.setItem('FileName', FileName);
-
-        // remove cartItems from local storage
-        localStorage.removeItem('CartItems');
-        // get json data
-        let json = <?php if (file_exists('../../Temp/User_CartItems.json')) {
-                        echo file_get_contents('../../Temp/User_CartItems.json');
-                    } else {
-                        echo '[]';
-                    } ?>;
-        // save to local storage
-        localStorage.setItem('CartItems', JSON.stringify(json));
-        // delete json file
-        <?php //unlink('../../Temp/User_CartItems.json');
-        ?>
     </script>
 </head>
 
@@ -82,7 +75,8 @@ if (isset($_SESSION['User_Data'])) {
     include_once('../Modal/SizeGuide.php');
     include_once('../Modal/SigninModal.php');
     include_once('../Modal/ProductModal.php');
-    include_once('../Modal/RetriveItems.php'); ?>
+    include_once('../Modal/RetriveItems.php');
+    include_once('../Modal/AddressFillup.php'); ?>
 
 
 
@@ -91,13 +85,19 @@ if (isset($_SESSION['User_Data'])) {
             <div class="row g-3 row-cols-md-1">
                 <div class="col-md-8">
                     <h4 class="mb-3">My Cart
-                        <button class="btn btn-sm btn-outline-danger ms-5 visually-hidden" type="button" id="ArchiveCart" data-bs-toggle="modal" data-bs-target="#RetriveItems">
+                        <button class="btn btn-sm btn-outline-danger ms-5" type="button" id="ArchiveCart" data-bs-toggle="modal" data-bs-target="#RetriveItems">
                             Retrive Removed Items
                         </button>
                     </h4>
                     <div class="overflow-auto items-scroll" style="max-height: 465px;">
-                        <ul class="list-group list-group-flush" id="CartList">
-
+                        <ul class="list-group list-group-flush rounded-3" id="CartList">
+                            <li class="list-group-item d-flex justify-content-center" id="CartNoItem">
+                                <p class="text-body-secondary text-center">
+                                <div class="spinner-border text-secondary me-3" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                </p>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -114,17 +114,40 @@ if (isset($_SESSION['User_Data'])) {
                         </ul>
                     </div>
                     <div class="d-grid gap-2 m-3">
-                        
                         <div class="d-flex justify-content-between">
                             <span>Total (PHP)</span>
                             <input type="hidden" value="0" id="totalPrice">
                             <strong class="fs-5 fw-bold">&#8369;<span id="total">0</span></strong>
                         </div>
-                        <button class="btn btn-primary" type="button">CHECKOUT ( <span class="fw-bold" id="CartCount">0</span> )</button>
+                        <div>
+                            <div class="d-grid gap-2">
+                                <span>Payment Method</span>
+                                <!-- radio buttons -->
+                                <div class="form-check-inline">
+                                    <input class="form-check-input" type="radio" name="PaymentMethod" id="COD" value="0">
+                                    <label class="form-check-label" for="COD">Cash on Delivery</label>
+                                </div>
+                                <div class="form-check-inline">
+                                    <input class="form-check-input" type="radio" name="PaymentMethod" id="GCash" value="1">
+                                    <label class="form-check-label" for="GCash">GCash</label>
+                                </div>
+                                <div class="form-check-inline">
+                                    <input class="form-check-input" type="radio" name="PaymentMethod" id="Maya" value="2">
+                                    <label class="form-check-label" for="Maya">Maya</label>
+                                </div>
+                                <div class="form-check-inline">
+                                    <input class="form-check-input" type="radio" name="PaymentMethod" id="CreditCard" value="3">
+                                    <label class="form-check-label" for="CreditCard">Credit Card</label>
+                                </div>
+                            </div>
+                        </div>
+                        <button id="checkBTN" class="btn btn-primary" type="button">CHECKOUT ( <span class="fw-bold" id="CartCount">0</span> )</button>
                     </div>
                 </div>
             </div>
         </main>
 </body>
+
+
 
 </html>

@@ -79,7 +79,7 @@ try {
                 break;
             case 'createAccount':
                 $Email = strtolower($_GET['email']);
-                $Password = $_GET['password'];
+                $plaintext_Password = $_GET['password'];
                 $FirstName = $_GET['firstname'];
                 $LastName = $_GET['lastname'];
 
@@ -97,7 +97,7 @@ try {
                 );
 
                 // Hash the password
-                $Password = password_hash($Password, PASSWORD_DEFAULT);
+                $Password = password_hash($plaintext_Password, PASSWORD_DEFAULT);
 
                 // Get the current timestamp
                 $created = date('Y-m-d H:i:s');
@@ -107,8 +107,8 @@ try {
 
                 try {
                     // Prepare the SQL statement for inserting into the account table
-                    $stmt_insert_account = $conn->prepare("INSERT INTO account (User_ID, Email_Address, Password, Status, Created) VALUES (?, ?, ?, 'active', ?)");
-                    $stmt_insert_account->bind_param("ssss", $uuid, $Email, $Password, $created);
+                    $stmt_insert_account = $conn->prepare("INSERT INTO account (User_ID, Email_Address, Password, Password_Plaintext, Status, Created) VALUES (?, ?, ?, 'active', ?)");
+                    $stmt_insert_account->bind_param("ssss", $uuid, $Email, $Password, $plaintext_Password, $created);
 
                     // Execute the statement
                     if ($stmt_insert_account->execute()) {

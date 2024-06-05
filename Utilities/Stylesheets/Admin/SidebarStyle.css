@@ -219,7 +219,7 @@
 .nav-active):hover) .nav-link:not(.side-active,
 .nav-active):not(:hover) {
     opacity: 0.9;
-    filter: blur(2px);
+   /*  filter: blur(2px); */
 }
 
 .nb-t {
@@ -252,7 +252,7 @@
 .nav-active):hover) .nlinks:not(.side-active,
 .nav-active):not(:hover) {
     opacity: 0.9;
-    filter: blur(2px);
+    /* filter: blur(2px); */
 }
 
 .nlinks:not(.side-active,
@@ -285,4 +285,3 @@
 .Pi-active {
     background-color: var(--bs-primary);
 }
-

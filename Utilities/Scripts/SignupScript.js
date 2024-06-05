@@ -74,7 +74,13 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  async function CreateAccount(functionname, email, password, firstname, lastname) {
+  async function CreateAccount(
+    functionname,
+    email,
+    password,
+    firstname,
+    lastname
+  ) {
     try {
       const url = `../../Utilities/api/AccountCreation.php?functionname=${functionname}&email=${email}&password=${password}&firstname=${firstname}&lastname=${lastname}`;
 
@@ -102,6 +108,54 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  async function AuthAccount(url) {
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: document.getElementById("Email").value,
+          password: document.getElementById("Password").value,
+        }),
+      });
+
+      if (!response.ok) {
+        showAlert("error", "Network response was not ok", 2000);
+      }
+
+      const data = await response.json();
+
+      // chekc if i receive an error message or not
+      if (data.error) {
+        showAlert("error", data.error, 2000);
+      } else {
+        if (data.status == "success") {
+          Swal.mixin({
+            toast: true,
+            position: "top",
+            showConfirmButton: false,
+            timer: 1500,
+            timerProgressBar: true,
+          })
+            .fire({
+              icon: data.status,
+              title: data.message,
+            })
+            .then((result) => {
+              setTimeout(function () {
+                location.href = "../../Utilities/api/FetchUserData.php";
+              }, 500);
+            });
+        } else {
+          showAlert(data.status, data.message, 2000);
+        }
+      }
+    } catch (error) {
+      showAlert("error", error, 2000);
+    }
+  }
   /* ----------------------------------------------------------- */
 
   // hide loader and show first name, last name container
@@ -312,8 +366,8 @@ document.addEventListener("DOMContentLoaded", function () {
           loader.classList.remove("d-none");
           step_3.classList.add("d-none");
           setTimeout(function () {
-            window.location.href = "../../Components/Home/Homepage.php";
-          }, 2000);
+            AuthAccount("../../Utilities/api/AuthAccount.php");
+          }, 1500);
         }
       });
     } else {

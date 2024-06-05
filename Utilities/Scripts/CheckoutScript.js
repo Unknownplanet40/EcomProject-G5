@@ -1,429 +1,967 @@
-// Retrieve JSON data from local storage
-if (localStorage.getItem("CartItems") == null) {
-  localStorage.setItem("CartItems", JSON.stringify([]));
-} else {
-  var UserCart = JSON.parse(localStorage.getItem("CartItems"));
-}
+let haveExistingAddress = false;
+let completeAddress = "";
+let paymentMethod = "none";
+localStorage.removeItem("SelectedItems");
 
-// Check if UserCart is not empty
-if (UserCart.length > 0) {
+async function CheckoutItems(UserID) {
   try {
-    UserCart.forEach((obj) => {
-      var CartList = document.getElementById("CartList");
-      var li = document.createElement("li");
-      li.className = "list-group-item bg-transparent";
-      li.id = `MainCart_${obj.id}`;
-      li.innerHTML = `<div class="hstack gap-3">
-            <div class="input-group-text border-0 px-0" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-trigger="hover" data-bs-title="Select item to checkout">
-                <input class="btn-check px-0" type="checkbox" id="Check${
-                  obj.id
-                }">
-                <label class="px-0 btn btn-secondary text-body-emphasis bg-transparent border-0" style="cursor: pointer;" for="Check${
-                  obj.id
-                }" id="CheckLabel${obj.id}">
-                    <svg class="bi" width="30px" height="30px">
-                    <use xlink:href="#Check" />
-                                </svg>
-                                </label>
-                                <input type="hidden" value="${
-                                  obj.id
-                                }" id="ProductID${obj.id}">
-                            </div>
-                            <div class="card border-0 bg-transparent">
-                                <div class="row g-0">
-                                    <div class="col-2 d-flex align-items-center">
-                                        <img src="../${
-                                          obj.product_Image
-                                        }" class="img-fluid object-fit-cover w-100 rounded" alt="...">
-                                    </div>
-                                    <div class="col-10">
-                                        <div class="card-body">
-                                            <div class="d-flex justify-content-between">
-                                                <div>
-                                                <h5 class="card-title
-                                                text-truncate" id="ProductName${
-                                                  obj.id
-                                                }" style="width: 200px" data-bs-toggle="tooltip" data-bs-placement="top" title="${
-        obj.product_Name
-      }"
-                                                >${obj.product_Name}</h5>
-                                                <div class="text-body-secondary">
-                                                    Price: 
-                                                    &#8369;
-                                                    <span class="text-body-secondary fs-5 fw-bold" id="ItemPrice${
-                                                      obj.id
-                                                    }">${obj.Price}</span>
-                                                </div>
-                                                </div>
-                                                <div>
-                                                <button class="btn btn-sm btn-outline-danger border-0" style="cursor: pointer;
-                                                " id="DeleteItem${obj.id}">
-                                                    <svg fill="currentColor" class="bi" width="16px" height="16px">
-                                                        <use xlink:href="#Trash" />
-                                                    </svg>
-                                                </button>
-                                                </div>
-                                            </div>
-                                            <div class="hstack gap-3" id="ItemDetails${
-                                              obj.id
-                                            }">
-                                                <div class="d-flex align-items-center">
-                                                    <span class="text-body-secondary me-2">Size: </span>
-                                                    <select class="form-select form-select-sm w-auto" id="Size${
-                                                      obj.id
-                                                    }">
-                                                        <option ${
-                                                          obj.Size != "S" &&
-                                                          obj.Size != "M" &&
-                                                          obj.Size != "L" &&
-                                                          obj.Size != "XL"
-                                                            ? "selected"
-                                                            : ""
-                                                        } hidden>Choose...</option>
-                                                        <option ${
-                                                          obj.Size == "S"
-                                                            ? "selected"
-                                                            : ""
-                                                        } value="S">Small</option>
-                                                        <option ${
-                                                          obj.Size == "M"
-                                                            ? "selected"
-                                                            : ""
-                                                        } value="M">Medium</option>
-                                                        <option ${
-                                                          obj.Size == "L"
-                                                            ? "selected"
-                                                            : ""
-                                                        } value="L">Large</option>
-                                                        <option ${
-                                                          obj.Size == "XL"
-                                                            ? "selected"
-                                                            : ""
-                                                        } value="XL">Extra Large</option>
-                                                    </select>
-                                                </div>
-                                                <div class="d-flex align-items-center">
-                                                    <span class="text-body- me-2">Qty: </span>
-                                                    <div class="btn-group btn-group-sm w-50" role="group">
-                                                        <a class="btn btn-sm btn-outline-secondary" id="Qminus${
-                                                          obj.id
-                                                        }">&minus;</a>
-                                                        <input type="text" class="form-control form-control-sm text-center" min="1" value="${
-                                                          obj.Quantity
-                                                        }" id="Q${
-        obj.id
-      }" readonly>
-                                                        <a class="btn btn-sm btn-outline-secondary" id="Qplus${
-                                                          obj.id
-                                                        }">&plus;</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>`;
-      CartList.appendChild(li);
+    const response = await fetch(
+      "../../Utilities/api/CheckoutItems.php?UserID=" + UserID
+    );
 
-      // Quantity minus
-      document
-        .getElementById(`Qminus${obj.id}`)
-        .addEventListener("click", function () {
-          var Q = document.getElementById(`Q${obj.id}`);
-          if (Q.value > 1) {
-            Q.value--;
-          }
+    if (!response.ok) {
+      throw new Error("HTTP error " + response.status);
+    }
+
+    const data = await response.json();
+
+    if (data.length > 0) {
+      var CheckoutList = document.getElementById("CartList");
+      CheckoutList.innerHTML = "";
+
+      data.forEach((obj) => {
+        var li = document.createElement("li");
+        li.classList.add("list-group-item");
+        CheckoutList.appendChild(li);
+
+        var row = document.createElement("div");
+        row.classList.add("row", "g-0");
+
+        var col1 = document.createElement("div");
+        col1.classList.add(
+          "col-1",
+          "d-flex",
+          "justify-content-end",
+          "align-items-center",
+          "px-0"
+        );
+        row.appendChild(col1);
+
+        var input1 = document.createElement("input");
+        input1.classList.add("btn-check");
+        input1.type = "checkbox";
+        input1.id = "Check_" + obj.UUID;
+
+        var label1 = document.createElement("label");
+        label1.classList.add(
+          "px-0",
+          "btn",
+          "btn-secondary",
+          "text-body-emphasis",
+          "bg-transparent",
+          "border-0"
+        );
+        label1.style.cursor = "pointer";
+        label1.htmlFor = "Check_" + obj.UUID;
+        label1.id = "CheckLabel_" + obj.UUID;
+        label1.innerHTML =
+          "<svg class='bi' width='30px' height='30px'><use xlink:href='#Check' /></svg>";
+
+        col1.appendChild(input1);
+        col1.appendChild(label1);
+
+        var col2 = document.createElement("div");
+        col2.classList.add(
+          "col-4",
+          "d-flex",
+          "justify-content-center",
+          "align-items-center",
+          "px-1"
+        );
+
+        var img = document.createElement("img");
+        img.src = obj.Images[0].Img_Path;
+        img.alt = obj.Prod_Details.Prod_Name;
+        img.classList.add("img-thumbnail", "object-fit-contain");
+        img.style.width = "150px";
+        img.style.height = "150px";
+
+        col2.appendChild(img);
+
+        var col3 = document.createElement("div");
+        col3.classList.add("col-7");
+
+        var div1 = document.createElement("div");
+        div1.classList.add("d-flex", "justify-content-between");
+
+        var h6 = document.createElement("h6");
+        h6.classList.add("mb-0");
+        h6.innerHTML = obj.Prod_Details.Prod_Name;
+
+        var button1 = document.createElement("button");
+        button1.classList.add("btn-close");
+        button1.type = "button";
+        button1.ariaLabel = "Close";
+
+        div1.appendChild(h6);
+        div1.appendChild(button1);
+
+        var br = document.createElement("br");
+
+        var small = document.createElement("small");
+
+        var b1 = document.createElement("b");
+        b1.innerHTML = obj.Prod_Details.Brand;
+
+        var b2 = document.createElement("b");
+        b2.innerHTML = obj.Prod_Details.Color;
+
+        small.innerHTML = "Brand: ";
+        small.appendChild(b1);
+
+        small.innerHTML += " | Color: ";
+        small.appendChild(b2);
+
+        var innerdiv = document.createElement("div");
+        innerdiv.classList.add("mt-3");
+        var div2 = document.createElement("div");
+        div2.classList.add("d-flex", "justify-content-start");
+
+        var inputGroup1 = document.createElement("div");
+        inputGroup1.classList.add("input-group", "w-50", "mx-2");
+
+        var button2 = document.createElement("button");
+        button2.classList.add("btn", "btn-sm", "btn-outline-secondary");
+        button2.type = "button";
+        button2.id = "Minus_" + obj.UUID;
+        button2.innerHTML = "-";
+
+        var input3 = document.createElement("input");
+        input3.type = "text";
+        input3.classList.add("form-control", "form-control-sm", "text-center");
+        input3.value = obj.Ordered_Qty;
+        input3.id = "QInput_" + obj.UUID;
+        input3.min = 1;
+        if (obj.Ordered_Size == "S") {
+          input3.max = obj.Sizes[0].S;
+        } else if (obj.Ordered_Size == "M") {
+          input3.max = obj.Sizes[0].M;
+        } else if (obj.Ordered_Size == "L") {
+          input3.max = obj.Sizes[0].L;
+        } else if (obj.Ordered_Size == "XL") {
+          input3.max = obj.Sizes[0].XL;
+        } else {
+          input3.max = 1;
+        }
+        var button3 = document.createElement("button");
+        button3.classList.add("btn", "btn-sm", "btn-outline-secondary");
+        button3.type = "button";
+        button3.id = "Plus_" + obj.UUID;
+        button3.innerHTML = "+";
+
+        inputGroup1.appendChild(button2);
+        inputGroup1.appendChild(input3);
+        inputGroup1.appendChild(button3);
+
+        var inputGroup2 = document.createElement("div");
+        inputGroup2.classList.add("input-group", "w-50", "mx-2");
+
+        var select1 = document.createElement("select");
+        select1.classList.add("form-select", "form-select-sm");
+        select1.id = "Size_" + obj.UUID;
+
+        // Create and configure the initial "Size" option
+        var option1 = document.createElement("option");
+        option1.disabled = true;
+        option1.hidden = true;
+        option1.innerHTML = "Size";
+
+        // Create the size options
+        var sizes = ["S", "M", "L", "XL"];
+        var options = [];
+
+        sizes.forEach(function (size) {
+          var option = document.createElement("option");
+          option.value = size;
+          option.hidden = true; // Initially hidden
+          option.innerHTML = size;
+          options.push(option);
         });
 
-      // Quantity plus
-      document
-        .getElementById(`Qplus${obj.id}`)
-        .addEventListener("click", function () {
-          var Q = document.getElementById(`Q${obj.id}`);
-          Q.value++;
-        });
+        // Check availability and unhide available sizes
+        if (obj.Sizes[0].S > 0) {
+          options[0].hidden = false;
+          options[0].setAttribute("data-Qty", obj.Sizes[0].S);
+        }
 
-      // Checkboxes
-      document
-        .getElementById(`Check${obj.id}`)
-        .addEventListener("click", function () {
-          if (document.getElementById("totalCartItem").value == 0) {
-            //remove no item in cart
-            document.getElementById("NoItem").remove();
-          }
+        if (obj.Sizes[0].M > 0) {
+          options[1].hidden = false;
+          options[1].setAttribute("data-Qty", obj.Sizes[0].M);
+        }
 
-          if (document.getElementById(`Check${obj.id}`).checked) {
-            // Change CheckLabel to Check
-            document.getElementById(`CheckLabel${obj.id}`).innerHTML =
-              "<svg class='bi' width='30px' height='30px'><use xlink:href='#Close' /></svg>";
+        if (obj.Sizes[0].L > 0) {
+          options[2].hidden = false;
+          options[2].setAttribute("data-Qty", obj.Sizes[0].L);
+        }
 
-            // disable item details
-            document
-              .getElementById(`ItemDetails${obj.id}`)
-              .classList.add("visually-hidden");
+        if (obj.Sizes[0].XL > 0) {
+          options[3].hidden = false;
+          options[3].setAttribute("data-Qty", obj.Sizes[0].XL);
+        }
 
-            // Increment totalCartItem
-            document.getElementById("totalCartItem").value =
-              parseInt(document.getElementById("totalCartItem").value) + 1;
-
-            var SelectSize = document.getElementById(`Size${obj.id}`);
-            let Size = SelectSize.options[SelectSize.selectedIndex].value;
-            var ProductID = document.getElementById(`ProductID${obj.id}`).value;
-            var ProductName = document.getElementById(
-              `ProductName${obj.id}`
-            ).textContent;
-            var Quantity = document.getElementById(`Q${obj.id}`).value;
-            var Price = document.getElementById(
-              `ItemPrice${obj.id}`
-            ).textContent;
-
-            var data = {
-              id: ProductID,
-              product_Name: ProductName,
-              Size: Size,
-              Quantity: Quantity,
-              Price: Price,
-            };
-
-            //increment totalCartItem
-            document.getElementById("totalCartItem").value =
-              document.getElementById("totalCartItem").value;
-
-            let Checklist = document.getElementById("CheckoutList");
-            let li = document.createElement("li");
-
-            // Add item to checkout list
-            li.className =
-              "list-group-item d-flex justify-content-between lh-sm";
-            li.id = `Item_${ProductID}`;
-            li.style = "cursor: pointer";
-            li.innerHTML = `<div>
-                        <h6 class="my-0 text-truncate" style="max-width: 200px" title="${ProductName}">${ProductName}</h6>
-                        <small class="text-body-secondary">Size: <span class="text-body fw-bold">${Size}</span> Qty: <span class="text-body fw-bold">${Quantity}</span></small>
-                    </div>
-                    <div class="hstack gap-3">
-                        <span class="text-body-secondary">
-                            &#8369;
-                            <span class="text-body-secondary fs-5 fw-bold" id="ItemPrice${ProductID}">${
-              Quantity * Price
-            }</span>
-                        </span>
-                    </div>`;
-            Checklist.appendChild(li);
-
-            // Increment total price
-            let total_Price = document.getElementById("totalPrice").value;
-            let total = parseInt(total_Price) + parseInt(Quantity * Price);
-            document.getElementById("totalPrice").value = total;
-            document.getElementById("total").textContent = total;
-
-            // Increment Cart Count
-            document.getElementById("CartCount").textContent =
-              parseInt(document.getElementById("CartCount").textContent) + 1;
+        if (obj.Ordered_Size == "S") {
+          options[0].selected = true;
+          if (parseInt(input3.value) > parseInt(obj.Sizes[0].S)) {
+            label1.classList.add("visually-hidden");
           } else {
-            // Change CheckLabel to Check
-            document.getElementById(`CheckLabel${obj.id}`).innerHTML =
+            label1.classList.remove("visually-hidden");
+          }
+        } else if (obj.Ordered_Size == "M") {
+          options[1].selected = true;
+          if (parseInt(input3.value) > parseInt(obj.Sizes[0].M)) {
+            label1.classList.add("visually-hidden");
+          } else {
+            label1.classList.remove("visually-hidden");
+          }
+        } else if (obj.Ordered_Size == "L") {
+          options[2].selected = true;
+          if (parseInt(input3.value) > parseInt(obj.Sizes[0].L)) {
+            label1.classList.add("visually-hidden");
+          } else {
+            label1.classList.remove("visually-hidden");
+          }
+        } else if (obj.Ordered_Size == "XL") {
+          options[3].selected = true;
+          if (parseInt(input3.value) > parseInt(obj.Sizes[0].XL)) {
+            label1.classList.add("visually-hidden");
+          } else {
+            label1.classList.remove("visually-hidden");
+          }
+        } else {
+          options[0].selected = true;
+          label1.classList.add("visually-hidden");
+        }
+
+        // Append options to the select element
+        select1.appendChild(option1);
+        options.forEach(function (option) {
+          select1.appendChild(option);
+        });
+
+        inputGroup2.appendChild(select1);
+
+        div2.appendChild(inputGroup1);
+        div2.appendChild(inputGroup2);
+        innerdiv.appendChild(div2);
+
+        var hr = document.createElement("hr");
+        hr.classList.add("my-2");
+
+        var div3 = document.createElement("div");
+        div3.classList.add("d-flex", "justify-content-evenly");
+
+        var p1 = document.createElement("p");
+        p1.classList.add("text-body-secondary");
+        p1.innerHTML = "Price: ";
+
+        var b3 = document.createElement("b");
+        b3.innerHTML = "&#8369; " + obj.Prod_Details.Price + ".00";
+        b3.setAttribute("data-price", obj.Prod_Details.Price);
+
+        var p2 = document.createElement("p");
+        p2.classList.add("text-body-secondary");
+        p2.innerHTML = "Total: ";
+
+        var b4 = document.createElement("b");
+        b4.innerHTML =
+          "&#8369; " + obj.Prod_Details.Price * input3.value + ".00";
+        b4.setAttribute("data-total", obj.Prod_Details.Price * input3.value);
+
+        p1.appendChild(b3);
+        p2.appendChild(b4);
+        div3.appendChild(p1);
+        div3.appendChild(p2);
+        col3.appendChild(div1);
+        col3.appendChild(small);
+        col3.appendChild(innerdiv);
+        col3.appendChild(hr);
+        col3.appendChild(div3);
+        row.appendChild(col1);
+        row.appendChild(col2);
+        row.appendChild(col3);
+        li.appendChild(row);
+
+        // Event listeners for the Size select element
+        select1.addEventListener("change", function () {
+          select1.childNodes.forEach(function (option) {
+            if (option.selected) {
+              var qty = option.getAttribute("data-Qty");
+              input3.max = qty;
+              if (parseInt(input3.value) > parseInt(qty)) {
+                document
+                  .getElementById("CheckLabel_" + obj.UUID)
+                  .classList.add("visually-hidden");
+              } else {
+                document
+                  .getElementById("CheckLabel_" + obj.UUID)
+                  .classList.remove("visually-hidden");
+              }
+            }
+          });
+        });
+
+        button2.addEventListener("click", function () {
+          if (parseInt(input3.value) > 1) {
+            input3.value = parseInt(input3.value) - 1;
+            b4.innerHTML =
+              "&#8369; " + obj.Prod_Details.Price * input3.value + ".00";
+            b4.setAttribute(
+              "data-total",
+              obj.Prod_Details.Price * input3.value
+            );
+            if (parseInt(input3.value) > parseInt(input3.max)) {
+              document
+                .getElementById("CheckLabel_" + obj.UUID)
+                .classList.add("visually-hidden");
+            } else {
+              document
+                .getElementById("CheckLabel_" + obj.UUID)
+                .classList.remove("visually-hidden");
+            }
+          }
+        });
+
+        button3.addEventListener("click", function () {
+          if (parseInt(input3.value) < parseInt(input3.max)) {
+            input3.value = parseInt(input3.value) + 1;
+            b4.innerHTML =
+              "&#8369; " + obj.Prod_Details.Price * input3.value + ".00";
+            b4.setAttribute(
+              "data-total",
+              obj.Prod_Details.Price * input3.value
+            );
+            if (parseInt(input3.value) > parseInt(input3.max)) {
+              document
+                .getElementById("CheckLabel_" + obj.UUID)
+                .classList.add("visually-hidden");
+            } else {
+              document
+                .getElementById("CheckLabel_" + obj.UUID)
+                .classList.remove("visually-hidden");
+            }
+          }
+        });
+
+        button1.addEventListener("click", function () {
+          var ConfirmDelete = confirm(
+            "Are you sure you want to remove this item from your cart?"
+          );
+          if (ConfirmDelete) {
+            DeleteCartItem(obj.UUID, UserID);
+          }
+        });
+
+        label1.addEventListener("click", function () {
+          if (!input1.checked) {
+            label1.innerHTML =
+              "<svg class='bi' width='30px' height='30px'><use xlink:href='#Close' /></svg>";
+            var CheckList = document.getElementById("CheckoutList");
+            // if NoItem is present, remove it
+            if (document.getElementById("NoItem") != null) {
+              document.getElementById("NoItem").remove();
+            }
+
+            var CartCount = document.getElementById("CartCount");
+            if (CartCount == null) {
+              CartCount = 0;
+            } else {
+              CartCount = parseInt(CartCount.innerHTML);
+            }
+            CartCount += 1;
+            document.getElementById("CartCount").innerHTML = CartCount;
+
+            var li = document.createElement("li");
+            li.classList.add(
+              "list-group-item",
+              "d-flex",
+              "justify-content-between"
+            );
+            li.id = "ItemNo_" + obj.UUID;
+            var div = document.createElement("div");
+            var h6 = document.createElement("h6");
+            h6.classList.add("my-0", "text-truncate");
+            h6.style.maxWidth = "200px";
+            h6.title = obj.Prod_Details.Prod_Name;
+            h6.innerHTML = obj.Prod_Details.Prod_Name;
+            var small = document.createElement("small");
+            small.classList.add("text-body-secondary");
+            small.innerHTML = "Size: ";
+            var span1 = document.createElement("span");
+            span1.classList.add("text-body", "fw-bold");
+            span1.innerHTML = obj.Ordered_Size;
+            small.appendChild(span1);
+            small.innerHTML += " Qty: ";
+            var span2 = document.createElement("span");
+            span2.classList.add("text-body", "fw-bold");
+            span2.innerHTML = input3.value;
+            small.appendChild(span2);
+            div.appendChild(h6);
+            div.appendChild(small);
+            var div2 = document.createElement("div");
+            div2.classList.add("hstack", "gap-3");
+            var span3 = document.createElement("span");
+            span3.classList.add("text-body-secondary");
+            span3.innerHTML = "&#8369;";
+            var span4 = document.createElement("span");
+            span4.classList.add("text-body-secondary", "fs-5", "fw-bold");
+            span4.id = "ItemPrice" + obj.Prod_Details.Prod_ID;
+            span4.innerHTML = obj.Prod_Details.Price * input3.value;
+            span3.appendChild(span4);
+            div2.appendChild(span3);
+            li.appendChild(div);
+            li.appendChild(div2);
+            CheckList.appendChild(li);
+
+            var totalprice = document.getElementById("totalPrice");
+            var total = document.getElementById("total");
+            var temp_price =
+              parseInt(totalprice.value) +
+              obj.Prod_Details.Price * input3.value;
+            totalprice.value = temp_price;
+            total.innerHTML = temp_price + ".00";
+
+            button2.disabled = true;
+            button3.disabled = true;
+            select1.disabled = true;
+            input3.disabled = true;
+          } else {
+            button2.disabled = false;
+            button3.disabled = false;
+            select1.disabled = false;
+            input3.disabled = false;
+
+            label1.innerHTML =
               "<svg class='bi' width='30px' height='30px'><use xlink:href='#Check' /></svg>";
 
-            // enable item details
-            document
-              .getElementById(`ItemDetails${obj.id}`)
-              .classList.remove("visually-hidden");
+            var ItemNo = document.getElementById("ItemNo_" + obj.UUID);
+            if (ItemNo != null) {
+              ItemNo.remove();
 
-            // Remove item from checkout list
-            var Item = document.getElementById(`Item_${obj.id}`);
-            Item.remove();
+              var totalprice = document.getElementById("totalPrice");
+              var total = document.getElementById("total");
+              var temp_price =
+                parseInt(totalprice.value) -
+                obj.Prod_Details.Price * input3.value;
 
-            // Decrement totalCartItem
-            document.getElementById("totalCartItem").value =
-              parseInt(document.getElementById("totalCartItem").value) - 1;
+              totalprice.value = temp_price;
+              total.innerHTML = temp_price + ".00";
 
-            // Decrement Cart Count
-            document.getElementById("CartCount").textContent =
-              parseInt(document.getElementById("CartCount").textContent) - 1;
-
-            // If totalCartItem is 0 display no items in cart
-            if (document.getElementById("totalCartItem").value == 0) {
-              let li = document.createElement("li");
-              li.className = "list-group-item d-flex justify-content-center";
-              li.id = "NoItem";
-              li.innerHTML = `<p class="text-body-secondary text-center">
-              <div class="spinner-border spinner-border-sm text-secondary my-1 me-3" role="status"><span class="visually-hidden">Loading...</span></div> No Selected Items</p>`;
-              document.getElementById("CheckoutList").appendChild(li);
+              var CartCount = document.getElementById("CartCount");
+              if (CartCount == null) {
+                CartCount = 0;
+              } else {
+                CartCount = parseInt(CartCount.innerHTML);
+              }
+              CartCount -= 1;
+              document.getElementById("CartCount").innerHTML = CartCount;
             }
 
-            // Decrement total price
-            let total_Price = document.getElementById("totalPrice").value;
-            let ItemPrice =
-              parseInt(
-                document.getElementById(`ItemPrice${obj.id}`).textContent
-              ) * parseInt(document.getElementById(`Q${obj.id}`).value);
-            let total = parseInt(total_Price) - ItemPrice;
-            document.getElementById("totalPrice").value = total;
-            document.getElementById("total").textContent = total;
-          }
-        });
-
-      // Remove item
-      document
-        .getElementById(`DeleteItem${obj.id}`)
-        .addEventListener("click", function () {
-          if (document.getElementById(`Check${obj.id}`).checked) {
-            // Decrement total price
-            let total_Price = document.getElementById("totalPrice").value;
-            let ItemPrice =
-              parseInt(
-                document.getElementById(`ItemPrice${obj.id}`).textContent
-              ) * parseInt(document.getElementById(`Q${obj.id}`).value);
-            let total = parseInt(total_Price) - ItemPrice;
-            document.getElementById("totalPrice").value = total;
-            document.getElementById("total").textContent = total;
-
-            // Decrement totalCartItem
-            document.getElementById("totalCartItem").value =
-              parseInt(document.getElementById("totalCartItem").value) - 1;
-
-            // Decrement Cart Count
-            document.getElementById("CartCount").textContent =
-              parseInt(document.getElementById("CartCount").textContent) - 1;
-
-            // If totalCartItem is 0 display no items in cart
-            if (document.getElementById("totalCartItem").value == 0) {
-              let li = document.createElement("li");
-              li.className = "list-group-item d-flex justify-content-center";
-              li.id = "NoItem";
-              li.innerHTML = `<p class="text-body-secondary text-center">
-              <div class="spinner-border spinner-border-sm text-secondary my-1 me-3" role="status"><span class="visually-hidden">Loading...</span></div> No Selected Items</p>`;
-              document.getElementById("CheckoutList").appendChild(li);
-            }
-
-            // save MainCart of current id to local storage
-            var savedCart = {
-              id: obj.id,
-              product_Name: obj.product_Name,
-              product_Image: obj.product_Image,
-              Size: obj.Size,
-              Quantity: obj.Quantity,
-              Price: obj.Price,
-            };
-
-            // if archivedCart is existing in local storage
-            if (localStorage.getItem("ArchivedCart") != null) {
-              // Retrieve archivedCart from local storage
-              var ArchivedCart = JSON.parse(
-                localStorage.getItem("ArchivedCart")
-              );
-
-              // Push savedCart to archivedCart
-              ArchivedCart.push(savedCart);
-
-              // Save archivedCart to local storage
-              localStorage.setItem(
-                "ArchivedCart",
-                JSON.stringify(ArchivedCart)
-              );
-            } else {
-              // Create new array
-              var ArchivedCart = [];
-
-              // Push savedCart to archivedCart
-              ArchivedCart.push(savedCart);
-
-              // Save archivedCart to local storage
-              localStorage.setItem(
-                "ArchivedCart",
-                JSON.stringify(ArchivedCart)
-              );
-            }
-
-            /*             var ArchivedItem = JSON.parse(localStorage.getItem("ArchivedCart"));
-            var RetriveList = document.getElementById("RetriveList");
-
-            RetriveList.innerHTML = "";
-
-            ArchivedItem.forEach((Archived) => {
+            if (
+              document.getElementById("CheckoutList").childElementCount == 0
+            ) {
+              var CheckList = document.getElementById("CheckoutList");
               var li = document.createElement("li");
-              li.className =
-                "list-group-item d-flex justify-content-between lh-sm";
-              li.id = `Item_${Archived.id}`;
-              li.style = "cursor: pointer";
-              var div = document.createElement("div");
-              div.innerHTML = `
-                    <div class="d-flex align-items-between">
-                        <div>
-                            <h6 class="my-0 text-truncate" style="max-width: 200px" title="${Archived.product_Name}">${Archived.product_Name}</h6>
-                            <small class="text-body-secondary">Size: <span class="text-body fw-bold">${Archived.Size}</span> Qty: <span class="text-body fw-bold">${Archived.Quantity}</span></small>
-                        </div>
-                        <button class="btn btn-sm btn-outline-danger border-0" style="cursor: pointer;" id="RetrieveItem${Archived.id}">
-                            &#8617;
-                        </button>
-                    </div>
-                    </div>
-                    <div class="hstack gap-3">
-                        <span class="text-body-secondary">
-                            &#8369;
-                            <span class="text-body-secondary fs-5 fw-bold" id="ItemPrice${Archived.id}">${Archived.Price}</span>
-                        </span>
-                    </div>`;
-              li.appendChild(div);
-              RetriveList.appendChild(li);
-            }); */
-
-            document.getElementById(`MainCart_${obj.id}`).remove();
-            document.getElementById(`Item_${obj.id}`).remove();
-
-            // check if CartList does contain any child
-            if (CartList.childElementCount == 0) {
-              let li = document.createElement("li");
-              li.className = "list-group-item d-flex justify-content-center";
-              li.id = `NoItem`;
-              li.innerHTML = `<p class="text-body-secondary text-center">
-              <div class="spinner-grow text-secondary my-1 me-3" role="status"><span class="visually-hidden">Loading...</span></div></p>`;
-              CartList.appendChild(li);
+              li.classList.add(
+                "list-group-item",
+                "d-flex",
+                "justify-content-center"
+              );
+              li.id = "NoItem";
+              li.innerHTML =
+                '<p class="text-body-secondary text-center"><div class="spinner-border spinner-border-sm text-secondary my-1 me-3" role="status"><span class="visually-hidden">Loading...</span></div> No Selected Items</p>';
+              CheckList.appendChild(li);
             }
-
-            // compare ArchivedCart and UserCart if id is equal remove from UserCart
-            UserCart = UserCart.filter((item) => item.id != obj.id);
-
-            // Save UserCart to local storage
-            localStorage.setItem("CartItems", JSON.stringify(UserCart));
-          } else {
-            document.getElementById(`MainCart_${obj.id}`).remove();
           }
         });
-    });
+      });
+    } else {
+      var CheckoutList = document.getElementById("CartList");
+      CheckoutList.innerHTML = "";
+      var li = document.createElement("li");
+      li.classList.add(
+        "list-group-item",
+        "d-flex",
+        "justify-content-center",
+        "align-items-center",
+        "bg-transparent"
+      );
+      li.id = "ChartNoItem";
+      var p = document.createElement("p");
+      p.classList.add("text-body-secondary", "text-center");
+      var div = document.createElement("div");
+      div.classList.add("spinner-border", "text-secondary", "me-3");
+      div.role = "status";
+      var span = document.createElement("span");
+      span.classList.add("visually-hidden");
+      span.innerHTML = "Loading...";
+      div.appendChild(span);
+      p.appendChild(div);
+      li.appendChild(p);
+      CheckoutList.appendChild(li);
+    }
+  } catch (error) {}
+}
+
+async function DeleteCartItem(UUID, UserID) {
+  try {
+    const response = await fetch(
+      "../../Utilities/api/DeleteCartItem.php?UUID=" +
+        UUID +
+        "&UserID=" +
+        UserID
+    );
+
+    if (!response.ok) {
+      throw new Error("HTTP error " + response.status);
+    }
+
+    const data = await response.json();
+
+    if (data.Status == "Success") {
+      CheckoutItems(UserID);
+    }
+  } catch (error) {}
+}
+
+async function addressAndPaymentMethod(userID) {
+  try {
+    const response = await fetch(
+      `../../Utilities/api/CheckUserStat.php?UserID=${userID}`
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error ${response.status}`);
+    }
+
+    const responseData = await response.json();
+
+    if (responseData.status === "error") {
+      console.error(responseData.message);
+      return;
+    }
+
+    if (responseData.status === "success") {
+      const data = responseData.data;
+
+      haveExistingAddress = data.isAddressExist === 1;
+      completeAddress = data.address;
+      switch (data.payment_method) {
+        case "GCash":
+          paymentMethod = "GCash";
+          break;
+        case "Maya":
+          paymentMethod = "Maya";
+          break;
+        case "Credit Card":
+          paymentMethod = "Credit/Debit Card";
+          break;
+        case "COD":
+          paymentMethod = "Cash on Delivery";
+          break;
+        default:
+          paymentMethod = "none";
+      }
+      const paymentMethodRadios = document.querySelectorAll(
+        'input[name="PaymentMethod"]'
+      );
+      paymentMethodRadios.forEach((radio) => {
+        if (radio.value === "0" && paymentMethod === "Cash on Delivery") {
+          radio.checked = true;
+        } else if (radio.value === "1" && paymentMethod === "GCash") {
+          radio.checked = true;
+        } else if (radio.value === "2" && paymentMethod === "Maya") {
+          radio.checked = true;
+        } else if (
+          radio.value === "3" &&
+          paymentMethod === "Credit/Debit Card"
+        ) {
+          radio.checked = true;
+        }
+      });
+
+      console.log("haveExistingAddress: ", haveExistingAddress);
+      console.log("paymentMethod: ", paymentMethod);
+      console.log("completeAddress: ", completeAddress);
+    }
   } catch (error) {
+    console.error("Function: addressAndPaymentMethod\n", error);
+  }
+}
+
+async function CheckforPaymentType(
+  UsesrID,
+  PaymentMethod,
+  selectedItems,
+  Address
+) {
+  try {
+    const response = await fetch(
+      "../../Utilities/api/PaymentInfo.php?UserID=" +
+        UsesrID +
+        "&PaymentMethod=" +
+        PaymentMethod
+    );
+
+    if (!response.ok) {
+      throw new Error("HTTP error " + response.status);
+    }
+
+    function loadingSwal() {
+      Swal.fire({
+        title: "Processing Payment",
+        html: "Please wait while we process your payment.",
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+      });
+    }
+
+    function processPayment(Type, selectedItems, Address) {
+      if (Type === "Cash on Delivery") {
+        //ProceedtoCheckout(selectedItems, Address, "Cash on Delivery");
+        console.log("Proceed to checkout with COD");
+      } else {
+        loadingSwal();
+        // Simulate payment processing delay
+        setTimeout(() => {
+          const isSuccess = Math.random() > 0.2; // 80% chance to succeed, 20% chance to fail
+          if (isSuccess) {
+            Swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 1400,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener("mouseenter", Swal.stopTimer);
+                toast.addEventListener("mouseleave", Swal.resumeTimer);
+              },
+            })
+              .fire({
+                icon: "success",
+                text: "Your payment has been successfully processed.",
+              })
+              .then(() => {
+                // Proceed to checkout
+              });
+          } else {
+            Swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 5000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener("mouseenter", Swal.stopTimer);
+                toast.addEventListener("mouseleave", Swal.resumeTimer);
+              },
+            }).fire({
+              icon: "warning",
+              text: "There was an issue processing your payment. Please try again.",
+            });
+          }
+        }, 3000); // 3 second delay to simulate processing time
+      }
+    }
+
+    const data = await response.json();
+
+    if (data.status == "error") {
+      if (data.message === "Wallet not found.") {
+        Swal.mixin({
+          toast: true,
+          position: "top",
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        })
+          .fire({
+            icon: "info",
+            text:
+              "We noticed that you don't have " + PaymentMethod + " Payment method yet.",
+          })
+          .then(() => {
+            const walletModal = new bootstrap.Modal(
+              document.getElementById("OnlineWallet"),
+              {
+                keyboard: false,
+                backdrop: "static",
+              }
+            );
+            walletModal.show();
+          });
+        return;
+      } else if (data.message === "Credit card not found.") {
+        Swal.mixin({
+          toast: true,
+          position: "top",
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        })
+          .fire({
+            icon: "info",
+            text: "We noticed that you don't have " + PaymentMethod + " Payment method yet.",
+          })
+          .then(() => {
+            const cardModal = new bootstrap.Modal(
+              document.getElementById("CreditCard"),
+              {
+                keyboard: false,
+                backdrop: "static",
+              }
+            );
+            cardModal.show();
+          });
+        return;
+      } else {
+        alert(data.message);
+      }
+    }
+
+    if (data.status == "success") {
+      processPayment(data.Type, selectedItems, Address);
+    }
+  } catch (error) {
+    console.error("Function: CheckforPaymentType\n", error);
+  }
+}
+
+async function ProceedtoCheckout(Items, Address, PaymentMethod) {
+  try {
+    var totalPrice = document.getElementById("totalPrice").value;
+    const response = await fetch("../../Utilities/api/OrderItem.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        Items: Items,
+        Address: Address,
+        PaymentMethod: PaymentMethod,
+        TotalPrice: totalPrice,
+        User_ID: User_ID,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("HTTP error " + response.status);
+    }
+
+    const data = await response.json();
+
+    if (data.status == "success") {
+      alert(data.data.Address);
+    } else {
+      alert("Checkout failed!");
+    }
+  } catch (error) {
+    console.error("Function: ProceedtoCheckout\n", error);
+  }
+}
+
+async function SaveOLPaymentInfo(Type, Number, Email, UserID) {
+  try {
+    const response = await fetch(
+      "../../Utilities/api/OnlinePayment.php?Type=" +
+        Type +
+        "&Number=" +
+        Number +
+        "&Email=" +
+        Email +
+        "&UserID=" +
+        UserID
+    );
+
+    if (!response.ok) {
+      throw new Error("HTTP error " + response.status);
+    }
+
+    const data = await response.json();
+
+    if (data.status == "success") {
+      Swal.mixin({
+        toast: true,
+        position: "top",
+        showConfirmButton: false,
+        timer: 1500,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", Swal.stopTimer);
+          toast.addEventListener("mouseleave", Swal.resumeTimer);
+        },
+      })
+        .fire({
+          icon: "success",
+          text: "Successfully saved wallet information.",
+        })
+        .then(() => {
+          document.getElementById("OLM_Close").click();
+        });
+    } else {
+      Swal.mixin({
+        toast: true,
+        position: "top",
+        showConfirmButton: false,
+        timer: 1500,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", Swal.stopTimer);
+          toast.addEventListener("mouseleave", Swal.resumeTimer);
+        },
+      }).fire({
+        icon: "error",
+        text: "Failed to save wallet information.",
+      });
+    }
+  } catch (error) {
+    console.error("Function: SavePaymentInfo\n", error);
+  }
+}
+
+if (localStorage.getItem("TempUserID") == null) {
+  var TempUserID = 0;
+} else {
+  var TempUserID = localStorage.getItem("TempUserID");
+  CheckoutItems(TempUserID);
+  addressAndPaymentMethod(TempUserID);
+}
+
+document.getElementById("checkBTN").addEventListener("click", function () {
+  if (TempUserID != 0) {
+    var checkoutList = document.getElementById("CheckoutList");
+    if (checkoutList.childElementCount > 0) {
+      var cartCount = document.getElementById("CartCount");
+      if (cartCount != null) {
+        if (parseInt(cartCount.innerHTML) > 0) {
+          var selectedItems = [];
+          var items = document.querySelectorAll('input[type="checkbox"]');
+          items.forEach((item) => {
+            if (item.checked) {
+              selectedItems.push(item.id.split("_")[1]);
+            }
+          });
+
+          if (selectedItems.length > 0) {
+            localStorage.setItem(
+              "SelectedItems",
+              JSON.stringify(selectedItems)
+            );
+
+            // Check if user has existing address
+            if (haveExistingAddress) {
+              const paymentMethodRadios = document.querySelectorAll(
+                'input[name="PaymentMethod"]'
+              );
+              let selectedPaymentMethod = "";
+              let selectedPaymentMethodValue = "";
+              paymentMethodRadios.forEach((radio) => {
+                if (radio.checked) {
+                  selectedPaymentMethod = radio.value;
+                  selectedPaymentMethodValue =
+                    radio.nextElementSibling.innerText;
+                }
+              });
+
+              if (selectedPaymentMethod === "") {
+                Swal.mixin({
+                  toast: true,
+                  position: "top",
+                  showConfirmButton: false,
+                  timer: 1500,
+                  timerProgressBar: true,
+                  didOpen: (toast) => {
+                    toast.addEventListener("mouseenter", Swal.stopTimer);
+                    toast.addEventListener("mouseleave", Swal.resumeTimer);
+                  },
+                }).fire({
+                  icon: "error",
+                  text: "Please select a payment method.",
+                });
+              } else {
+                CheckforPaymentType(
+                  TempUserID,
+                  selectedPaymentMethodValue,
+                  selectedItems,
+                  completeAddress
+                );
+              }
+            } else {
+              const addressModal = new bootstrap.Modal(
+                document.getElementById("Addressfillup"),
+                {
+                  keyboard: false,
+                  backdrop: "static",
+                }
+              );
+              addressModal.show();
+            }
+          }
+        }
+      }
+    }
+  }
+});
+
+document.getElementById("SaveWallet").addEventListener("click", function () {
+  function functoast(icon, text, timer) {
     Swal.mixin({
       toast: true,
-      position: "top-end",
+      position: "top",
       showConfirmButton: false,
-      timer: 5000,
+      timer: timer,
       timerProgressBar: true,
       didOpen: (toast) => {
         toast.addEventListener("mouseenter", Swal.stopTimer);
         toast.addEventListener("mouseleave", Swal.resumeTimer);
       },
     }).fire({
-      icon: "error",
-      title: "Error: " + error,
+      icon: icon,
+      text: text,
     });
   }
-} else {
-  var CartList = document.getElementById("CartList");
-  var li = document.createElement("li");
-  li.className = "list-group-item bg-transparent";
-  li.id = `NoItem`;
-  var div = document.createElement("div");
-  div.className = "d-flex justify-content-center";
-  var spinner = document.createElement("div");
-  spinner.className = "spinner-grow";
-  spinner.role = "status";
-  var span = document.createElement("span");
-  span.className = "visually-hidden";
-  span.textContent = "Loading...";
-  spinner.appendChild(span);
-  div.appendChild(spinner);
-  li.appendChild(div);
-  CartList.appendChild(li);
-}
+
+  const walletNumber = document.getElementById("OL_Account").value;
+  const walletEmail = document.getElementById("OL_Email").value;
+  const walletGcash = document.getElementById("GCash");
+  const walletMaya = document.getElementById("Maya");
+  const walletType = walletGcash.checked ? "GCash" : "Maya";
+
+  if (walletNumber === "" || walletEmail === "") {
+    functoast("error", "Please fill up all fields.", 3000);
+    return;
+  }
+
+  if (!walletGcash.checked && !walletMaya.checked) {
+    functoast("error", "Please select a wallet type.", 3000);
+    return;
+  }
+
+  const walletNumberRegex = /^(09)\d{9}$/;
+  if (!walletNumberRegex.test(walletNumber)) {
+    functoast("error", "Please start with '09' followed by 9 digits.", 3000);
+    return;
+  } else if (walletNumber.length !== 11) {
+    functoast("error", "Please enter 11 digits.", 3000);
+    return;
+  }
+
+  const walletEmailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+  if (!walletEmailRegex.test(walletEmail)) {
+    functoast("error", "Please enter a valid email address.", 3000);
+    return;
+  }
+
+  SaveOLPaymentInfo(walletType, walletNumber, walletEmail, TempUserID);
+});

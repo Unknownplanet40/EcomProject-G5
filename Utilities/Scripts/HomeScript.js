@@ -73,6 +73,81 @@ document.addEventListener("DOMContentLoaded", function () {
     (popoverTriggerEl) => new bootstrap.Popover(popoverTriggerEl)
   );
 
+  async function addToCart(url) {
+    try {
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        DToast("error", "An error occured while adding to cart.");
+        return;
+      }
+
+      const data = await response.json();
+
+      if (data.error) {
+        DToast("error", data.error);
+      } else {
+        if (data.status == "success") {
+          DToast(data.status, data.message);
+          if (data.type != "update") {
+            var cartCount = document.getElementById("Cart-Items").textContent;
+            document.getElementById("Cart-Items").textContent =
+              parseInt(cartCount) + 1;
+          }
+        } else {
+          DToast(data.status, data.message);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  function DToast(icon, title) {
+    Swal.mixin({
+      toast: true,
+      position: "top",
+      showConfirmButton: false,
+      timer: 1500,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.addEventListener("mouseenter", Swal.stopTimer);
+        toast.addEventListener("mouseleave", Swal.resumeTimer);
+      },
+    })
+      .fire({
+        icon: icon,
+        title: title,
+      })
+      .then((result) => {
+        if (Is_User_Logged_In) {
+          // after that close modal
+          var modal = new bootstrap.Modal(document.getElementById("Product"));
+          modal.hide();
+        }
+      });
+  }
+
+  // check if thier is NeedLogin in local storage
+  const needLogin = localStorage.getItem("NeedLogin");
+  if (needLogin == "true") {
+    const prod_id = localStorage.getItem("ProdID");
+    const Size = localStorage.getItem("ProdSize");
+    const Qty = localStorage.getItem("ProdQty");
+
+    addToCart(
+      `../../Utilities/api/AddToCart.php?prod_id=${prod_id}&user_id=${User_ID}&size=${Size}&qty=${Qty}`
+    );
+
+    //document.getElementById("Cart-Items").textContent = parseInt(document.getElementById("Cart-Items").textContent) + 1;
+
+    // remove the NeedLogin in local storage
+    localStorage.removeItem("NeedLogin");
+    localStorage.removeItem("ProdID");
+    localStorage.removeItem("ProdSize");
+    localStorage.removeItem("ProdQty");
+  }
+
   // hide loader after fully load
   document.getElementById("loader").classList.remove("d-block");
   document.getElementById("loader").classList.add("d-none");
@@ -565,64 +640,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // dispose bootstrap modal with id Product when button with id AddCart is clicked
       document.getElementById("AddCart").addEventListener("click", function () {
-        function DToast(icon, title) {
-          Swal.mixin({
-            toast: true,
-            position: "top",
-            showConfirmButton: false,
-            timer: 1500,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.addEventListener("mouseenter", Swal.stopTimer);
-              toast.addEventListener("mouseleave", Swal.resumeTimer);
-            },
-          })
-            .fire({
-              icon: icon,
-              title: title,
-            })
-            .then((result) => {
-              if (Is_User_Logged_In) {
-                // after that close modal
-                var modal = bootstrap.Modal.getInstance(
-                  document.getElementById("Product")
-                );
-                modal.hide();
-              }
-            });
-        }
-
-        async function addToCart(url) {
-          try {
-            const response = await fetch(url);
-
-            if (!response.ok) {
-              DToast("error", "An error occured while adding to cart.");
-              return;
-            }
-
-            const data = await response.json();
-
-            if (data.error) {
-              DToast("error", data.error);
-            } else {
-              if (data.status == "success") {
-                DToast(data.status, data.message);
-                var cartCount =
-                  document.getElementById("Cart-Items").textContent;
-                document.getElementById("Cart-Items").textContent =
-                  parseInt(cartCount) + 1;
-              } else {
-                DToast(data.status, data.message);
-              }
-            }
-          } catch (error) {
-            console.error(error);
-          }
-        }
-
-        //data to be sent
-
         var prod_id = document.getElementById("ProductID").value;
         var Size =
           document.getElementById("Selectsize").options[
@@ -641,8 +658,31 @@ document.addEventListener("DOMContentLoaded", function () {
           }
         } else {
           DToast("info", "Sorry, you need to login first.");
+          setTimeout(function () {
+            const signModal = new bootstrap.Modal("#SignIN");
+            var prodModal = bootstrap.Modal.getInstance(
+              document.getElementById("Product")
+            );
+            prodModal.hide();
+            signModal.show();
+          }, 1500);
+
+          // save the product info to local storage
+          localStorage.setItem("ProdID", prod_id);
+          localStorage.setItem("ProdSize", Size);
+          localStorage.setItem("ProdQty", Qty);
+          localStorage.setItem("NeedLogin", "true");
         }
       });
+
+      document
+        .getElementById("tocheckout")
+        .addEventListener("click", function () {
+          if (User_ID != 0) {
+            localStorage.setItem("TempUserID", User_ID);
+            window.location.href = "../../Components/Checkout/Checkout.php";
+          }
+        });
 
       if (Is_User_Logged_In) {
         document
@@ -712,6 +752,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (CartTotal > 0) {
                       var UserCart = document.getElementById("UserCart");
                       UserCart.innerHTML = "";
+                      document.getElementById("tocheckout").removeAttribute("disabled");
 
                       for (let i = 0; i < CartTotal; i++) {
                         updateCartCount();
@@ -904,6 +945,8 @@ document.addEventListener("DOMContentLoaded", function () {
                         </div>
                       </a>`;
                               UserCart.appendChild(li);
+                              document
+                                .getElementById("tocheckout").setAttribute("disabled", "true");
                             }
                           });
                       }

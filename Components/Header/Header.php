@@ -117,7 +117,7 @@
                     $stmt->bind_param("s", $_SESSION['User_Data']['user_ID']);
                     $stmt->execute();
                     $result = $stmt->get_result();
-                    $CartItem = $result->num_rows;?>
+                    $CartItem = $result->num_rows; ?>
                     <div class="hstack gap-3">
                         <div class="me-3 position-relative" id="cart-btn">
                             <a class="d-block link-body-emphasis text-decoration-none mt-1" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">
@@ -131,9 +131,18 @@
                             </a>
                         </div>
                         <div>
-                            <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
-                                <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
-                            </a>
+                            <?php if ($UserRole == "user" && $haveAddress == 0) { ?>
+                                <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle position-relative" data-bs-toggle="dropdown">
+                                    <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
+                                    <span class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
+                                        <span class="visually-hidden">Important</span>
+                                    </span>
+                                </a>
+                            <?php } else { ?>
+                                <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+                                    <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
+                                </a>
+                            <?php } ?>
                             <ul class="dropdown-menu text-small shadow dropdown-menu-end">
                                 <li>
                                     <h3 class="dropdown-header">
@@ -146,6 +155,10 @@
                                         <?php if ($UserRole == "admin") { ?>
                                             <div class="text-center" style="margin-top: -15px;">
                                                 <small class="text-muted">Administrator</small>
+                                            </div>
+                                        <?php } else if ($UserRole == "seller") { ?>
+                                            <div class="text-center" style="margin-top: -15px;">
+                                                <small class="text-muted">Brand Seller</small>
                                             </div>
                                         <?php } else { ?>
                                             <div class="text-center" style="margin-top: -15px;">
@@ -160,6 +173,8 @@
                                 <li><a class="dropdown-item dropdown-item-text" href="#">Profile</a></li>
                                 <?php if ($UserRole == "admin") { ?>
                                     <li><a class="dropdown-item dropdown-item-text" href="../Admin/Dashboard/Dashboard.php">Dashboard</a></li>
+                                <?php } else if ($UserRole == "seller") { ?>
+                                    <li><a class="dropdown-item dropdown-item-text" href="../Admin/Products/Products_Inv.php">Products Dashboard</a></li>
                                 <?php } ?>
                                 <li><a class="dropdown-item dropdown-item-text" href="#">Settings</a></li>
                                 <li>
@@ -192,11 +207,11 @@
                 <div>
                     <ul class="list-group list-group-flush rounded-2 bg-transparent" id="UserCart">
                         <li class="list-group-item bg-transparent border-0">
-                            <a class="list-group-item list-group-item-action bg-transparent border-0 text-body-emphasis" aria-current="true">
-                                <div class="d-flex w-100 justify-content-center">
-                                    <h5 class=" text-body-emphasis text-center">Your cart is empty</h5>
+                            <div class="text-center">
+                                <div class="spinner-border" role="status">
+                                    <span class="visually-hidden">Loading...</span>
                                 </div>
-                            </a>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -205,7 +220,7 @@
     </div>
     <div class="offcanvas-footer my-3">
         <div class=" vstack gap-2 col-10 mx-auto">
-            <button type="button" class="btn btn-primary" <?php echo ($CartItem == 0) ? 'disabled' : ''; ?> onclick="window.location.href='../../Components/Checkout/Checkout.php';">Proceed to Checkout</button>
+            <button id="tocheckout" type="button" class="btn btn-primary" <?php echo ($CartItem == 0) ? 'disabled' : ''; ?>>Proceed to Checkout</button>
             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">Continue Shopping</button>
         </div>
     </div>

@@ -6,6 +6,7 @@ $login = false;
 $Username = 'Undefined';
 $UserRole = 'Undefined';
 $Theme = 'light';
+$haveAddress = 0;
 
 if (isset($_SESSION['User_Data'])) {
     if ($_SESSION['User_Data']['Is_user_logged_in'] == 1) {
@@ -13,6 +14,7 @@ if (isset($_SESSION['User_Data'])) {
         $Username = $_SESSION['User_Data']['First_Name'] . ' ' . $_SESSION['User_Data']['Last_Name'];
         $Last_Login = date('F j, Y', strtotime($_SESSION['User_Data']['Last_Login']));
         $UserRole = $_SESSION['User_Data']['Role'];
+        $haveAddress = $_SESSION['User_Data']['HaveAddress'];
         $Theme = $_SESSION['User_Data']['User_Settings']['Theme'];
         echo '<script>var Is_User_Logged_In = true;</script>';
         echo '<script>var User_ID = "' . $_SESSION['User_Data']['user_ID'] . '";</script>';

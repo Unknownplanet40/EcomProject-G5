@@ -40,6 +40,7 @@ if (isset($_SESSION['User_ID'])) {
             'First_Name' => $row['First_Name'],
             'Last_Name' => $row['Last_Name'],
             'Role' => $row['Role'],
+            'HaveAddress' => $row['Have_Address'],
             'Is_user_logged_in' => $row['Is_user_logged_in'],
             'Last_Login' => $row['Last_Login'],
             'User_Settings' => $Uconfig_Data,
@@ -51,7 +52,7 @@ if (isset($_SESSION['User_ID'])) {
         // set session data
         $_SESSION['User_Data'] = $data;
         // redirect to the previous page
-        header('Location: ' . $_SERVER['HTTP_REFERER']);
+        header('Location: ../../Components/Home/Homepage.php');
     } else {
         session_destroy();
         header('Location: ' . $_SERVER['HTTP_REFERER']);
