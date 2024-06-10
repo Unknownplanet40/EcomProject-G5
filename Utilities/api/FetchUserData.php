@@ -34,11 +34,30 @@ if (isset($_SESSION['User_ID'])) {
             }
         }
 
+        $stmt_Uconfig->close();
+
+        $stmt_email = $conn->prepare("SELECT * FROM account WHERE User_ID = ?");
+        $stmt_email->bind_param("s", $user_id);
+        $stmt_email->execute();
+        $result_email = $stmt_email->get_result();
+        $email = 'Undefined';
+
+        if ($result_email->num_rows > 0) {
+            $row_email = $result_email->fetch_assoc();
+
+            if ($row_email['User_ID'] == $user_id) {
+                $email = $row_email['Email_Address'];
+            }
+        }
+
+        $stmt_email->close();
+
 
         $data = [
             'user_ID' => $row['User_ID'],
             'First_Name' => $row['First_Name'],
             'Last_Name' => $row['Last_Name'],
+            'Email' => $email,
             'Role' => $row['Role'],
             'HaveAddress' => $row['Have_Address'],
             'Is_user_logged_in' => $row['Is_user_logged_in'],

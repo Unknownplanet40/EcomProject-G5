@@ -73,7 +73,7 @@ try {
                 response(['status' => 'error', 'message' => 'User address not found.']);
             }
         } else {
-            $address = 'No address found.';
+            $completeAddress = 'No address found.';
         }
 
         response(['status' => 'success', 'data' => ['isAddressExist' => $isAddressExist, 'address' => $completeAddress, 'payment_method' => $payment_method]]);

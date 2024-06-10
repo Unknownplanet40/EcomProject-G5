@@ -1,6 +1,7 @@
 let haveExistingAddress = false;
 let completeAddress = "";
 let paymentMethod = "none";
+let retrievedItems = [];
 localStorage.removeItem("SelectedItems");
 
 async function CheckoutItems(UserID) {
@@ -621,8 +622,7 @@ async function CheckforPaymentType(
 
     function processPayment(Type, selectedItems, Address) {
       if (Type === "Cash on Delivery") {
-        //ProceedtoCheckout(selectedItems, Address, "Cash on Delivery");
-        console.log("Proceed to checkout with COD");
+        ProceedtoCheckout(selectedItems, Address, PaymentMethod);
       } else {
         loadingSwal();
         // Simulate payment processing delay
@@ -645,7 +645,7 @@ async function CheckforPaymentType(
                 text: "Your payment has been successfully processed.",
               })
               .then(() => {
-                // Proceed to checkout
+                ProceedtoCheckout(selectedItems, Address, PaymentMethod);
               });
           } else {
             Swal.mixin({
@@ -685,7 +685,9 @@ async function CheckforPaymentType(
           .fire({
             icon: "info",
             text:
-              "We noticed that you don't have " + PaymentMethod + " Payment method yet.",
+              "We noticed that you don't have " +
+              PaymentMethod +
+              " Payment method yet.",
           })
           .then(() => {
             const walletModal = new bootstrap.Modal(
@@ -712,7 +714,10 @@ async function CheckforPaymentType(
         })
           .fire({
             icon: "info",
-            text: "We noticed that you don't have " + PaymentMethod + " Payment method yet.",
+            text:
+              "We noticed that you don't have " +
+              PaymentMethod +
+              " Payment method yet.",
           })
           .then(() => {
             const cardModal = new bootstrap.Modal(
@@ -762,7 +767,24 @@ async function ProceedtoCheckout(Items, Address, PaymentMethod) {
     const data = await response.json();
 
     if (data.status == "success") {
-      alert(data.data.Address);
+      Swal.mixin({
+        toast: true,
+        position: "top",
+        showConfirmButton: false,
+        timer: 1500,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", Swal.stopTimer);
+          toast.addEventListener("mouseleave", Swal.resumeTimer);
+        },
+      })
+        .fire({
+          icon: "success",
+          text: "Order placed successfully.",
+        })
+        .then(() => {
+          CheckoutItems(User_ID);
+        });
     } else {
       alert("Checkout failed!");
     }
@@ -827,6 +849,109 @@ async function SaveOLPaymentInfo(Type, Number, Email, UserID) {
     }
   } catch (error) {
     console.error("Function: SavePaymentInfo\n", error);
+  }
+}
+
+async function ArchiveCart(UserID) {
+  try {
+    const response = await fetch(
+      "../../Utilities/api/ArchiveCart.php?UserID=" + UserID
+    );
+
+    if (!response.ok) {
+      throw new Error("HTTP error " + response.status);
+    }
+    const data = await response.json();
+
+    var RetriveList = document.getElementById("RetriveList");
+    RetriveList.innerHTML = "";
+
+    if (data.status == "error") {
+      var li = document.createElement("li");
+      li.classList.add("list-group-item", "text-center");
+      li.innerHTML = "No items to retrieve.";
+      RetriveList.appendChild(li);
+    } else {
+      data.data.forEach((obj) => {
+        var li = document.createElement("li");
+        li.classList.add(
+          "list-group-item",
+          "d-flex",
+          "justify-content-between",
+          "align-items-start",
+          "bg-body-tertiary",
+          "bg-opacity-50"
+        );
+
+        var input = document.createElement("input");
+        input.classList.add("form-check-input", "me-1");
+        input.type = "checkbox";
+        input.id = "Check_" + obj.UUID;
+
+        var div1 = document.createElement("div");
+        div1.classList.add("ms-2", "me-auto");
+
+        var div2 = document.createElement("div");
+        div2.classList.add("fw-bold");
+        div2.innerHTML =
+          '<label for="Check_' + obj.UUID + '">' + obj.Product + "</label>";
+
+        var div3 = document.createElement("div");
+        div3.classList.add("text-muted");
+        div3.innerHTML = "Brand: ";
+
+        var span1 = document.createElement("span");
+        span1.classList.add("fw-bold");
+        span1.innerHTML = obj.Brand;
+        div3.appendChild(span1);
+
+        div3.innerHTML += " | Size: ";
+        var span2 = document.createElement("span");
+        span2.classList.add("fw-bold");
+        span2.innerHTML = obj.Size;
+        div3.appendChild(span2);
+
+        div3.innerHTML += " | Quantity: ";
+        var span3 = document.createElement("span");
+        span3.classList.add("fw-bold");
+        span3.innerHTML = obj.Quantity;
+        div3.appendChild(span3);
+
+        div1.appendChild(div2);
+        div1.appendChild(div3);
+
+        var span4 = document.createElement("span");
+        span4.classList.add("text-body-secondary");
+        span4.innerHTML = "&#x20B1; ";
+
+        var span5 = document.createElement("span");
+        span5.classList.add("fw-bold");
+        span5.innerHTML = obj.Price;
+        span4.appendChild(span5);
+
+        li.appendChild(input);
+        li.appendChild(div1);
+        li.appendChild(span4);
+
+        RetriveList.appendChild(li);
+
+        input.addEventListener("click", function () {
+          if (input.checked) {
+            retrievedItems.push(obj.UUID);
+          } else {
+            retrievedItems = retrievedItems.filter((item) => item !== obj.UUID);
+          }
+          // if retrievedItems is not empty, enable the "Retrieve" button
+          if (retrievedItems.length > 0) {
+            document.getElementById("RetBTN").disabled = false;
+          } else {
+            document.getElementById("RetBTN").disabled = true;
+          }
+        });
+      });
+    }
+  } catch (error) {
+    console.error("Function: ArchiveCart\n", error);
   }
 }
 
@@ -964,4 +1089,32 @@ document.getElementById("SaveWallet").addEventListener("click", function () {
   }
 
   SaveOLPaymentInfo(walletType, walletNumber, walletEmail, TempUserID);
+});
+
+document.getElementById("ArchiveCart").addEventListener("click", function () {
+    ArchiveCart(TempUserID);
+});
+
+document.getElementById("RetBTN").addEventListener("click", function () {
+  if (retrievedItems.length > 0) {
+    var RetBTN = document.getElementById("RetBTN");
+    RetBTN.disabled = true;
+    RetBTN.innerHTML = "Retrieving...";
+
+    setTimeout(() => {
+      RetBTN.disabled = false;
+      RetBTN.innerHTML = "Retrieve Selected Items";
+    }, 1000);
+  } else {
+    var RetBTN = document.getElementById("RetBTN");
+    RetBTN.disabled = true;
+    RetBTN.classList.remove("btn-primary");
+    RetBTN.classList.add("btn-secondary");
+
+    setTimeout(() => {
+      RetBTN.disabled = false;
+      RetBTN.classList.remove("btn-secondary");
+      RetBTN.classList.add("btn-primary");
+    }, 1000);
+  }
 });

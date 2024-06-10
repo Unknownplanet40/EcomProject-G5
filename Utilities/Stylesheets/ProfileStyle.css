@@ -1,0 +1,96 @@
+@import url(../Stylesheets/Fonts.css);
+
+*{
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body{
+    background-image: url(../../Assets/Images/SignBG.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+
+.form-control:focus {
+    box-shadow: none;
+    border-color: #BA68C8
+}
+
+.bg-blur-10 {
+    backdrop-filter: blur(30px) !important;
+    background-image: linear-gradient(
+        128deg,
+        rgba(255, 255, 255, 0.3) 0%,
+        rgba(0, 0, 0, 0.2) 100%
+    );
+}
+
+.bg-blur-5 {
+    backdrop-filter: blur(5px) !important;
+}
+
+.Cmodal-backdrop {
+    --bs-backdrop-zindex: 1050;
+    --bs-backdrop-bg: #000;
+    --bs-backdrop-opacity: 0.3;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: var(--bs-backdrop-zindex);
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--bs-backdrop-bg);
+    backdrop-filter: blur(5px) !important;
+}
+
+.Cmodal-backdrop.Cfade {
+    opacity: 0;
+}
+
+.Cmodal-backdrop.Cshow {
+    opacity: 0.9;
+}
+
+.custom-loader {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+
+    z-index: 1060;
+
+    background-image: url('../../Assets/Images/Logo_2.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+
+    width: 192px;
+    height: 128px;
+
+    animation: zoom 1500ms ease-in-out infinite;
+}
+
+@keyframes zoom {
+    0% {
+        transform: translate(-50%, -50%) scale(1, 1);
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(1.5, 1.5);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(1, 1);
+    }
+}
+
+.link-RP {
+    cursor: pointer;
+}
+
+.link-RP:hover {
+    text-decoration: underline  !important;
+}
+
