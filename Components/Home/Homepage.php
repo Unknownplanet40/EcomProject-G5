@@ -38,6 +38,7 @@ if (isset($_SESSION['User_Data'])) {
     <script defer src="../../Utilities/Scripts/HomeScript.js"></script>
     <!-- <script defer src="../../Utilities/Scripts/ToggleSwitch.js"></script> -->
     <script defer src="../../Utilities/Scripts/LoginScript.js"></script>
+    <!-- <link rel="manifest" href="../../Utilities/manifest.json"> -->
     <title>Ecommers</title>
     <script>
         // clear specific local storage
@@ -124,7 +125,7 @@ if (isset($_SESSION['User_Data'])) {
                             return '../../Assets/Images/Alternative.gif';
                         }
                     }
-                    
+
                     // change popularity to [100] to show the most popular products
                     $stmt_prod = $conn->prepare("SELECT * FROM product WHERE Status = 0 AND Popularity = 0 ORDER BY Popularity ASC LIMIT 30");
                     $stmt_prod->execute();
