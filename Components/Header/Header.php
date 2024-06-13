@@ -50,57 +50,6 @@
                     </a>
                 </li>
             </ul>
-
-            <!-- For Testing Only -->
-            <div class="d-flex justify-content-end visually-hidden">
-                <a href=" #" data-bs-target="#SignIN" data-bs-toggle="modal" class="d-block link-body-emphasis text-decoration-none" id="Log-In">
-                    <svg class="bi mx-1" width="16" height="16" role="img" aria-label="Register">
-                        <use xlink:href="#Login" />
-                    </svg><span>Sign In / Register</span>
-                </a>
-                <div class="hstack gap-3 visually-hidden" id="Log-Out">
-                    <div class="me-3" id="Cart-Empty" title="Cart is empty">
-                        <a class="d-block link-body-emphasis text-decoration-none mt-1">
-                            <svg class="mb-1" width="24" height="24" role="img" aria-label="Cart is empty">
-                                <use xlink:href="#NoCart" />
-                            </svg>
-                        </a>
-                    </div>
-                    <div class="me-3 position-relative visually-hidden" id="Cart-Not-Empty">
-                        <a class="d-block link-body-emphasis text-decoration-none mt-1" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-2 text-bg-primary bg-opacity-75">
-                                99+
-                                <span class="visually-hidden">Items in cart</span>
-                            </span>
-                            <svg class="mb-1" width="24" height="24" role="img" aria-label="Cart">
-                                <use xlink:href="#Cart" />
-                            </svg>
-                        </a>
-                    </div>
-                    <div>
-                        <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
-                            <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
-                        </a>
-                        <ul class="dropdown-menu text-small shadow dropdown-menu-end">
-                            <li>
-                                <p class="dropdown-header">Welcome,</p>
-                                <p class="dropdown-item-text px-2">Lorem Ipsum Dolor</p>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#">About Us</a></li>
-                            <li><a class="dropdown-item" href="#">Settings</a></li>
-                            <li><a class="dropdown-item" href="#">Profile</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#">Sign out</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
             <div class="d-flex justify-content-end">
                 <?php
                 if (!$login) { ?>
@@ -133,21 +82,36 @@
                         <div>
                             <?php if ($UserRole == "user" && $haveAddress == 0) { ?>
                                 <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle position-relative" data-bs-toggle="dropdown">
-                                    <img src="../../Assets/Images/Profile.gif" alt="Profile" width="32" height="32" class="rounded-circle">
-                                    <span class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
-                                        <span class="visually-hidden">Important</span>
-                                    </span>
+                                    <?php if ($has_profile) { ?>
+                                        <img src="<?php echo $profile; ?>" alt="Profile" width="32" height="32" class="rounded-circle">
+                                        <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
+                                            <span class="visually-hidden">Important</span>
+                                        </span>
+                                    <?php } else { ?>
+                                        <img src="../../Assets/Images/Profile.gif" alt="Profile" width="32" height="32" class="rounded-circle">
+                                        <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
+                                            <span class="visually-hidden">Important</span>
+                                        </span>
+                                    <?php } ?>
                                 </a>
                             <?php } else { ?>
                                 <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+                                    <?php if ($has_profile) { ?>
+                                        <img src="<?php echo $profile; ?>" alt="Profile" width="32" height="32" class="rounded-circle">
+                                    <?php } else { ?>
                                     <img src="../../Assets/Images/Profile.gif" alt="Profile" width="32" height="32" class="rounded-circle">
+                                <?php } ?>
                                 </a>
                             <?php } ?>
                             <ul class="dropdown-menu text-small shadow dropdown-menu-end">
                                 <li>
                                     <h3 class="dropdown-header">
                                         <div class="d-flex justify-content-center">
-                                            <img src="../../Assets/Images/Profile.gif" alt="Profile" width="48" height="48" class="rounded-circle">
+                                            <?php if ($has_profile) { ?>
+                                                <img src="<?php echo $profile; ?>" alt="Profile" width="48" height="48" class="rounded-circle">
+                                            <?php } else { ?>
+                                                <img src="../../Assets/Images/Profile.gif" alt="Profile" width="48" height="48" class="rounded-circle">
+                                            <?php } ?>
                                         </div>
                                         <div class="d-flex justify-content-center" style="max-width: 200px;">
                                             <p class="dropdown-item-text px-2 text-truncate fw-bold fs-6" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover" data-bs-title="<?php echo $Username; ?>"><?php echo $Username; ?></p>
@@ -176,6 +140,7 @@
                                     <li><a class="dropdown-item dropdown-item-text" href="../Admin/Products/Products_Inv.php">Products Dashboard</a></li>
                                 <?php } ?>
                                 <li><a class="dropdown-item dropdown-item-text" href="../../Components/Profile/General_Setting.php">Settings</a></li>
+                                <li><a class="dropdown-item dropdown-item-text" href="#">My Orders</a></li>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>

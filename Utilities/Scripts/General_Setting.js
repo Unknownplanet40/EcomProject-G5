@@ -1,5 +1,20 @@
 /* Global variables here */
 let ispassVisible = false;
+let olddata = [];
+let oldpayment = [];
+let returncode = 0;
+
+// check if user is online or offline and disable input fields if offline
+setInterval(function () {
+  let isoffline = navigator.onLine ? false : true;
+  if (isoffline) {
+    var Email = document.getElementById("Email");
+    Email.setAttribute("disabled", "true");
+  } else {
+    var Email = document.getElementById("Email");
+    Email.removeAttribute("disabled");
+  }
+});
 
 /* Asynchronous functions here */
 async function postTheme(theme) {
@@ -36,28 +51,108 @@ async function postTheme(theme) {
   }
 }
 
-async function postProfileImage(image) {}
-
-async function postProfileDetails(fname, lname, contact, email) {
+async function postProfileImage(type, imageFile) {
   try {
-    const response = await fetch("../../Utilities/api/UserInfo.php", {
-      method: "POST",
-      body: JSON.stringify({
-        firstname: fname,
-        lastname: lname,
-        contact: contact,
-        email: email,
-      }),
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-      },
-    });
+    const formData = new FormData();
+    formData.append("UserID", User_ID);
+    formData.append("image", imageFile);
+
+    const response = await fetch(
+      `../../Utilities/api/UserInfo.php?profile=${type}`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("An error occurred while updating the profile image");
+    }
+
+    const data = await response.json();
+
+    if (data.status === "error") {
+      console.error(data.message);
+    }
+
+    if (data.status === "success") {
+      Swal.mixin({
+        toast: true,
+        position: "top",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      })
+        .fire({
+          icon: data.status,
+          text: data.message,
+        })
+        .then(() => {
+          getProfileDetails();
+        });
+      return;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function postProfileDetails(fname, lname, contact, email, Gender) {
+  try {
+    const response = await fetch(
+      "../../Utilities/api/UserInfo.php?update=info",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          UserID: User_ID,
+          firstname: fname,
+          lastname: lname,
+          contact: contact,
+          email: email,
+          gender: Gender,
+        }),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      }
+    );
 
     if (!response.ok) {
       throw new Error("An error occurred while updating the profile");
     }
 
     const data = await response.json();
+
+    if (data.status === "error") {
+      console.error(data.message);
+    }
+
+    if (data.status === "success") {
+      Swal.mixin({
+        toast: true,
+        position: "top",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      }).fire({
+        icon: data.status,
+        text: data.message,
+      });
+      getProfileDetails();
+      return;
+    } else if (data.status === "info") {
+      Swal.mixin({
+        toast: true,
+        position: "top",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      }).fire({
+        icon: data.status,
+        text: data.message,
+      });
+      return;
+    }
   } catch (error) {
     console.error(error);
   }
@@ -87,6 +182,48 @@ async function getProfileDetails() {
       document.getElementById("Gender").value = data.data.Gender;
       document.getElementById("Password").value = "PLACEHOLDER";
 
+      if (data.data.Have_Profile) {
+        document.getElementById("profile-pic").src = data.data.Profile;
+      } else {
+        document.getElementById("profile-pic").src =
+          "../../Assets/Images/Profile.gif";
+      }
+
+      document.getElementById("name_side").innerHTML =
+        data.data.First_Name + " " + data.data.Last_Name;
+      document.getElementById("email_side").innerHTML = data.data.Email_Address;
+
+      if (data.data.Have_Address) {
+        document.getElementById("upaddress-icon").innerHTML =
+          "<use xlink:href='#Pencil' />";
+        document.getElementById("upaddress-label").innerHTML = "Save Changes";
+
+        document.getElementById("Province").value = data.data.Address.Province;
+        document.getElementById("Municipality").value =
+          data.data.Address.Municipality;
+        document.getElementById("Barangay").value = data.data.Address.Barangay;
+        document.getElementById("ZipCode").value = data.data.Address.Zipcode;
+        document.getElementById("HouseNo").value = data.data.Address.HouseNo;
+        document.getElementById("Landmark").value = data.data.Address.Landmark;
+      } else {
+        document.getElementById("upaddress-icon").innerHTML =
+          "<use xlink:href='#Plus' />";
+        document.getElementById("upaddress-label").innerHTML = "Add Address";
+      }
+
+      olddata = [
+        data.data.First_Name,
+        data.data.Last_Name,
+        data.data.ContactInfo,
+        data.data.Email_Address,
+        data.data.Gender,
+      ];
+
+      oldpayment = [
+        data.data.Payment_Details.Email_Address,
+        data.data.Payment_Details.Account_Number,
+      ];
+
       if (data.data.Paymentmethod == "Cash on Delivery") {
         document.getElementById("COD").checked = true;
         document.getElementById("Ewallet").classList.add("d-none");
@@ -96,12 +233,20 @@ async function getProfileDetails() {
         document.getElementById("GCash").checked = true;
         document.getElementById("Ewallet").classList.remove("d-none");
         document.getElementById("E_wallet_Name").innerHTML = "GCash";
+        document.getElementById("EwalletMail").value =
+          data.data.Payment_Details.Email_Address;
+        document.getElementById("EwalletNumber").value =
+          data.data.Payment_Details.Account_Number;
       }
 
       if (data.data.Paymentmethod == "Maya") {
         document.getElementById("Maya").checked = true;
         document.getElementById("Ewallet").classList.remove("d-none");
         document.getElementById("E_wallet_Name").innerHTML = "Maya";
+        document.getElementById("EwalletMail").value =
+          data.data.Payment_Details.Email_Address;
+        document.getElementById("EwalletNumber").value =
+          data.data.Payment_Details.Account_Number;
       }
 
       if (data.data.Paymentmethod == "Credit Card") {
@@ -124,7 +269,6 @@ async function getProfileDetails() {
           }
         });
       });
-
       return;
     }
   } catch (error) {
@@ -189,6 +333,149 @@ async function postPassword(pass, newpass) {
   }
 }
 
+async function verifyEmail(email, code, name) {
+  try {
+    const response = await fetch(
+      "../../Utilities/api/UserInfo.php?email=" +
+        encodeURIComponent(email) +
+        "&code=" +
+        encodeURIComponent(code) +
+        "&name=" +
+        encodeURIComponent(name)
+    );
+
+    if (!response.ok) {
+      throw new Error("An error occurred while verifying the email");
+    }
+
+    const data = await response.json();
+
+    if (data.status === "error") {
+      returncode = 0;
+    }
+
+    if (data.status === "valid") {
+      returncode = data.code;
+    } else {
+      returncode = 0;
+    }
+  } catch (error) {
+    console.error(error);
+    returncode = 0;
+  }
+}
+
+async function postAddress(
+  type,
+  province,
+  municipality,
+  barangay,
+  zipcode,
+  houseno,
+  landmark
+) {
+  try {
+    const response = await fetch(
+      "../../Utilities/api/UserInfo.php?address=" + type,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          UserID: User_ID,
+          province: province,
+          municipality: municipality,
+          barangay: barangay,
+          zipcode: zipcode,
+          houseno: houseno,
+          landmark: landmark,
+        }),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("An error occurred while updating the address");
+    }
+
+    const data = await response.json();
+
+    if (data.status === "error") {
+      console.error(data.message);
+    }
+
+    if (data.status === "success") {
+      Swal.mixin({
+        toast: true,
+        position: "top",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      })
+        .fire({
+          icon: data.status,
+          text: data.message,
+        })
+        .then(() => {
+          getProfileDetails();
+        });
+      return;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function postEwallet(payment, email, number) {
+  try {
+    const response = await fetch(
+      "../../Utilities/api/UserInfo.php?ewallet=update",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          UserID: User_ID,
+          payment: payment,
+          email: email,
+          number: number,
+        }),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("An error occurred while updating the e-wallet");
+    }
+
+    const data = await response.json();
+
+    if (data.status === "error") {
+      console.error(data.message);
+    }
+
+    if (data.status === "success") {
+      Swal.mixin({
+        toast: true,
+        position: "top",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      })
+        .fire({
+          icon: data.status,
+          text: data.message,
+        })
+        .then(() => {
+          getProfileDetails();
+        });
+      return;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("loader").classList.remove("d-block");
   document.getElementById("loader").classList.add("d-none");
@@ -214,6 +501,11 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("ThemePreview").src =
       "../../Assets/Theme/LightMode.png";
     document.getElementById("themeLabel").innerText = "(Dark Mode)";
+  } else {
+    document.getElementById("SwitchTheme").checked = false;
+    document.getElementById("ThemePreview").src =
+      "../../Assets/Theme/DarkMode.png";
+    document.getElementById("themeLabel").innerText = "(Light Mode)";
   }
 
   document.getElementById("SwitchTheme").addEventListener("click", function () {
@@ -236,7 +528,6 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("ThemePreviewLabel").innerText = "Dark Mode";
       document.body.setAttribute("data-bs-theme", "light");
       postTheme("light");
-      postTheme("dark");
       theme.disabled = true;
       setTimeout(function () {
         theme.disabled = false;
@@ -264,6 +555,11 @@ document.addEventListener("DOMContentLoaded", function () {
         "image/gif",
       ];
       var validSize = 5000000; // 5MB
+
+      if (file == null) {
+        return;
+      }
+
       if (file.size > validSize) {
         Swal.mixin({
           toast: true,
@@ -297,6 +593,16 @@ document.addEventListener("DOMContentLoaded", function () {
         profile.src = e.target.result;
       };
       reader.readAsDataURL(file);
+
+      document.getElementById("changeimage-label").innerHTML = "Uploading...";
+      document.getElementById("changeimage").disabled = true;
+
+      setTimeout(function () {
+        document.getElementById("changeimage-label").innerHTML =
+          "Change Profile";
+        document.getElementById("changeimage").disabled = false;
+        postProfileImage("upload", file);
+      }, 1000);
     });
 
   document.getElementById("pass-toggle").addEventListener("click", function () {
@@ -502,4 +808,420 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById(id).type = "password";
     });
   }
+
+  document.getElementById("updetails").addEventListener("click", function () {
+    var FirstName = document.getElementById("FirstName");
+    var LastName = document.getElementById("LastName");
+    var Contact = document.getElementById("Contact");
+    var Email = document.getElementById("Email");
+    var Gender = document.getElementById("Gender");
+
+    var FN_FB = document.getElementById("FN_FB");
+    var LN_FB = document.getElementById("LN_FB");
+    var C_FB = document.getElementById("C_FB");
+    var E_FB = document.getElementById("E_FB");
+    var G_FB = document.getElementById("G_FB");
+
+    if (FirstName.value == "") {
+      FirstName.classList.add("is-invalid");
+      FN_FB.innerHTML = "Please enter your first name";
+
+      setTimeout(function () {
+        FirstName.classList.remove("is-invalid");
+        FN_FB.innerHTML = "";
+      }, 2000);
+      return;
+    }
+
+    if (LastName.value == "") {
+      LastName.classList.add("is-invalid");
+      LN_FB.innerHTML = "Please enter your last name";
+
+      setTimeout(function () {
+        LastName.classList.remove("is-invalid");
+        LN_FB.innerHTML = "";
+      }, 2000);
+      return;
+    }
+
+    if (Contact.value == "") {
+      Contact.classList.add("is-invalid");
+      C_FB.innerHTML = "Please enter your contact number";
+
+      setTimeout(function () {
+        Contact.classList.remove("is-invalid");
+        C_FB.innerHTML = "";
+      }, 2000);
+      return;
+    } else if (Contact.value.length != 11) {
+      Contact.classList.add("is-invalid");
+      C_FB.innerHTML = "Invalid contact number";
+
+      setTimeout(function () {
+        Contact.classList.remove("is-invalid");
+        C_FB.innerHTML = "";
+      }, 2000);
+      return;
+    } else if (Contact.value.substring(0, 2) != "09") {
+      Contact.classList.add("is-invalid");
+      C_FB.innerHTML = "Please enter a valid contact number";
+
+      setTimeout(function () {
+        Contact.classList.remove("is-invalid");
+        C_FB.innerHTML = "";
+      }, 2000);
+      return;
+    } else if (isNaN(Contact.value)) {
+      Contact.classList.add("is-invalid");
+      C_FB.innerHTML = "Please remove special or any characters";
+
+      setTimeout(function () {
+        Contact.classList.remove("is-invalid");
+        C_FB.innerHTML = "";
+      }, 2000);
+      return;
+    }
+
+    var validGender = ["Male", "Female"];
+    if (Gender.value == "") {
+      Gender.classList.add("is-invalid");
+      G_FB.innerHTML = "Please select Male or Femail";
+
+      setTimeout(function () {
+        Gender.classList.remove("is-invalid");
+        G_FB.innerHTML = "";
+      }, 2000);
+      return;
+    } else if (!validGender.includes(Gender.value)) {
+      Gender.classList.add("is-invalid");
+      G_FB.innerHTML = "Please choice Male or Femail";
+
+      setTimeout(function () {
+        Gender.classList.remove("is-invalid");
+        G_FB.innerHTML = "";
+      }, 2000);
+      return;
+    }
+
+    var validRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+    if (Email.value == "") {
+      Email.classList.add("is-invalid");
+      E_FB.innerHTML = "Please enter your email address";
+
+      setTimeout(function () {
+        Email.classList.remove("is-invalid");
+        E_FB.innerHTML = "";
+      }, 2000);
+      return;
+    } else if (!Email.value.match(validRegex)) {
+      Email.classList.add("is-invalid");
+      E_FB.innerHTML = "Invalid email address";
+
+      setTimeout(function () {
+        Email.classList.remove("is-invalid");
+        E_FB.innerHTML = "";
+      }, 2000);
+      return;
+    }
+
+    if (Email.value != olddata[3]) {
+      // open EmailVeridication modal
+      const emailmodal = new bootstrap.Modal("#EmailVeridication", {
+        keyboard: false,
+      });
+      emailmodal.show();
+      var codes = Math.floor(100000 + Math.random() * 900000);
+      codes = verifyEmail(Email.value, codes, FirstName.value);
+      return;
+    }
+
+    // if not data changed
+    if (
+      FirstName.value == olddata[0] &&
+      LastName.value == olddata[1] &&
+      Contact.value == olddata[2] &&
+      Email.value == olddata[3] &&
+      Gender.value == olddata[4]
+    ) {
+      document.getElementById("updetails").disabled = true;
+      setTimeout(function () {
+        document.getElementById("updetails").disabled = false;
+      }, 2000);
+      return;
+    }
+
+    document.getElementById("updetails").disabled = true;
+    document.getElementById("updetails-label").innerHTML = "Please wait...";
+    setTimeout(function () {
+      document.getElementById("updetails").disabled = false;
+      document.getElementById("updetails-label").innerHTML = "Save Changes";
+      postProfileDetails(
+        FirstName.value,
+        LastName.value,
+        Contact.value,
+        Email.value,
+        Gender.value
+      );
+    }, 1000);
+  });
+
+  document
+    .getElementById("verifycode")
+    .addEventListener("click", async function () {
+      const verifycode = returncode;
+      var email = document.getElementById("Email").value;
+      var code1 = document.getElementById("code1").value;
+      var code2 = document.getElementById("code2").value;
+      var code3 = document.getElementById("code3").value;
+      var code4 = document.getElementById("code4").value;
+      var code5 = document.getElementById("code5").value;
+      var code6 = document.getElementById("code6").value;
+
+      var usercode = code1 + code2 + code3 + code4 + code5 + code6;
+
+      if (verifycode == 0) {
+        Swal.mixin({
+          toast: true,
+          position: "top",
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+        }).fire({
+          icon: "error",
+          text: "An error occurred while verifying the email",
+        });
+        return;
+      }
+
+      if (usercode == verifycode) {
+        const emailmodal = bootstrap.Modal.getInstance(
+          document.getElementById("EmailVeridication")
+        );
+        emailmodal.hide();
+        postProfileDetails(
+          document.getElementById("FirstName").value,
+          document.getElementById("LastName").value,
+          document.getElementById("Contact").value,
+          email,
+          document.getElementById("Gender").value
+        );
+      } else {
+        Swal.mixin({
+          toast: true,
+          position: "top",
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+        }).fire({
+          icon: "error",
+          text: "Invalid verification code",
+        });
+      }
+    });
+
+  document
+    .getElementById("UpdateAddress")
+    .addEventListener("click", function () {
+      var province = document.getElementById("Province");
+      var Municipality = document.getElementById("Municipality");
+      var Barangay = document.getElementById("Barangay");
+      var ZipCodev = document.getElementById("ZipCode");
+      var HouseNo = document.getElementById("HouseNo");
+      var Landmark = document.getElementById("Landmark");
+
+      if (province.value == "") {
+        province.classList.add("is-invalid");
+        setTimeout(function () {
+          province.classList.remove("is-invalid");
+        }, 2000);
+        return;
+      }
+
+      if (Municipality.value == "") {
+        Municipality.classList.add("is-invalid");
+        setTimeout(function () {
+          Municipality.classList.remove("is-invalid");
+        }, 2000);
+        return;
+      }
+
+      if (Barangay.value == "") {
+        Barangay.classList.add("is-invalid");
+        setTimeout(function () {
+          Barangay.classList.remove("is-invalid");
+        }, 2000);
+        return;
+      }
+
+      if (ZipCodev.value == "") {
+        ZipCodev.classList.add("is-invalid");
+        setTimeout(function () {
+          ZipCodev.classList.remove("is-invalid");
+        }, 2000);
+        return;
+      } else if (ZipCodev.value.length != 4) {
+        ZipCodev.classList.add("is-invalid");
+        setTimeout(function () {
+          ZipCodev.classList.remove("is-invalid");
+        }, 2000);
+        return;
+      } else if (isNaN(ZipCodev.value)) {
+        ZipCodev.classList.add("is-invalid");
+        setTimeout(function () {
+          ZipCodev.classList.remove("is-invalid");
+        }, 2000);
+        return;
+      }
+
+      if (HouseNo.value == "") {
+        HouseNo.classList.add("is-invalid");
+        setTimeout(function () {
+          HouseNo.classList.remove("is-invalid");
+        }, 2000);
+        return;
+      }
+
+      if (
+        document.getElementById("upaddress-label").innerHTML == "Save Changes"
+      ) {
+        document.getElementById("UpdateAddress").disabled = true;
+        document.getElementById("upaddress-label").innerHTML = "Please wait...";
+
+        setTimeout(function () {
+          document.getElementById("UpdateAddress").disabled = false;
+          document.getElementById("upaddress-label").innerHTML = "Save Changes";
+
+          postAddress(
+            "update",
+            province.value,
+            Municipality.value,
+            Barangay.value,
+            ZipCodev.value,
+            HouseNo.value,
+            Landmark.value
+          );
+        }, 1000);
+        return;
+      }
+
+      document.getElementById("UpdateAddress").disabled = true;
+      document.getElementById("upaddress-label").innerHTML =
+        "Adding Address...";
+
+      setTimeout(function () {
+        document.getElementById("UpdateAddress").disabled = false;
+        document.getElementById("upaddress-label").innerHTML = "Save Changes";
+
+        postAddress(
+          "add",
+          province.value,
+          Municipality.value,
+          Barangay.value,
+          ZipCodev.value,
+          HouseNo.value,
+          Landmark.value
+        );
+      }, 1500);
+    });
+
+  document
+    .getElementById("UpdateEwallet")
+    .addEventListener("click", function () {
+      var payment = document.getElementsByName("PaymentMethod");
+      var EwalletMail = document.getElementById("EwalletMail");
+      var EwalletNumber = document.getElementById("EwalletNumber");
+      var selected = "";
+      var validPayment = ["GCash", "Maya"];
+      var validEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+
+      payment.forEach((element) => {
+        if (element.checked) {
+          selected = element.value;
+        }
+      });
+
+      if (selected == "") {
+        Swal.mixin({
+          toast: true,
+          position: "top",
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+        }).fire({
+          icon: "info",
+          text: "Please select a payment method",
+        });
+        return;
+      }
+
+      if (validPayment.includes(selected)) {
+        if (EwalletMail.value == "") {
+          EwalletMail.classList.add("is-invalid");
+          setTimeout(function () {
+            EwalletMail.classList.remove("is-invalid");
+          }, 2000);
+          return;
+        }
+      }
+
+      if (EwalletNumber.value == "") {
+        EwalletNumber.classList.add("is-invalid");
+        setTimeout(function () {
+          EwalletNumber.classList.remove("is-invalid");
+        }, 2000);
+        return;
+      } else if (isNaN(EwalletNumber.value)) {
+        EwalletNumber.classList.add("is-invalid");
+        setTimeout(function () {
+          EwalletNumber.classList.remove("is-invalid");
+        }, 2000);
+        return;
+      } else if (EwalletNumber.value.length != 11) {
+        EwalletNumber.classList.add("is-invalid");
+        setTimeout(function () {
+          EwalletNumber.classList.remove("is-invalid");
+        }, 2000);
+        return;
+      }
+
+      if (EwalletMail == "") {
+        EwalletMail.classList.add("is-invalid");
+        setTimeout(function () {
+          EwalletMail.classList.remove("is-invalid");
+        }, 2000);
+        return;
+      } else if (!EwalletMail.value.match(validEmail)) {
+        EwalletMail.classList.add("is-invalid");
+        setTimeout(function () {
+          EwalletMail.classList.remove("is-invalid");
+        }, 2000);
+        return;
+      }
+
+      if (
+        EwalletMail.value == oldpayment[0] &&
+        EwalletNumber.value == oldpayment[1]
+      ) {
+        Swal.mixin({
+          toast: true,
+          position: "top",
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+        }).fire({
+          icon: "info",
+          text: "No changes made",
+        });
+        return;
+      }
+
+      document.getElementById("UpdateEwallet").disabled = true;
+      document.getElementById("Ewallet-label").innerHTML = "Please wait...";
+
+      setTimeout(function () {
+        document.getElementById("UpdateEwallet").disabled = false;
+        document.getElementById("Ewallet-label").innerHTML = "Save Changes";
+        postEwallet(selected, EwalletMail.value, EwalletNumber.value);
+      }, 1000);
+    });
 });

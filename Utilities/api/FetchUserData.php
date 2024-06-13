@@ -51,7 +51,24 @@ if (isset($_SESSION['User_ID'])) {
         }
 
         $stmt_email->close();
+        $stmt->close();
 
+        $stmt_profile = $conn->prepare("SELECT * FROM user_profile WHERE User_ID = ?");
+        $stmt_profile->bind_param("s", $user_id);
+        $stmt_profile->execute();
+        $result_profile = $stmt_profile->get_result();
+        $profile = 'Undefined';
+
+        if ($result_profile->num_rows > 0) {
+            $row_profile = $result_profile->fetch_assoc();
+            $profile = base64_encode($row_profile['Image_File']);
+            $profile_type = $row_profile['Image_Type'];
+            $profile = 'data:image/' . $profile_type . ';base64,' . base64_encode($row_profile['Image_File']);
+            $profile_available = true;
+        } else {
+            $profile = null;
+            $profile_available = false;
+        }
 
         $data = [
             'user_ID' => $row['User_ID'],
@@ -63,6 +80,8 @@ if (isset($_SESSION['User_ID'])) {
             'Is_user_logged_in' => $row['Is_user_logged_in'],
             'Last_Login' => $row['Last_Login'],
             'User_Settings' => $Uconfig_Data,
+            'Has_Profile' => $profile_available,
+            'Profile' => $profile,
         ];
         // clear session
         session_destroy();

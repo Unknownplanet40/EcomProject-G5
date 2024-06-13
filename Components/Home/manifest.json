@@ -1,0 +1,41 @@
+{
+  "short_name": "Playaz",
+  "name": "Playaz Luxury Streetwear",
+  "start_url": "./Homepage.php",
+  "display": "standalone",
+  "background_color": "#BA68C8",
+  "theme_color": "#BA68C8",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "../../Assets/Images/Logo_1.png",
+      "sizes": "1254x1666",
+      "type": "image/png"
+    },
+    {
+      "src": "../../Assets/Images/Logo_1x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "../../Assets/Icons/Logo_1_x128.ico",
+      "sizes": "128x128",
+      "type": "image/icon"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "../../Assets/Images/StockVid1-Alt.png",
+      "type": "image/png",
+      "sizes": "1920x1080",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "../../Assets/Images/StockVid2-Alt.png",
+      "type": "image/png",
+      "sizes": "1920x1080",
+      "form_factor": "wide"
+    }
+  ]
+}

@@ -7,6 +7,8 @@ $Username = 'Undefined';
 $UserRole = 'Undefined';
 $Theme = 'light';
 $haveAddress = 0;
+$profile = 'Undefined';
+$has_profile = false;
 
 if (isset($_SESSION['User_Data'])) {
     if ($_SESSION['User_Data']['Is_user_logged_in'] == 1) {
@@ -16,6 +18,8 @@ if (isset($_SESSION['User_Data'])) {
         $UserRole = $_SESSION['User_Data']['Role'];
         $haveAddress = $_SESSION['User_Data']['HaveAddress'];
         $Theme = $_SESSION['User_Data']['User_Settings']['Theme'];
+        $profile = $_SESSION['User_Data']['Profile'];
+        $has_profile = $_SESSION['User_Data']['Has_Profile'];
         echo '<script>var Is_User_Logged_In = true;</script>';
         echo '<script>var User_ID = "' . $_SESSION['User_Data']['user_ID'] . '";</script>';
     }
@@ -38,7 +42,7 @@ if (isset($_SESSION['User_Data'])) {
     <script defer src="../../Utilities/Scripts/HomeScript.js"></script>
     <!-- <script defer src="../../Utilities/Scripts/ToggleSwitch.js"></script> -->
     <script defer src="../../Utilities/Scripts/LoginScript.js"></script>
-    <!-- <link rel="manifest" href="../../Utilities/manifest.json"> -->
+    <link rel="manifest" href="manifest.json">
     <title>Ecommers</title>
     <script>
         // clear specific local storage
