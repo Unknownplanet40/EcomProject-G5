@@ -86,7 +86,9 @@ if (!$login) {
                 </thead>
                 <tbody class="table-group-divider" id="ProductTableBody">
                     <?php
-                    $stmt = $conn->prepare("SELECT * FROM product WHERE Status = 0");
+                    $showBrand = $_SESSION['User_Data']['First_Name'];
+                    $stmt = $conn->prepare("SELECT * FROM product WHERE Status = 0 AND Brand = ? ORDER BY Prod_Name ASC");
+                    $stmt->bind_param("s", $showBrand);
                     $stmt->execute();
                     $result = $stmt->get_result();
                     $ID = 0;

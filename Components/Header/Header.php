@@ -1,3 +1,7 @@
+<audio id="backgroundMusic" loop autoplay>
+    <source src="../../Assets/Audio/BG Music.wav" type="audio/wav" />
+</audio>
+<button id="play" hidden>Play</button>
 <nav class="navbar navbar-expand-lg bg-body-tertiary bg-opacity-50 bg-blur-3 border-bottom shadow-sm fixed-top">
     <div class="container-fluid">
         <div class="col-md-3 mb-2 mb-md-0 me-5">
@@ -99,8 +103,8 @@
                                     <?php if ($has_profile) { ?>
                                         <img src="<?php echo $profile; ?>" alt="Profile" width="32" height="32" class="rounded-circle">
                                     <?php } else { ?>
-                                    <img src="../../Assets/Images/Profile.gif" alt="Profile" width="32" height="32" class="rounded-circle">
-                                <?php } ?>
+                                        <img src="../../Assets/Images/Profile.gif" alt="Profile" width="32" height="32" class="rounded-circle">
+                                    <?php } ?>
                                 </a>
                             <?php } ?>
                             <ul class="dropdown-menu text-small shadow dropdown-menu-end">
@@ -137,7 +141,7 @@
                                 <?php if ($UserRole == "admin") { ?>
                                     <li><a class="dropdown-item dropdown-item-text" href="../Admin/Dashboard/Dashboard.php">Dashboard</a></li>
                                 <?php } else if ($UserRole == "seller") { ?>
-                                    <li><a class="dropdown-item dropdown-item-text" href="../Admin/Products/Products_Inv.php">Products Dashboard</a></li>
+                                    <li><a class="dropdown-item dropdown-item-text" href="../Admin/Products/Product_Inv.php">Products Dashboard</a></li>
                                 <?php } ?>
                                 <li><a class="dropdown-item dropdown-item-text" href="../../Components/Profile/General_Setting.php">Settings</a></li>
                                 <li><a class="dropdown-item dropdown-item-text" href="#">My Orders</a></li>
@@ -154,7 +158,8 @@
                             </ul>
                         </div>
                     </div>
-                <?php } ?>
+                <?php
+                } ?>
             </div>
         </div>
     </div>

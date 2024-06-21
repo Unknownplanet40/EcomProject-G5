@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once('../../Databases/DB_Configurations.php');
+include_once '../../Databases/DB_Configurations.php';
 
 $login = false;
 $Username = 'Undefined';
@@ -36,9 +36,10 @@ if (isset($_SESSION['User_Data'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Third-party Stylesheet/Scripts -->
-    <?php include_once('../../Utilities/Third-party/Import-ThirdParty.php'); ?>
+    <?php include_once '../../Utilities/Third-party/Import-ThirdParty.php'; ?>
     <!-- Main Stylesheet/Scripts -->
     <link rel="stylesheet" href="../../Utilities/Stylesheets/HomeStyle.css">
+    <link rel="stylesheet" href="../../Utilities/Stylesheets/Gallery.css">
     <script defer src="../../Utilities/Scripts/HomeScript.js"></script>
     <!-- <script defer src="../../Utilities/Scripts/ToggleSwitch.js"></script> -->
     <script defer src="../../Utilities/Scripts/LoginScript.js"></script>
@@ -54,7 +55,7 @@ if (isset($_SESSION['User_Data'])) {
     </script>
 </head>
 
-<?php include_once('../../Assets/Icons/Icon_Assets.php'); ?>
+<?php include_once '../../Assets/Icons/Icon_Assets.php'; ?>
 
 <body class="bg-body-tertiary" id="cBody" style="overflow: hidden;">
     <div id="devtool" class="visually-hidden">
@@ -69,21 +70,21 @@ if (isset($_SESSION['User_Data'])) {
     </div>
     <?php
     // Alert
-    include_once('../SweetAlerts/Sweetalert.php');
+    include_once '../SweetAlerts/Sweetalert.php';
 
     // Header
-    include_once('../Header/Header.php');
+    include_once '../Header/Header.php';
 
     // Modal
-    include_once('../Modal/SearchModal.php');
-    include_once('../Modal/SizeGuide.php');
-    include_once('../Modal/SigninModal.php');
-    include_once('../Modal/ProductModal.php');
+    include_once '../Modal/SearchModal.php';
+    include_once '../Modal/SizeGuide.php';
+    include_once '../Modal/SigninModal.php';
+    include_once '../Modal/ProductModal.php';
     ?>
 
     <!-- Carousel -->
     <div class="container-xxl mt-3 mb-5 px-1 d-none d-md-block">
-        <?php include_once('../Carousel/CarouselFrontPage.php'); ?>
+        <?php include_once '../Carousel/CarouselFrontPage.php'; ?>
     </div>
     <!-- Brands Icons -->
     <div class="mt-4 bg-body-emphasis p-2">
@@ -104,6 +105,7 @@ if (isset($_SESSION['User_Data'])) {
             </div>
         </div>
     </div>
+
     <!-- Product Cards -->
     <h1 class="text-center clamp m-5">Most Popular Products</h1>
     <div class="album bg-body-tertiary pt-1">
@@ -131,7 +133,7 @@ if (isset($_SESSION['User_Data'])) {
                     }
 
                     // change popularity to [100] to show the most popular products
-                    $stmt_prod = $conn->prepare("SELECT * FROM product WHERE Status = 0 AND Popularity = 0 ORDER BY Popularity ASC LIMIT 30");
+                    $stmt_prod = $conn->prepare("SELECT * FROM product WHERE Status = 0 AND Popularity > 3000 ORDER BY Popularity ASC LIMIT 8");
                     $stmt_prod->execute();
                     $result = $stmt_prod->get_result();
 
@@ -230,13 +232,14 @@ if (isset($_SESSION['User_Data'])) {
 
                             });
                         </script>
-                    <?php }
+                    <?php
+                    }
                 } else {
                     for ($i = 0; $i < 5; $i++) { ?>
-                        <!-- 
-                            If No Products are Available or 
-                            the Database is Empty or 
-                            There is an Error 
+                        <!--
+                            If No Products are Available or
+                            the Database is Empty or
+                            There is an Error
                         -->
                         <div class="col">
                             <a class="text-decoration-none">
@@ -255,34 +258,56 @@ if (isset($_SESSION['User_Data'])) {
                                 </div>
                             </a>
                         </div>
-                <?php  }
-                }
-
-                ?>
+                <?php }
+                } ?>
             </div>
         </div>
     </div>
-    <!-- Debugging Purposes -->
-    <div class="container mt-4 bg-body-secondary rounded-2 p-2 visually-hidden">
-        <p class="text-center text-body-secondary">*Note: For UI testing purposes only until the backend is ready to be integrated</p>
-        <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" role="switch" id="light-dark">
-            <label class="form-check-label" for="light-dark" id="light-dark-label">Switch to Dark Mode - <small class="text-muted">*Note: This will be Included via Settings</small></label>
+    <h1 class="text-center clamp m-5">Gallery</h1>
+    <div class="album bg-body-tertiary pt-1">
+        <div class="modal" id="inlage" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content border-0 bg-body-tertiary bg-opacity-10 bg-blur-5">
+                    <div class="modal-body">
+                        <img src="../../Assets/Images/Alternative.gif" id="preview-inlage" alt="Gallery Image" class="img-fluid object-fit-cover" width="100%" data-bs-dismiss="modal">
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" role="switch" id="login-out">
-            <label class="form-check-label" for="login-out" id="login-out-label">Switch to Login Mode</label>
+        <div class="container-lg">
+            <div class="row row-cols-3 row-cols-sm-4 row-cols-md-5 row-cols-lg-6 row-col-xxl-7 g-3" data-masonry='{"percentPosition": true }'>
+                <?php 
+                // count the number of images in the gallery folder
+                $dir = '../../Assets/Products_Assets/Gallery/';
+                $files = glob($dir . '*.{jpg,jpeg,png,gif}', GLOB_BRACE);
+                $filecount = count($files);
+                for ($i = 1; $i <= $filecount; $i++) { ?>
+                    <div class="col">
+                        <img src="../../Assets/Products_Assets/Gallery/StockImage <?php echo $i; ?>.jpg" alt="Gallery Image" class="img-fluid object-fit-cover gal-img">
+                    </div>
+                <?php } ?>
+            </div>
         </div>
-        <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" role="switch" id="cart-status" disabled>
-            <label class="form-check-label" for="cart-status" id="cart-status-label">Switch to Cart Status</label>
-        </div>
-        <button id="ShowToast" type="button" class="btn btn-sm btn-primary">Show Toast</button>
-        <label class="form-check-label mt-1" for="cart-status" id="ShowToast">Show SweetAlert2 Toast</label>
 
+        <script>
+            var modal = document.getElementById('inlage');
+            var img = document.getElementsByClassName('gal-img');
+            var modalImg = document.getElementById('preview-inlage');
+
+            for (var i = 0; i < img.length; i++) {
+                img[i].onclick = function() {
+                    modal.style.display = 'block';
+                    modalImg.src = this.src;
+                }
+            }
+
+            modal.onclick = function() {
+                modal.style.display = 'none';
+            }
+        </script>
     </div>
     <!-- Footer -->
-    <?php include_once('../Footer/Footer.php'); ?>
+    <?php include_once '../Footer/Footer.php'; ?>
 </body>
 
 </html>

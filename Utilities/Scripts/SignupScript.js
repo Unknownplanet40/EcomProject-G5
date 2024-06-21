@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   OTPcode = 0;
   canReload = true;
+  ExpireTime = 0;
 
   async function checkEmailExistence(functionname, email) {
     try {
@@ -162,6 +163,16 @@ document.addEventListener("DOMContentLoaded", function () {
   loader.classList.add("d-none");
   step_1.classList.remove("d-none");
 
+  var backgroundMusic = document.getElementById("backgroundMusic");
+  backgroundMusic.currentTime = localStorage.getItem("BGMusicTime");
+  backgroundMusic.play();
+  backgroundMusic.volume = 0.1;
+  //save current timestamp of background music to local storage
+  setInterval(function () {
+    localStorage.setItem("BGMusicTime", backgroundMusic.currentTime);
+  }, 1000);
+
+
   FN_Next.addEventListener("click", function () {
     var firstName = document.getElementById("Fname");
     var lastName = document.getElementById("Lname");
@@ -236,10 +247,18 @@ document.addEventListener("DOMContentLoaded", function () {
       }, 1500);
       return;
     }
-    var otp = Math.floor(1000 + Math.random() * 9000);
+    var otp = Math.floor(100000 + Math.random() * 900000);
     OTPcode = otp;
     canReload = false;
     AuthenticateOTP("sendOTP", fname.value, emailAddress.value, otp);
+    var currentTime = new Date();
+    currentTime.setMinutes(currentTime.getMinutes() + 5);
+    ExpireTime = currentTime;
+    var OTP_Timer = document.getElementById("OTP-Timer");
+    OTP_Timer.textContent = ExpireTime.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
     step_2_2.classList.remove("d-none");
     step_2_1.classList.add("d-none");
   });
@@ -253,9 +272,18 @@ document.addEventListener("DOMContentLoaded", function () {
   RegenOTP.addEventListener("click", function () {
     var emailAddress = document.getElementById("Email");
     var fname = document.getElementById("Fname");
-    var otp = Math.floor(1000 + Math.random() * 9000);
+    var otp = Math.floor(100000 + Math.random() * 900000);
     OTPcode = otp;
     AuthenticateOTP("sendOTP", fname.value, emailAddress.value, otp);
+    // get current time and add 5 minutes
+    var currentTime = new Date();
+    currentTime.setMinutes(currentTime.getMinutes() + 5);
+    ExpireTime = currentTime;
+    var OTP_Timer = document.getElementById("OTP-Timer");
+    OTP_Timer.textContent = ExpireTime.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   });
 
   OTP_Next.addEventListener("click", function () {
@@ -264,20 +292,50 @@ document.addEventListener("DOMContentLoaded", function () {
     var OTP2 = document.getElementById("OTP2");
     var OTP3 = document.getElementById("OTP3");
     var OTP4 = document.getElementById("OTP4");
+    var OTP5 = document.getElementById("OTP5");
+    var OTP6 = document.getElementById("OTP6");
 
-    var OTP_Input = OTP1.value + OTP2.value + OTP3.value + OTP4.value;
+    var OTP_Input =
+      OTP1.value +
+      OTP2.value +
+      OTP3.value +
+      OTP4.value +
+      OTP5.value +
+      OTP6.value;
 
     if (OTP_Input === "" || OTP_Input != OTP) {
       OTP1.classList.add("is-invalid");
       OTP2.classList.add("is-invalid");
       OTP3.classList.add("is-invalid");
       OTP4.classList.add("is-invalid");
+      OTP5.classList.add("is-invalid");
+      OTP6.classList.add("is-invalid");
       setTimeout(function () {
         OTP1.classList.remove("is-invalid");
         OTP2.classList.remove("is-invalid");
         OTP3.classList.remove("is-invalid");
         OTP4.classList.remove("is-invalid");
+        OTP5.classList.remove("is-invalid");
+        OTP6.classList.remove("is-invalid");
       }, 1500);
+      return;
+    }
+
+    if (new Date() > ExpireTime) {
+      Swal.mixin({
+        toast: true,
+        position: "top",
+        showConfirmButton: false,
+        timer: 1500,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", Swal.stopTimer);
+          toast.addEventListener("mouseleave", Swal.resumeTimer);
+        },
+      }).fire({
+        icon: "error",
+        title: "OTP has expired. Please generate a new one.",
+      });
       return;
     }
 

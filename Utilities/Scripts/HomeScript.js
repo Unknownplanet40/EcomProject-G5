@@ -53,8 +53,56 @@ function ConsoleMessage() {
     }
   }
 }
+
 document.addEventListener("DOMContentLoaded", function () {
   // ConsoleMessage();
+
+  var backgroundMusic = document.getElementById("backgroundMusic");
+  var playbtn = document.getElementById("play");
+  var keys = [];
+  var konami = "38,38,40,40,37,39,37,39,66,65"; // Konami Code
+
+  backgroundMusic.currentTime = localStorage.getItem("BGMusicTime");
+  backgroundMusic.volume = 0.1;
+  setInterval(function () {
+    localStorage.setItem("BGMusicTime", backgroundMusic.currentTime);
+  }, 1000);
+
+  function playMusic() {
+    backgroundMusic
+      .play()
+      .then(() => {
+        backgroundMusic.volume = 0.1;
+      })
+      .catch((error) => {
+        console.error("Failed to play the music:", error);
+      });
+
+    // Remove event listeners after playing the music
+    document.removeEventListener("click", playMusic);
+    document.removeEventListener("keypress", playMusic);
+  }
+  
+  // Add event listeners for user interaction
+  document.addEventListener("click", playMusic);
+  document.addEventListener("keypress", playMusic);
+
+  window.addEventListener(
+    "keydown",
+    function (e) {
+      keys.push(e.keyCode);
+      if (keys.toString().indexOf(konami) >= 0) {
+        // pause/play background music
+        if (backgroundMusic.paused) {
+          backgroundMusic.play();
+        } else {
+          backgroundMusic.pause();
+        }
+        keys = [];
+      }
+    },
+    true
+  );
 
   // --------------------------------------------------------- //
 
@@ -752,7 +800,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (CartTotal > 0) {
                       var UserCart = document.getElementById("UserCart");
                       UserCart.innerHTML = "";
-                      document.getElementById("tocheckout").removeAttribute("disabled");
+                      document
+                        .getElementById("tocheckout")
+                        .removeAttribute("disabled");
 
                       for (let i = 0; i < CartTotal; i++) {
                         updateCartCount();
@@ -946,7 +996,8 @@ document.addEventListener("DOMContentLoaded", function () {
                       </a>`;
                               UserCart.appendChild(li);
                               document
-                                .getElementById("tocheckout").setAttribute("disabled", "true");
+                                .getElementById("tocheckout")
+                                .setAttribute("disabled", "true");
                             }
                           });
                       }

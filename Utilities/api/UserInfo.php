@@ -218,7 +218,6 @@ try {
                 response(['status' => 'error', 'message' => 'Failed to update profile picture']);
             }
         }
-
     } else if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_GET['ewallet'])) {
         $rawData = file_get_contents('php://input');
         $data = json_decode($rawData, true);
@@ -300,8 +299,6 @@ try {
                 response(['status' => 'error', 'message' => 'Failed to update payment method']);
             }
         }
-
-
     } else if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['get'])) {
 
         $user_ID = $_SESSION['User_Data']['user_ID'];
@@ -337,6 +334,8 @@ try {
         $result->store_result();
         $data = [];
         $details = [];
+        $card_data = [];
+        $address_data = [];
 
         if ($result->num_rows > 0) {
             $result->bind_result($Email_Address, $First_Name, $Last_Name, $Gender, $ContactInfo, $Have_Address, $Paymentmethod);
@@ -364,17 +363,34 @@ try {
                 $result_payment = $stmt_payment->get_result();
                 $row_payment = $result_payment->fetch_assoc();
                 if ($row_payment['Wallet_Type'] > 0) {
-                    $Paymentmethod = $row_payment['Wallet_Type'];
+                    $Paymentmethod = $row_payment['Wallet_Type'];/* 
                     $details = [
                         'Email_Address' => $row_payment['Email_address'],
                         'Account_Number' => $row_payment['Account_Number']
-                    ];
+                    ]; */
                 } else {
                     $Paymentmethod = 'none';
+                    $details = [];
                 }
                 $stmt_payment->close();
             } else if ($Paymentmethod == 2) {
-                $Paymentmethod = 'Credit Card';
+                /* $stmt_card = $conn->prepare("SELECT * FROM user_cardinfo WHERE User_ID = ?");
+                $stmt_card->bind_param('s', $user_ID);
+                $stmt_card->execute();
+                $result_card = $stmt_card->get_result();
+                $row_card = $result_card->fetch_assoc();
+                if ($result_card->num_rows > 0) {
+                    $card_data = [
+                        'Card_Holder' => $row_card['Card_Holder'],
+                        'Card_Number' => $row_card['Card_Number'],
+                        'Card_Exp' => $row_card['Exp_date'],
+                        'Card_CVV' => $row_card['CVV']
+                    ];
+                } else {
+                    $Paymentmethod = 'none';
+                    $card_data = [];
+                } */
+                $paymentmethod = 'Credit Card';
             } else if ($Paymentmethod == 3) {
                 $Paymentmethod = 'Cash on Delivery';
             } else {
@@ -387,14 +403,17 @@ try {
                 $stmt_address->execute();
                 $result_address = $stmt_address->get_result();
                 $row_address = $result_address->fetch_assoc();
-                $address_data = [
-                    'Province' => $row_address['Province'],
-                    'Municipality' => $row_address['Municipality'],
-                    'Barangay' => $row_address['Barangay'],
-                    'HouseNo' => $row_address['HouseNo'],
-                    'Zipcode' => $row_address['zipcode'],
-                    'Landmark' => $row_address['Landmark']
-                ];
+
+                if ($result_address->num_rows > 0) {
+                    $address_data = [
+                        'Province' => $row_address['Province'],
+                        'Municipality' => $row_address['Municipality'],
+                        'Barangay' => $row_address['Barangay'],
+                        'HouseNo' => $row_address['HouseNo'],
+                        'Zipcode' => $row_address['zipcode'],
+                        'Landmark' => $row_address['Landmark']
+                    ];
+                }
                 $stmt_address->close();
             }
 
@@ -427,7 +446,6 @@ try {
                 'Have_Profile' => $profile_available,
                 'Profile' => $profile,
                 'Paymentmethod' => $Paymentmethod,
-                'Payment_Details' => $details
             ];
 
             $_SESSION['User_Data']['Profile'] = $profile;
@@ -455,7 +473,6 @@ try {
         } else {
             response(['status' => 'invalid']);
         }
-
     } else if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['password']) && isset($_GET['newpassword'])) {
         $oldPass = $_GET['password'];
         $newPass = $_GET['newpassword'];
@@ -509,59 +526,62 @@ try {
 
         $mail->isHTML(true);
         $mail->Subject = 'Verification Code';
-        $mail->Body = '
-        <html>
-        <head>
-            <style>
-                .email-container {
-                    font-family: Arial, sans-serif;
-                    color: #333;
-                    line-height: 1.5;
-                }
-                .email-header {
-                    font-size: 18px;
-                    font-weight: bold;
-                }
-                .email-body {
-                    margin-top: 10px;
-                    margin-bottom: 10px;
-                }
-                .email-footer {
-                    margin-top: 20px;
-                    font-size: 14px;
-                    color: #777;
-                }
-            </style>
-        </head>
-        <body>
-            <div class="email-container">
-                <div class="email-header">Hello ' . htmlspecialchars($name, ENT_QUOTES, 'UTF-8') . ',</div>
-                <div class="email-body">
-                    Your verification code is: <strong>' . htmlspecialchars($OTP, ENT_QUOTES, 'UTF-8') . '</strong><br><br>
-                    Please enter this code in the verification form to complete your registration.
-                </div>
-                <div class="email-footer">
-                    Thank you!<br>
-                    Your Company Team
-                </div>
-            </div>
-        </body>
-        </html>';
+        $mail->Body = '<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Code Verification</title><style>body{font-family:Arial,sans-serif;line-height:1.6}.container{max-width:600px;margin:0 auto;padding:20px;border:1px solid #ddd;border-radius:10px}.header{background-color:#4CAF50;color:white;padding:5px 0;text-align:center;border-radius:10px 10px 0 0;display:flex;align-items:center;justify-content:center}.content{padding:10px 20px 20px 20px}.footer{margin-top:20px;text-align:center;font-size:0.9em;color:#777}table{width:100%}td{padding:10px}img{display:block;margin:0 auto}h2{margin:0;color:#fff}ul{list-style-type:none;padding:0}li{margin-bottom:10px}p{margin:0 0 10px}</style></head><body><div class="container"><div class="header"><table><tr><td><img src="https://raw.githubusercontent.com/Unknownplanet40/EcomProject-G5/main/Assets/Images/Logo_1.png" alt="Company Logo" style="display: block;" width="32"></td><td><h2>Playaz Luxury Streetwears</h2></td></tr></table></div><hr><h3 style="text-align: center;">Code Verification</h3><div class="content"><p>Dear <b>' . htmlspecialchars($name, ENT_QUOTES, 'UTF-8') . '</b>,</p><p>Your verification code is: <b>' . htmlspecialchars($OTP, ENT_QUOTES, 'UTF-8') . '</b></p><p>Please use this code to verify your email address.</p><p>If you did not request this code, please ignore this email.</p><div style="text-align: end;"><p>Thank you!</p><p>Best regards,<br>The Playaz Team</p></div></div><div class="footer"><p>&copy; ' . date('Y') . ' Playaz Luxury Streetwear. All rights reserved.</p></div></div></body></html>';
 
         // Plain text message
-        $mail->AltBody = 'Hello ' . $name . ",\n\nYour verification code is: " . $OTP . "\n\nPlease enter this code in the verification form to complete your registration.\n\nThank you!\nYour Company Team";
+        $mail->AltBody = 'Hello ' . $name . ",\n\nYour verification code is: " . $OTP . "\n\nPlease enter this code in the verification form to complete your registration.\n\nThank you!\nBest regards,\nThe Playaz Team";
 
         if ($mail->send()) {
             response(['status' => 'valid', 'code' => $OTP]);
         } else {
             response(['status' => 'invalid']);
         }
+    } else if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['payout'])) {
+        $payout = $_GET['payout'];
+        $user_ID = $_GET['UserID'];
+
+        if ($user_ID != $_SESSION['User_Data']['user_ID']) {
+            response(['status' => 'error', 'message' => 'Unauthorized']);
+        }
+
+        switch ($payout) {
+            case 'GCash':
+            case 'Maya':
+                $stmt_check = $conn->prepare("SELECT * FROM user_onlinewallet WHERE User_ID = ? AND Wallet_Type = ? ");
+                $stmt_check->bind_param('ss', $user_ID, $payout);
+                $stmt_check->execute();
+                $result = $stmt_check->get_result();
+                $row = $result->fetch_assoc();
+
+                if ($result->num_rows > 0) {
+                    response(['status' => 'success', 'message' => $payout . ' account found', 'email' => $row['Email_address'], 'number' => $row['Account_Number']]);
+                } else {
+                    response(['status' => 'error', 'message' => $payout . ' account not found']);
+                }
+                break;
+            case 'CreditCard':
+                $stmt_check = $conn->prepare("SELECT * FROM user_cardinfo WHERE User_ID = ?");
+                $stmt_check->bind_param('s', $user_ID);
+                $stmt_check->execute();
+                $result = $stmt_check->get_result();
+                $row = $result->fetch_assoc();
+
+                if ($result->num_rows > 0) {
+                    response(['status' => 'success', 'message' => 'Credit Card account found', 'cardholder' => $row['Card_Holder'], 'cardnumber' => $row['Card_Number'], 'expdate' => $row['Exp_date'], 'cvv' => $row['CVV']]);
+                } else {
+                    response(['status' => 'error', 'message' => 'Credit Card account not found']);
+                }
+                break;
+            case 'COD':
+                response(['status' => 'success', 'message' => 'Cash on Delivery']);
+                break;
+            default:
+                response(['status' => 'error', 'message' => 'Invalid payout method']);
+                break;
+        }
     } else {
         response(['status' => 'error', 'message' => 'Invalid request method']);
     }
-
-
-
 } catch (\Throwable $th) {
     response(['status' => 'error', 'message' => 'Something went wrong! (' . $th->getMessage() . ')']);
 }

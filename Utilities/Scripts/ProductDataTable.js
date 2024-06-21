@@ -312,7 +312,7 @@ async function UpdateProduct(formData) {
   }
 }
 
-$("#SearchProduct").on("keyup", function () {
+$("#SearchAdmin").on("keyup", function () {
   // pass value to dt-search-0
   $("#ProductTable").DataTable().search(this.value).draw();
 });

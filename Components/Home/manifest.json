@@ -29,13 +29,13 @@
       "src": "../../Assets/Images/StockVid1-Alt.png",
       "type": "image/png",
       "sizes": "1920x1080",
-      "form_factor": "narrow"
+      "form_factor": "wide"
     },
     {
       "src": "../../Assets/Images/StockVid2-Alt.png",
       "type": "image/png",
       "sizes": "1920x1080",
-      "form_factor": "wide"
+      "form_factor": "narrow"
     }
   ]
 }

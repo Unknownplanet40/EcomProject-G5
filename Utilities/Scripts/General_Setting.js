@@ -3,6 +3,7 @@ let ispassVisible = false;
 let olddata = [];
 let oldpayment = [];
 let returncode = 0;
+let payments = [];
 
 // check if user is online or offline and disable input fields if offline
 setInterval(function () {
@@ -158,6 +159,59 @@ async function postProfileDetails(fname, lname, contact, email, Gender) {
   }
 }
 
+async function getPayoutDetails(UserID, type) {
+  try {
+    const response = await fetch(
+      "../../Utilities/api/UserInfo.php?payout=" + type + "&UserID=" + UserID
+    );
+
+    if (!response.ok) {
+      throw new Error("An error occurred while fetching the payout details");
+    }
+
+    const data = await response.json();
+
+    if (data.status === "error") {
+      if (type == "GCash" || type == "Maya") {
+        document.getElementById("EwalletMail").value = "";
+        document.getElementById("EwalletNumber").value = "";
+      } else if (type == "CreditCard") {
+        document.getElementById("CCName").value = "";
+        document.getElementById("CCNumber").value = "";
+        document.getElementById("CCExpiry").value = "";
+        document.getElementById("CCCVV").value = "";
+      }
+    }
+
+    if (data.status === "success") {
+      if (type == "GCash" || type == "Maya") {
+        oldpayment = [];
+        oldpayment = [data.email, data.number];
+        if (!payments.includes(type)) {
+          payments.push(type);
+        }
+
+        document.getElementById("EwalletMail").value = data.email;
+        document.getElementById("EwalletNumber").value = data.number;
+      } else if (type == "CreditCard") {
+        oldpayment = [];
+        oldpayment = [data.cardholder, data.cardnumber, data.expdate, data.cvv];
+        if (!payments.includes(type)) {
+          payments.push(type);
+        }
+        document.getElementById("CCName").value = data.cardholder;
+        document.getElementById("CCNumber").value = data.cardnumber;
+        document.getElementById("CCExpiry").value = data.expdate;
+        document.getElementById("CCCVV").value = data.cvv;
+      } else {
+        return;
+      }
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 async function getProfileDetails() {
   try {
     const response = await fetch(
@@ -219,11 +273,6 @@ async function getProfileDetails() {
         data.data.Gender,
       ];
 
-      oldpayment = [
-        data.data.Payment_Details.Email_Address,
-        data.data.Payment_Details.Account_Number,
-      ];
-
       if (data.data.Paymentmethod == "Cash on Delivery") {
         document.getElementById("COD").checked = true;
         document.getElementById("Ewallet").classList.add("d-none");
@@ -233,25 +282,19 @@ async function getProfileDetails() {
         document.getElementById("GCash").checked = true;
         document.getElementById("Ewallet").classList.remove("d-none");
         document.getElementById("E_wallet_Name").innerHTML = "GCash";
-        document.getElementById("EwalletMail").value =
-          data.data.Payment_Details.Email_Address;
-        document.getElementById("EwalletNumber").value =
-          data.data.Payment_Details.Account_Number;
+        getPayoutDetails(User_ID, "GCash");
       }
 
       if (data.data.Paymentmethod == "Maya") {
         document.getElementById("Maya").checked = true;
         document.getElementById("Ewallet").classList.remove("d-none");
-        document.getElementById("E_wallet_Name").innerHTML = "Maya";
-        document.getElementById("EwalletMail").value =
-          data.data.Payment_Details.Email_Address;
-        document.getElementById("EwalletNumber").value =
-          data.data.Payment_Details.Account_Number;
+        getPayoutDetails(User_ID, "Maya");
       }
 
       if (data.data.Paymentmethod == "Credit Card") {
         document.getElementById("CreditCard").checked = true;
-        document.getElementById("Ewallet").classList.add("d-none");
+        document.getElementById("CreditCardForm").classList.remove("d-none");
+        getPayoutDetails(User_ID, "CreditCard");
       }
 
       document.getElementsByName("PaymentMethod").forEach((element) => {
@@ -259,12 +302,23 @@ async function getProfileDetails() {
           if (element.checked) {
             if (element.value == "GCash") {
               document.getElementById("Ewallet").classList.remove("d-none");
+              document.getElementById("CreditCardForm").classList.add("d-none");
               document.getElementById("E_wallet_Name").innerHTML = "GCash";
+              getPayoutDetails(User_ID, "GCash");
             } else if (element.value == "Maya") {
               document.getElementById("Ewallet").classList.remove("d-none");
+              document.getElementById("CreditCardForm").classList.add("d-none");
               document.getElementById("E_wallet_Name").innerHTML = "Maya";
+              getPayoutDetails(User_ID, "Maya");
+            } else if (element.value == "CreditCard") {
+              document.getElementById("Ewallet").classList.add("d-none");
+              document
+                .getElementById("CreditCardForm")
+                .classList.remove("d-none");
+              getPayoutDetails(User_ID, "CreditCard");
             } else {
               document.getElementById("Ewallet").classList.add("d-none");
+              document.getElementById("CreditCardForm").classList.add("d-none");
             }
           }
         });
@@ -488,7 +542,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const tooltipList = [...tooltipTriggerList].map(
     (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
   );
-
   const popoverTriggerList = document.querySelectorAll(
     '[data-bs-toggle="popover"]'
   );
@@ -1222,6 +1275,79 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("UpdateEwallet").disabled = false;
         document.getElementById("Ewallet-label").innerHTML = "Save Changes";
         postEwallet(selected, EwalletMail.value, EwalletNumber.value);
+      }, 1000);
+    });
+
+  document
+    .getElementById("UpdateCreditCard")
+    .addEventListener("click", function () {
+      var CCName = document.getElementById("CCName");
+      var CCNumber = document.getElementById("CCNumber");
+      var CCExpiry = document.getElementById("CCExpiry");
+      var CCCVV = document.getElementById("CCCVV");
+      var validCC = /^[\w\s]+$/;
+      var validCCNumber = /^[\d]{16}$/;
+      var validCCExpiry = /^[\d]{2}\/[\d]{2}$/;
+
+
+      if (CCName.value == "" || !CCName.value.match(validCC)) {
+        CCName.classList.add("is-invalid");
+        setTimeout(function () {
+          CCName.classList.remove("is-invalid");
+        }, 2000);
+        return;
+      }
+
+      if (CCNumber.value == "" || !CCNumber.value.match(validCCNumber)) {
+        CCNumber.classList.add("is-invalid");
+        setTimeout(function () {
+          CCNumber.classList.remove("is-invalid");
+        }, 2000);
+        return;
+      }
+
+      if (CCExpiry.value == "" || !CCExpiry.value.match(validCCExpiry)) {
+        CCExpiry.classList.add("is-invalid");
+        setTimeout(function () {
+          CCExpiry.classList.remove("is-invalid");
+        }, 2000);
+        return;
+      }
+
+      if (CCCVV.value == "" || isNaN(CCCVV.value)) {
+        CCCVV.classList.add("is-invalid");
+        setTimeout(function () {
+          CCCVV.classList.remove("is-invalid");
+        }, 2000);
+        return;
+      }
+
+      if (
+        CCName.value == oldpayment[0] &&
+        CCNumber.value == oldpayment[1] &&
+        CCExpiry.value == oldpayment[2] &&
+        CCCVV.value == oldpayment[3]
+      ) {
+        Swal.mixin({
+          toast: true,
+          position: "top",
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+        }).fire({
+          icon: "info",
+          text: "No changes made",
+        });
+        return;
+      }
+
+      document.getElementById("UpdateCreditCard").disabled = true;
+      document.getElementById("CreditCard-label").innerHTML = "Please wait...";
+
+      setTimeout(function () {
+        document.getElementById("UpdateCreditCard").disabled = false;
+        document.getElementById("CreditCard-label").innerHTML = "Save Changes";
+        console.log("Update Credit Card");
       }, 1000);
     });
 });
