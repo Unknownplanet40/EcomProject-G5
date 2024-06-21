@@ -1,9 +1,10 @@
-<center>
-<img src="./Assets/Images/Logo_1.png" style="max-width: 64px; margin-top: 20px; margin-bottom: 20px;" alt="Playaz Luxury Streetwear Logo" />
+
+
+<p align="center">
+  <img src="./Assets/Images/Logo_1.png" width="100" align="center"/>
+</p>
 
 # [![Typing SVG](https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=35&pause=1000&multiline=true&random=false&width=525&height=55&lines=PLAYAZ+LUXURY+STREETWEAR)](https://git.io/typing-svg)
-
-</center>
 
 Discover Playaz Luxxury Streetwear: Your destination for edgy urban fashion. Explore our curated collection of clothing apparel blending luxury with street attitude. Elevate your style today!
 
@@ -103,7 +104,7 @@ For customer credentials, you can create a new account or use the following test
 - **Email:** Example@domain.com
 - **Password:** 123456
 
-Please note that you have a Internet connection to load the website properly.
+Please make sure that you have a working internet connection to load some of the external resources used in the website. 
 
 ## Step 9: Enjoy the Website
 
