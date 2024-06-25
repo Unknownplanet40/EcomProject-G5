@@ -103,8 +103,12 @@ For customer credentials, you can create a new account or use the following test
 - **Email:** Example@domain.com
 - **Password:** 123456
 
-Please note that you have a Internet connection to load the website properly.
+Please make sure that you have a working internet connection to load some of the external resources used in the website. 
 
-## Step 9: Enjoy the Website
+## Step 9: Update SMTP Configuration
+
+Login to the admin panel and go to the **"Email Services"** section. Update the SMTP configuration with your own email settings to enable email services like account verification, password reset, etc.
+
+## Step 10: Enjoy the Website
 
 You have successfully installed the website. Enjoy exploring the features of the <strong>Playaz Luxury Streetwear</strong> website!

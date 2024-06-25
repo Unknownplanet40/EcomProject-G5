@@ -57,6 +57,18 @@ function ConsoleMessage() {
 document.addEventListener("DOMContentLoaded", function () {
   // ConsoleMessage();
 
+  if ('serviceMaker' in navigator) {
+    navigator.serviceMaker.register('serviceWorker.js')
+      .then(function (registration) {
+        console.log('Service Worker registered with scope:', registration.scope);
+      })
+      .catch(function (error) {
+        console.error('Service Worker registration failed:', error);
+      });
+  } else {
+    //console.error('Service Worker is not supported in this browser.');
+  }
+
   var backgroundMusic = document.getElementById("backgroundMusic");
   var playbtn = document.getElementById("play");
   var keys = [];
@@ -1023,3 +1035,4 @@ document.addEventListener("DOMContentLoaded", function () {
       break;
   }
 });
+

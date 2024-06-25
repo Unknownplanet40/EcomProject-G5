@@ -1,3 +1,13 @@
+// Global Variables
+SelectedItem = [];
+var path = "";
+
+if (localStorage.getItem("FileName") == null) {
+  path = window.location.pathname.split("/").pop();
+} else {
+  path = localStorage.getItem("FileName");
+}
+
 function tableReady1() {
   $("#loader").addClass("d-none");
   $("#AdminTable").removeClass("d-none");
@@ -81,74 +91,6 @@ $(document).ready(function () {
     ],
   });
 
-  var Seller = $("#SellerTable").DataTable({
-    pageLength: 10,
-    responsive: true,
-    layout: {
-      topStart: {
-        pageLength: {
-          menu: [5, 10, 25, 50, 100],
-        },
-      },
-      topEnd: {},
-    },
-    columnDefs: [
-      {
-        targets: [0],
-        searchable: false,
-      },
-      {
-        targets: [1],
-        searchable: false,
-        visible: false,
-      },
-      {
-        targets: [4],
-        visible: false,
-      },
-      {
-        data: null,
-        defaultContent:
-          '<button type="button" id="Edit" class="btn btn-sm btn-primary me-1"><svg class="bi" width="14" height="14" fill="currentColor"><use xlink:href="#Pencil" /></svg></span></button><button type="button" id="Remove" class="btn btn-sm btn-danger"><svg class="bi" width="14" height="14" fill="currentColor"><use xlink:href="#Trash" /></svg></span></button>',
-        targets: -1,
-      },
-    ],
-  });
-
-  var User = $("#UserTable").DataTable({
-    pageLength: 10,
-    responsive: true,
-    layout: {
-      topStart: {
-        pageLength: {
-          menu: [5, 10, 25, 50, 100],
-        },
-      },
-      topEnd: {},
-    },
-    columnDefs: [
-      {
-        targets: [0],
-        searchable: false,
-      },
-      {
-        targets: [1],
-        searchable: false,
-        visible: false,
-      },
-      {
-        targets: [4],
-        visible: false,
-      },
-      {
-        data: null,
-        defaultContent:
-          '<button type="button" id="Edit" class="btn btn-sm btn-primary me-1"><svg class="bi" width="14" height="14" fill="currentColor"><use xlink:href="#Pencil" /></svg></span></button><button type="button" id="Remove" class="btn btn-sm btn-danger"><svg class="bi" width="14" height="14" fill="currentColor"><use xlink:href="#Trash" /></svg></span></button>',
-        targets: -1,
-      },
-    ],
-  });
-
   // Search Functions for Admin, Seller, and User
   $("#SearchAdmin").on("keyup", function () {
     $("#AdminTable").DataTable().search(this.value).draw();
@@ -166,9 +108,9 @@ $(document).ready(function () {
     try {
       const response = await fetch(
         "../../../Utilities/api/Special_UserInfo.php?ID=" +
-          data[1] +
-          "&Role=" +
-          data[8]
+        data[1] +
+        "&Role=" +
+        data[8]
       );
 
       if (!response.ok) {
@@ -284,15 +226,34 @@ $(document).ready(function () {
       title: "Are you sure?",
       text: "You won't be able to revert this!",
       icon: "warning",
-      showCancelButton: true,
+      customClass: {
+        confirmButton: "btn btn-sm btn-danger px-4 me-2",
+      },
+      showCancelButton: false,
       confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, delete it!",
+      confirmButtonText: "Yes, Archive it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
+
+        var userType = 0;
+
+        if (path == "Account-Admin.php") {
+          userType = 1;
+        } else if (path == "Account-Seller.php") {
+          userType = 2;
+        } else if (path == "Account-Users.php") {
+          userType = 3;
+        }
+        
         try {
           const response = await fetch(
-            "../../../Utilities/api/Special_UserInfo.php?delete=1&ID=" + data[1]
+            "../../../Utilities/api/Special_UserInfo.php?archive=1&user=" + userType, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ ID: data[1] }),
+          }
           );
 
           if (!response.ok) {
@@ -436,20 +397,6 @@ $(document).ready(function () {
           return;
         }
 
-        if ($("#Zipcode").val().length != 4) {
-          $("#Zipcode").addClass("is-invalid");
-          setTimeout(() => {
-            $("#Zipcode").removeClass("is-invalid");
-          }, 1500);
-          return;
-        } else if (isNaN($("#Zipcode").val())) {
-          $("#Zipcode").addClass("is-invalid");
-          setTimeout(() => {
-            $("#Zipcode").removeClass("is-invalid");
-          }, 1500);
-          return;
-        }
-
         if (roles.indexOf($("#Role").val()) == -1) {
           $("#Role").addClass("is-invalid");
           setTimeout(() => {
@@ -520,8 +467,7 @@ $(document).ready(function () {
         };
 
         try {
-          const response = await fetch(
-            "../../../Utilities/api/Special_UserInfo.php?update=1",
+          const response = await fetch("../../../Utilities/api/Special_UserInfo.php?update=1",
             {
               method: "POST",
               headers: {
@@ -566,7 +512,6 @@ $(document).ready(function () {
         } catch (error) {
           console.error(error);
         }
-
         break;
       case "Seller":
         break;
@@ -660,7 +605,11 @@ $(document).ready(function () {
       ID: UserID,
       Password: $("#NewPassword").val(),
       Email_Address: $("#Email_Address").val(),
+      Fname: $("#First_Name").val(),
+      Lname: $("#Last_Name").val(),
     };
+
+    $("#SavePassword").attr("disabled", true).html("Processing...").removeClass("btn-primary").addClass("btn-secondary");
 
     try {
       const response = await fetch(
@@ -682,10 +631,15 @@ $(document).ready(function () {
 
       if (UserInfo.status == "error") {
         console.log(UserInfo.message);
+        $("#SavePassword").attr("disabled", false).html("Not Saved").removeClass("btn-primary").addClass("btn-danger");
+        setTimeout(() => {
+          $("#SavePassword").html("Save changes").removeClass("btn-danger").addClass("btn-primary");
+        }, 1500);
         return;
       }
 
       if (UserInfo.status == "success") {
+        $("#SavePassword").attr("disabled", false).html("Saved").removeClass("btn-primary").addClass("btn-success");
         modal("hide", "PasswordReset");
         Swal.mixin({
           toast: true,
@@ -900,7 +854,149 @@ $(document).ready(function () {
     }
   });
 
-  $("#AdminArchive").on("click", function () {
+  $("#AdminArchive").on("click", async function () {
     modal("show", "ArchiveUser");
+    var userType = 0;
+
+    if (path == "Account-Admin.php") {
+      userType = 1;
+    } else if (path == "Account-Seller.php") {
+      userType = 2;
+    } else if (path == "Account-Users.php") {
+      userType = 3;
+    }
+
+    try {
+      const response = await fetch('../../../Utilities/api/Special_UserInfo.php?archive=0&user=' + userType, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const UserInfo = await response.json();
+
+      if (UserInfo.status == "error") {
+        $("#nodata").removeClass("d-none");
+        $("#ArchiveList").addClass("d-none");
+        return;
+      }
+
+      if (UserInfo.status == "success") {
+        $("#nodata").addClass("d-none");
+        $("#ArchiveList").removeClass("d-none");
+        $("#ArchiveList tbody").empty();
+
+        var list = $("#ArchiveList");
+
+        for (var i = 0; i < UserInfo.data.length; i++) {
+          var li = $("<li>").addClass("list-group-item d-flex justify-content-between align-items-start");
+          var input = $("<input>").addClass("form-check-input me-1").attr("type", "checkbox").attr("id", "CB_" + UserInfo.data[i].ID);
+          var div1 = $("<div>").addClass("ms-2 me-auto");
+          var div2 = $("<div>").addClass("fw-bold");
+          var label = $("<label>").text(UserInfo.data[i].First_Name + " " + UserInfo.data[i].Last_Name).attr("for", "CB_" + UserInfo.data[i].ID);
+          var span = $("<span>").text(UserInfo.data[i].Email);
+          var span2 = $("<span>").addClass("badge text-bg-secondary rounded text-uppercase").text(UserInfo.data[i].Status).attr("id", "Status_" + UserInfo.data[i].ID);
+
+          div2.append(label);
+          div1.append(div2, span);
+          li.append(input, div1, span2);
+          list.append(li);
+
+          //event listener for checkbox
+          $("#CB_" + UserInfo.data[i].ID).on("change", function () {
+            var ID = $(this).attr("id").substring(3);
+            if ($(this).is(":checked")) {
+              SelectedItem.push(ID);
+              $("#Status_" + ID).removeClass("text-bg-secondary").addClass("text-bg-primary");
+            } else {
+              $("#Status_" + ID).removeClass("text-bg-primary").addClass("text-bg-secondary");
+              var index = SelectedItem.indexOf(ID);
+              SelectedItem.splice(index, 1);
+            }
+          });
+        }
+      }
+    } catch (error) {
+      $("#nodata").removeClass("d-none");
+      $("#ArchiveList").addClass("d-none");
+      console.error(error);
+    }
+  })
+
+  $("#RestoreUser").on("click", async function () {
+    // check if there is a selected item
+    if (SelectedItem.length == 0) {
+      $("#RestoreUser").addClass("shack").attr("disabled", true).removeClass("btn-primary").addClass("btn-secondary");
+
+      setTimeout(() => {
+        $("#RestoreUser").removeClass("shack").attr("disabled", false).removeClass("btn-secondary").addClass("btn-primary");
+      }, 1000);
+    } else {
+      var data = {
+        ID: SelectedItem,
+      };
+
+      var userType = 0;
+
+      if (path == "Account-Admin.php") {
+        userType = 1;
+      } else if (path == "Account-Seller.php") {
+        userType = 2;
+      } else if (path == "Account-Users.php") {
+        userType = 3;
+      }
+
+      try {
+        const response = await fetch("../../../Utilities/api/Special_UserInfo.php?archive=2&user=" + userType,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        const UserInfo = await response.json();
+
+        if (UserInfo.status == "error") {
+          console.log(UserInfo.message);
+          return;
+        }
+
+        if (UserInfo.status == "success") {
+          modal("hide", "ArchiveUser");
+          Swal.mixin({
+            toast: true,
+            position: "top",
+            showConfirmButton: false,
+            timer: 1500,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", Swal.stopTimer);
+              toast.addEventListener("mouseleave", Swal.resumeTimer);
+            },
+          })
+            .fire({
+              icon: UserInfo.status,
+              title: UserInfo.message,
+            })
+            .then(() => {
+              location.reload();
+            });
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
   })
 });

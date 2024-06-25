@@ -361,9 +361,9 @@ async function postPassword(pass, newpass) {
   try {
     const response = await fetch(
       "../../Utilities/api/UserInfo.php?password=" +
-        encodeURIComponent(pass) +
-        "&newpassword=" +
-        encodeURIComponent(newpass)
+      encodeURIComponent(pass) +
+      "&newpassword=" +
+      encodeURIComponent(newpass)
     );
 
     if (!response.ok) {
@@ -391,11 +391,11 @@ async function verifyEmail(email, code, name) {
   try {
     const response = await fetch(
       "../../Utilities/api/UserInfo.php?email=" +
-        encodeURIComponent(email) +
-        "&code=" +
-        encodeURIComponent(code) +
-        "&name=" +
-        encodeURIComponent(name)
+      encodeURIComponent(email) +
+      "&code=" +
+      encodeURIComponent(code) +
+      "&name=" +
+      encodeURIComponent(name)
     );
 
     if (!response.ok) {
@@ -406,6 +406,40 @@ async function verifyEmail(email, code, name) {
 
     if (data.status === "error") {
       returncode = 0;
+
+      if (data.errordetails != null || data.message.includes("We are experiencing technical difficulties")) {
+        if (navigator.onLine) {
+          const VeriHide = bootstrap.Modal.getInstance(
+            document.getElementById("EmailVeridication")
+          );
+          VeriHide.hide();
+        }
+        
+        if (data.errordetails != null){
+          data.errordetails = data.errordetails.replace("SMTP Error:", "");
+          Swal.mixin({
+            toast: true,
+            position: "top",
+            showConfirmButton: false,
+            timer: 5000,
+            timerProgressBar: true,
+          }).fire({
+            icon: "error",
+            text: data.errordetails,
+          });
+        } else {
+          Swal.mixin({
+            toast: true,
+            position: "top",
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+          }).fire({
+            icon: data.status,
+            text: data.message,
+          });
+        }
+      }
     }
 
     if (data.status === "valid") {
@@ -450,6 +484,56 @@ async function postAddress(
 
     if (!response.ok) {
       throw new Error("An error occurred while updating the address");
+    }
+
+    const data = await response.json();
+
+    if (data.status === "error") {
+      console.error(data.message);
+    }
+
+    if (data.status === "success") {
+      Swal.mixin({
+        toast: true,
+        position: "top",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      })
+        .fire({
+          icon: data.status,
+          text: data.message,
+        })
+        .then(() => {
+          getProfileDetails();
+        });
+      return;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function postCreditCard(cardholder, cardnumber, expdate, cvv, type) {
+  try {
+    const response = await fetch("../../Utilities/api/UserInfo.php?card=" + type,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          UserID: User_ID,
+          cardholder: cardholder,
+          cardnumber: cardnumber,
+          expdate: expdate,
+          cvv: cvv,
+        }),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("An error occurred while updating the credit card");
     }
 
     const data = await response.json();
@@ -978,11 +1062,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (Email.value != olddata[3]) {
-      // open EmailVeridication modal
-      const emailmodal = new bootstrap.Modal("#EmailVeridication", {
-        keyboard: false,
-      });
-      emailmodal.show();
+      if (navigator.onLine) {
+        const emailmodal = new bootstrap.Modal("#EmailVeridication", {
+          keyboard: false,
+        });
+        emailmodal.show();
+      }
       var codes = Math.floor(100000 + Math.random() * 900000);
       codes = verifyEmail(Email.value, codes, FirstName.value);
       return;
@@ -1341,13 +1426,28 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
-      document.getElementById("UpdateCreditCard").disabled = true;
-      document.getElementById("CreditCard-label").innerHTML = "Please wait...";
 
-      setTimeout(function () {
-        document.getElementById("UpdateCreditCard").disabled = false;
-        document.getElementById("CreditCard-label").innerHTML = "Save Changes";
-        console.log("Update Credit Card");
-      }, 1000);
+      //check if creditcard is included in the payments array
+      if (payments.includes("Credit Card")) {
+      if (CCName.value != oldpayment[0] || CCNumber.value != oldpayment[1] || CCExpiry.value != oldpayment[2] || CCCVV.value != oldpayment[3]) {
+        document.getElementById("UpdateCreditCard").disabled = true;
+        document.getElementById("CreditCard-label").innerHTML = "Updating...";
+
+        setTimeout(function () {
+          document.getElementById("UpdateCreditCard").disabled = false;
+          document.getElementById("CreditCard-label").innerHTML = "Save Changes";
+          postCreditCard(CCName.value, CCNumber.value, CCExpiry.value, CCCVV.value, "update");
+        }, 1000);
+      }
+     } else {
+        document.getElementById("UpdateCreditCard").disabled = true;
+        document.getElementById("CreditCard-label").innerHTML = "Please wait...";
+
+        setTimeout(function () {
+          document.getElementById("UpdateCreditCard").disabled = false;
+          document.getElementById("CreditCard-label").innerHTML = "Save Changes";
+          postCreditCard(CCName.value, CCNumber.value, CCExpiry.value, CCCVV.value, "add");
+        }, 1000);
+     }
     });
 });

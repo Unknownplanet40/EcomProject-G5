@@ -18,6 +18,29 @@ function response($data)
     exit;
 }
 
+function is_connected()
+{
+    $connected = @fsockopen("www.example.com", 80);
+    if ($connected) {
+        $is_conn = true;
+        fclose($connected);
+    } else {
+        $is_conn = false;
+    }
+    return $is_conn;
+}
+
+function getCredential($conn, $keyName)
+{
+    $stmt = $conn->prepare("SELECT Credential FROM secret_keys WHERE Key_Name = ?");
+    $stmt->bind_param("s", $keyName);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $stmt->close();
+    return $row['Credential'];
+}
+
 if (!isset($_SESSION['User_Data'])) {
     response(['status' => 'error', 'message' => 'Unauthorized']);
 }
@@ -390,7 +413,7 @@ try {
                     $Paymentmethod = 'none';
                     $card_data = [];
                 } */
-                $paymentmethod = 'Credit Card';
+                $Paymentmethod = 'Credit Card';
             } else if ($Paymentmethod == 3) {
                 $Paymentmethod = 'Cash on Delivery';
             } else {
@@ -499,42 +522,43 @@ try {
             response(['status' => 'invalid', 'message' => 'Password is incorrect']);
         }
     } else if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['email'])) {
-        $stmt_get_Key = $conn->prepare("SELECT Credential FROM secret_keys WHERE Key_Name = 'SMTP_Pass'");
-        $stmt_get_Key->execute();
-        $result = $stmt_get_Key->get_result();
-        $row = $result->fetch_assoc();
-        $SMTP_Pass = $row['Credential'];
-        $stmt_get_Key->close();
 
-
-        $Email = $_GET['email'];
-        $Email = strtolower($Email);
-        $OTP = $_GET['code'];
-        $name = $_GET['name'];
-
-        $mail = new PHPMailer(true);
-        $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com';
-        $mail->SMTPAuth = true;
-        $mail->Username = 'ryanjamesc4@gmail.com';
-        $mail->Password = $SMTP_Pass;
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port = 587;
-
-        $mail->setFrom('ryanjamesc4@gmail.com');
-        $mail->addAddress($Email);
-
-        $mail->isHTML(true);
-        $mail->Subject = 'Verification Code';
-        $mail->Body = '<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Code Verification</title><style>body{font-family:Arial,sans-serif;line-height:1.6}.container{max-width:600px;margin:0 auto;padding:20px;border:1px solid #ddd;border-radius:10px}.header{background-color:#4CAF50;color:white;padding:5px 0;text-align:center;border-radius:10px 10px 0 0;display:flex;align-items:center;justify-content:center}.content{padding:10px 20px 20px 20px}.footer{margin-top:20px;text-align:center;font-size:0.9em;color:#777}table{width:100%}td{padding:10px}img{display:block;margin:0 auto}h2{margin:0;color:#fff}ul{list-style-type:none;padding:0}li{margin-bottom:10px}p{margin:0 0 10px}</style></head><body><div class="container"><div class="header"><table><tr><td><img src="https://raw.githubusercontent.com/Unknownplanet40/EcomProject-G5/main/Assets/Images/Logo_1.png" alt="Company Logo" style="display: block;" width="32"></td><td><h2>Playaz Luxury Streetwears</h2></td></tr></table></div><hr><h3 style="text-align: center;">Code Verification</h3><div class="content"><p>Dear <b>' . htmlspecialchars($name, ENT_QUOTES, 'UTF-8') . '</b>,</p><p>Your verification code is: <b>' . htmlspecialchars($OTP, ENT_QUOTES, 'UTF-8') . '</b></p><p>Please use this code to verify your email address.</p><p>If you did not request this code, please ignore this email.</p><div style="text-align: end;"><p>Thank you!</p><p>Best regards,<br>The Playaz Team</p></div></div><div class="footer"><p>&copy; ' . date('Y') . ' Playaz Luxury Streetwear. All rights reserved.</p></div></div></body></html>';
-
-        // Plain text message
-        $mail->AltBody = 'Hello ' . $name . ",\n\nYour verification code is: " . $OTP . "\n\nPlease enter this code in the verification form to complete your registration.\n\nThank you!\nBest regards,\nThe Playaz Team";
-
-        if ($mail->send()) {
-            response(['status' => 'valid', 'code' => $OTP]);
+        if (!is_connected()) {
+            response(['status' => 'error', 'message' => 'We are experiencing technical difficulties. Please try again later.']);
         } else {
-            response(['status' => 'invalid']);
+            $SMTP_Pass = getCredential($conn, 'SMTP_Pass');
+            $SMTP_Uname = getCredential($conn, 'SMTP_Uname');
+
+
+            $Email = $_GET['email'];
+            $Email = strtolower($Email);
+            $OTP = $_GET['code'];
+            $name = $_GET['name'];
+
+            $mail = new PHPMailer(true);
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = $SMTP_Uname;
+            $mail->Password = $SMTP_Pass;
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = 587;
+
+            $mail->setFrom($SMTP_Uname, 'Playaz Luxury Streetwears');
+            $mail->addAddress($Email);
+
+            $mail->isHTML(true);
+            $mail->Subject = 'Verification Code';
+            $mail->Body = '<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Code Verification</title><style>body{font-family:Arial,sans-serif;line-height:1.6}.container{max-width:600px;margin:0 auto;padding:20px;border:1px solid #ddd;border-radius:10px}.header{background-color:#4CAF50;color:white;padding:5px 0;text-align:center;border-radius:10px 10px 0 0;display:flex;align-items:center;justify-content:center}.content{padding:10px 20px 20px 20px}.footer{margin-top:20px;text-align:center;font-size:0.9em;color:#777}table{width:100%}td{padding:10px}img{display:block;margin:0 auto}h2{margin:0;color:#fff}ul{list-style-type:none;padding:0}li{margin-bottom:10px}p{margin:0 0 10px}</style></head><body><div class="container"><div class="header"><table><tr><td><img src="https://raw.githubusercontent.com/Unknownplanet40/EcomProject-G5/main/Assets/Images/Logo_1.png" alt="Company Logo" style="display: block;" width="32"></td><td><h2>Playaz Luxury Streetwears</h2></td></tr></table></div><hr><h3 style="text-align: center;">Code Verification</h3><div class="content"><p>Dear <b>' . htmlspecialchars($name, ENT_QUOTES, 'UTF-8') . '</b>,</p><p>Your verification code is: <b>' . htmlspecialchars($OTP, ENT_QUOTES, 'UTF-8') . '</b></p><p>Please use this code to verify your email address.</p><p>If you did not request this code, please ignore this email.</p><div style="text-align: end;"><p>Thank you!</p><p>Best regards,<br>The Playaz Team</p></div></div><div class="footer"><p>&copy; ' . date('Y') . ' Playaz Luxury Streetwear. All rights reserved.</p></div></div></body></html>';
+
+            // Plain text message
+            $mail->AltBody = 'Hello ' . $name . ",\n\nYour verification code is: " . $OTP . "\n\nPlease enter this code in the verification form to complete your registration.\n\nThank you!\nBest regards,\nThe Playaz Team";
+
+            if ($mail->send()) {
+                response(['status' => 'valid', 'code' => $OTP]);
+            } else {
+                response(['status' => $mail->ErrorInfo]);
+            }
         }
     } else if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['payout'])) {
         $payout = $_GET['payout'];
@@ -579,9 +603,72 @@ try {
                 response(['status' => 'error', 'message' => 'Invalid payout method']);
                 break;
         }
+    } else if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_GET['card'])) {
+        $ProccessType = $_GET['card'];
+
+        $rawData = file_get_contents('php://input');
+        $data = json_decode($rawData, true);
+
+        if (empty($data) || !isset($data['UserID']) || !isset($data['cardholder']) || !isset($data['cardnumber']) || !isset($data['expdate']) || !isset($data['cvv'])) {
+            response(['status' => 'error', 'message' => 'Invalid request']);
+        }
+
+        $user_ID = $data['UserID'];
+        $cardholder = $data['cardholder'];
+        $cardnumber = $data['cardnumber'];
+        $expdate = $data['expdate'];
+        $cvv = $data['cvv'];
+
+        if ($user_ID != $_SESSION['User_Data']['user_ID']) {
+            response(['status' => 'error', 'message' => 'Unauthorized']);
+        }
+
+        $conn->begin_transaction();
+
+        if ($ProccessType == 'add') {
+            $stmt_insert = $conn->prepare("INSERT INTO user_cardinfo (User_ID, Card_Holder, Card_Number, Exp_date, CVV) VALUES (?, ?, ?, ?, ?)");
+            $stmt_insert->bind_param('sssss', $user_ID, $cardholder, $cardnumber, $expdate, $cvv);
+            $stmt_insert->execute();
+
+            if ($stmt_insert->affected_rows > 0) {
+                $stmt_insert->close();
+
+                $stmt_info = $conn->prepare("UPDATE user_informations SET Paymentmethod = 2 WHERE User_ID = ?");
+                $stmt_info->bind_param('s', $user_ID);
+                $stmt_info->execute();
+                $stmt_info->close();
+
+                $conn->commit();
+                response(['status' => 'success', 'message' => 'Credit Card information has been added']);
+            } else {
+                $conn->rollback();
+                response(['status' => 'error', 'message' => 'Failed to add Credit Card information']);
+            }
+        } else if ($ProccessType == 'update') {
+            $stmt_update = $conn->prepare("UPDATE user_cardinfo SET Card_Holder = ?, Card_Number = ?, Exp_date = ?, CVV = ? WHERE User_ID = ?");
+            $stmt_update->bind_param('sssss', $cardholder, $cardnumber, $expdate, $cvv, $user_ID);
+            $stmt_update->execute();
+
+            if ($stmt_update->affected_rows > 0) {
+                $stmt_update->close();
+
+                $stmt_info = $conn->prepare("UPDATE user_informations SET Paymentmethod = 2 WHERE User_ID = ?");
+                $stmt_info->bind_param('s', $user_ID);
+                $stmt_info->execute();
+                $stmt_info->close();
+
+                $conn->commit();
+                response(['status' => 'success', 'message' => 'Credit Card information has been updated']);
+            } else {
+                $conn->rollback();
+                response(['status' => 'error', 'message' => 'Failed to update Credit Card information']);
+            }
+        } else {
+            response(['status' => 'error', 'message' => 'Invalid request type']);
+        }
     } else {
         response(['status' => 'error', 'message' => 'Invalid request method']);
     }
 } catch (\Throwable $th) {
-    response(['status' => 'error', 'message' => 'Something went wrong! (' . $th->getMessage() . ')']);
+    response(['status' => 'error', 'message' => 'Something went wrong!', 'errordetails' => $th->getMessage()]);
 }

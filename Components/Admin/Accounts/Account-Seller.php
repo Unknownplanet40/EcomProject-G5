@@ -6,6 +6,7 @@ $login = false;
 $Username = 'Undefined';
 $UserRole = 'Undefined';
 $Theme = 'light';
+$CurrentPath = substr($_SERVER['REQUEST_URI'], strrpos($_SERVER['REQUEST_URI'], '/') + 1);
 
 if (isset($_SESSION['User_Data'])) {
     if ($_SESSION['User_Data']['Is_user_logged_in'] == 1) {
@@ -63,14 +64,14 @@ if (!$login) {
             <span class="custom-loader"></span>
         </div>
         <div class="d-flex justify-content-center">
-            <input type="text" class="form-control form-control-sm w-50" id="SearchProduct" placeholder="Search Product">
-            <button class="btn btn-sm btn-primary mx-1" id="AddProduct">
-                <svg class="bi pe-none me-2" width="16" height="16">
-                    <use xlink:href="#Adprod" />
+            <input type="text" class="form-control form-control-sm w-50" id="SearchAdmin" placeholder="Seach here...">
+            <button class="btn btn-sm btn-primary mx-1" id="AddAdmin">
+                <svg class="bi pe-none" width="16" height="16">
+                    <use xlink:href="#Plus" />
                 </svg>
-                Add Product
+                New Seller
             </button>
-            <button class="btn btn-sm btn-primary mx-1" id="ArchiveProduct">
+            <button class="btn btn-sm btn-secondary mx-1" id="AdminArchive">
                 <svg class="bi pe-none me-1" width="16" height="16">
                     <use xlink:href="#Archive" />
                 </svg>
@@ -78,23 +79,25 @@ if (!$login) {
             </button>
         </div>
         <div class="table-responsive">
-            <table class="table table-striped-columns table-bordered table-hover d-none" id="SellerTable" style="width: 100%;">
+            <table class="table table-striped-columns table-bordered table-hover d-none" id="AdminTable" style="width: 100%;">
                 <thead>
                     <tr>
                         <th scope="col" class="text-center">#</th>
                         <th scope="col" class="text-center">User_ID</th>
-                        <th scope="col" class="text-center">Name</th>
+                        <th scope="col" class="text-center">First Name</th>
+                        <th scope="col" class="text-center">Last Name</th>
                         <th scope="col" class="text-center">Email</th>
                         <th scope="col" class="text-center">Password</th>
                         <th scope="col" class="text-center">Gender</th>
                         <th scope="col" class="text-center">Status</th>
+                        <th scope="col" class="text-center">Role</th>
                         <th scope="col" class="text-center">Action</th>
                     </tr>
                 </thead>
                 <tbody class="table-group-divider" id="ProductTableBody">
                     <?php
                     // Prepare and execute the first query
-                    $stmt_tb1 = $conn->prepare("SELECT * FROM account" );
+                    $stmt_tb1 = $conn->prepare("SELECT * FROM account");
                     $stmt_tb1->execute();
                     $result_tb1 = $stmt_tb1->get_result();
                     $ID = 0;
@@ -113,34 +116,52 @@ if (!$login) {
                         if ($row_tb2) { // Ensure the row exists
                             if ($row_tb2['Gender'] == 1) {
                                 $row_tb2['Gender'] = 'Male';
-                            } else if ($row_tb2['Gender'] == NULL) {
-                                $row_tb2['Gender'] = '<small class="text-danger">No Data</small>';
-                            } else {
+                            } else if ($row_tb2['Gender'] == 0) {
                                 $row_tb2['Gender'] = 'Female';
+                            } else {
+                                $row_tb2['Gender'] = '<small class="text-danger">No Data</small>';
                             }
                         } else {
                             $row_tb2['First_Name'] = $row_tb2['Last_Name'] = $row_tb2['Gender'] = $row_tb2['Address'] = "";
                         }
 
-                        if ($row_tb1['Status'] == 'active') {
-                            $row_tb1['Status'] = 'Active';
+                        // to uppercase the first letter of the status
+                        $row_tb1['Status'] = ucfirst($row_tb1['Status']);
+
+                        if ($row_tb1['Status'] == 'Active') {
+                            $tbColor = '';
+                        } else if ($row_tb1['Status'] == 'Inactive') {
+                            $tbColor = 'table-secondary';
+                        } else if ($row_tb1['Status'] == 'Suspended') {
+                            $tbColor = 'table-warning';
                         } else {
-                            $row_tb1['Status'] = 'Inactive';
+                            $row_tb1['Status'] = 'No Data';
+                            $tbColor = 'table-danger';
                         }
 
                         if ($row_tb2['Role'] == 'seller') {
-                    ?>
-                        <tr>
-                            <th scope="row" class="text-center"><?php echo $ID ?></th>
-                            <td><?php echo $row_tb1['User_ID'] ?></td>
-                            <td><?php echo $row_tb2['First_Name'] . ' ' . $row_tb2['Last_Name'] ?></td>
-                            <td><?php echo $row_tb1['Email_Address'] ?></td>
-                            <td class="text-center"><?php echo $row_tb1['Password'] ?></td>
-                            <td class="text-center"><?php echo $row_tb2['Gender'] ?></td>
-                            <td class="text-center"><?php echo $row_tb1['Status'] ?></td>
-                            <td class="text-center">Tangina mo</td>
-                        </tr>
-                    <?php
+
+                            $stmt_check_Stat = $conn->prepare("SELECT * FROM account WHERE User_ID = ? AND Status = 'Active'");
+                            $stmt_check_Stat->bind_param("s", $row_tb1['User_ID']);
+                            $stmt_check_Stat->execute();
+                            $result_check_Stat = $stmt_check_Stat->get_result();
+                            $row_check_Stat = $result_check_Stat->fetch_assoc();
+
+                            // if the account is active, display the data
+                            if ($row_check_Stat) { ?>
+                                <tr>
+                                    <th scope="row" class="text-center"><?php echo $ID ?></th>
+                                    <td><?php echo $row_tb1['User_ID'] ?></td>
+                                    <td><?php echo $row_tb2['First_Name'] ?></td>
+                                    <td><?php echo $row_tb2['Last_Name'] ?></td>
+                                    <td><?php echo $row_tb1['Email_Address'] ?></td>
+                                    <td class="text-center"><?php echo $row_tb1['Password'] ?></td>
+                                    <td class="text-center"><?php echo $row_tb2['Gender'] ?></td>
+                                    <td class="text-center <?php echo $tbColor ?>"><?php echo $row_tb1['Status'] ?></td>
+                                    <td class="text-center"><?php echo $row_tb2['Role'] ?></td>
+                                    <td class="text-center">Tangina mo</td>
+                                </tr>
+                    <?php }
                         }
                     }
                     ?>

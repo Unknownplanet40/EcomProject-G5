@@ -62,11 +62,11 @@ if (!$login) {
                     <img class="mt-5 rounded-3" style="object-fit: cover; object-position: center;" width="150" height="150" id="profile-pic" src="../../Assets/Images/Profile.gif">
                     <span class="fw-bold mt-3 mb-2" id="name_side"><?php echo $Username; ?></span>
                     <span class="fs-6" id="email_side"><?php echo $Email; ?></span>
-                    <div class="d-flex justify-content-between align-items-center mt-5 gap-2">
-                        <button class="btn btn-secondary btn-sm" type="button" id="Back">Back</button>
-                        <button class="btn btn-primary btn-sm" id="changeimage" type="button"><span id="changeimage-label">ChangeImage</span></button>
-                        <input type="file" class="d-none" id="ProfileImage" accept="image/png, image/jpeg image/jpg image/gif">
-                    </div>
+                </div>
+                <div class="d-grid gap-2 col-6 mx-auto">
+                    <button class="btn btn-secondary btn-sm" type="button" id="Back">Back</button>
+                    <button class="btn btn-primary btn-sm" id="changeimage" type="button"><span id="changeimage-label">ChangeImage</span></button>
+                    <input type="file" class="d-none" id="ProfileImage" accept="image/png, image/jpeg image/jpg image/gif">
                 </div>
             </div>
             <div class="col-md-5">

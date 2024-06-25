@@ -8,7 +8,7 @@
             <div class="modal-body p-5 pt-0">
                 <div class="form-floating mb-3">
                     <input type="email" class="form-control rounded-3" id="MailAddress" placeholder="name@example.com">
-                    <label for="floatingInput">Email address</label>
+                    <label for="MailAddress">Email address</label>
                 </div>
 
                 <div class="form-floating">

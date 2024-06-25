@@ -29,7 +29,9 @@ if (isset($_SESSION['User_Data'])) {
 }
 ?>
 
+
 <!DOCTYPE html>
+
 <html lang="en" data-bs-theme="<?php echo $Theme; ?>">
 
 <head>
@@ -44,6 +46,8 @@ if (isset($_SESSION['User_Data'])) {
     <!-- <script defer src="../../Utilities/Scripts/ToggleSwitch.js"></script> -->
     <script defer src="../../Utilities/Scripts/LoginScript.js"></script>
     <link rel="manifest" href="manifest.json">
+    <link rel="shortcut icon" href="../../Assets/Icons/Logo_1_x128.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="../../Assets/Images/Logo_1x144.png">
     <title>Ecommers</title>
     <script>
         // clear specific local storage
@@ -276,7 +280,7 @@ if (isset($_SESSION['User_Data'])) {
         </div>
         <div class="container-lg">
             <div class="row row-cols-3 row-cols-sm-4 row-cols-md-5 row-cols-lg-6 row-col-xxl-7 g-3" data-masonry='{"percentPosition": true }'>
-                <?php 
+                <?php
                 // count the number of images in the gallery folder
                 $dir = '../../Assets/Products_Assets/Gallery/';
                 $files = glob($dir . '*.{jpg,jpeg,png,gif}', GLOB_BRACE);

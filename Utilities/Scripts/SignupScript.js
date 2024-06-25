@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
   OTPcode = 0;
   canReload = true;
   ExpireTime = 0;
+  VeriError = "";
 
   async function checkEmailExistence(functionname, email) {
     try {
@@ -67,6 +68,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if ((data.isSent = true)) {
         return true;
       } else {
+        VeriError = data.error;
         return false;
       }
     } catch (error) {
@@ -167,7 +169,7 @@ document.addEventListener("DOMContentLoaded", function () {
   backgroundMusic.currentTime = localStorage.getItem("BGMusicTime");
   backgroundMusic.play();
   backgroundMusic.volume = 0.1;
-  //save current timestamp of background music to local storage
+  
   setInterval(function () {
     localStorage.setItem("BGMusicTime", backgroundMusic.currentTime);
   }, 1000);
@@ -247,20 +249,53 @@ document.addEventListener("DOMContentLoaded", function () {
       }, 1500);
       return;
     }
-    var otp = Math.floor(100000 + Math.random() * 900000);
-    OTPcode = otp;
-    canReload = false;
-    AuthenticateOTP("sendOTP", fname.value, emailAddress.value, otp);
-    var currentTime = new Date();
-    currentTime.setMinutes(currentTime.getMinutes() + 5);
-    ExpireTime = currentTime;
-    var OTP_Timer = document.getElementById("OTP-Timer");
-    OTP_Timer.textContent = ExpireTime.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-    step_2_2.classList.remove("d-none");
-    step_2_1.classList.add("d-none");
+    if (navigator.onLine) {
+      var otp = Math.floor(100000 + Math.random() * 900000);
+      OTPcode = otp;
+      canReload = false;
+
+      EA_Next.disabled = true;
+      EA_Next.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending...`;
+
+      if (AuthenticateOTP("sendOTP", fname.value, emailAddress.value, otp) == true) {
+        EA_Next.disabled = false;
+        EA_Next.innerHTML = "Next";
+        var currentTime = new Date();
+        currentTime.setMinutes(currentTime.getMinutes() + 5);
+        ExpireTime = currentTime;
+        var OTP_Timer = document.getElementById("OTP-Timer");
+        OTP_Timer.textContent = ExpireTime.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        step_2_2.classList.remove("d-none");
+        step_2_1.classList.add("d-none");
+      } else {
+        EA_Next.disabled = false;
+        EA_Next.innerHTML = "Next";
+        Swal.mixin({
+          toast: true,
+          position: "top",
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        }).fire({
+          icon: "error",
+          title: VeriError,
+        });
+      }
+    } else {
+      Swal.fire({
+        title: "No Internet Connection!",
+        text: "We are unable to send Verification Code. Please check your internet connection.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    }
   });
 
   EA_Back.addEventListener("click", function () {
@@ -269,21 +304,53 @@ document.addEventListener("DOMContentLoaded", function () {
     step_1.classList.remove("d-none");
   });
 
-  RegenOTP.addEventListener("click", function () {
+  RegenOTP.addEventListener("click", async function () {
     var emailAddress = document.getElementById("Email");
     var fname = document.getElementById("Fname");
     var otp = Math.floor(100000 + Math.random() * 900000);
     OTPcode = otp;
-    AuthenticateOTP("sendOTP", fname.value, emailAddress.value, otp);
-    // get current time and add 5 minutes
-    var currentTime = new Date();
-    currentTime.setMinutes(currentTime.getMinutes() + 5);
-    ExpireTime = currentTime;
-    var OTP_Timer = document.getElementById("OTP-Timer");
-    OTP_Timer.textContent = ExpireTime.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    if (navigator.onLine) {
+
+      RegenOTP.disabled = true;
+      RegenOTP.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending...`;
+
+      if (AuthenticateOTP("sendOTP", fname.value, emailAddress.value, otp) == true) {
+        RegenOTP.disabled = false;
+        RegenOTP.innerHTML = "Resend OTP";
+        var currentTime = new Date();
+        currentTime.setMinutes(currentTime.getMinutes() + 5);
+        ExpireTime = currentTime;
+        var OTP_Timer = document.getElementById("OTP-Timer");
+        OTP_Timer.textContent = ExpireTime.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      } else {
+        RegenOTP.disabled = false;
+        RegenOTP.innerHTML = "Resend OTP";
+        Swal.mixin({
+          toast: true,
+          position: "top",
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        }).fire({
+          icon: "error",
+          title: VeriError,
+        });
+      }
+    } else {
+      Swal.fire({
+        title: "No Internet Connection!",
+        text: "We are unable to send Verification Code. Please check your internet connection.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    }
   });
 
   OTP_Next.addEventListener("click", function () {

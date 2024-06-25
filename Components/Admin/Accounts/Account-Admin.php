@@ -6,6 +6,7 @@ $login = false;
 $Username = 'Undefined';
 $UserRole = 'Undefined';
 $Theme = 'light';
+$CurrentPath = substr($_SERVER['REQUEST_URI'], strrpos($_SERVER['REQUEST_URI'], '/') + 1);
 
 if (isset($_SESSION['User_Data'])) {
     if ($_SESSION['User_Data']['Is_user_logged_in'] == 1) {
@@ -96,7 +97,7 @@ if (!$login) {
                 <tbody class="table-group-divider" id="ProductTableBody">
                     <?php
                     // Prepare and execute the first query
-                    $stmt_tb1 = $conn->prepare("SELECT * FROM account" );
+                    $stmt_tb1 = $conn->prepare("SELECT * FROM account");
                     $stmt_tb1->execute();
                     $result_tb1 = $stmt_tb1->get_result();
                     $ID = 0;
@@ -115,10 +116,10 @@ if (!$login) {
                         if ($row_tb2) { // Ensure the row exists
                             if ($row_tb2['Gender'] == 1) {
                                 $row_tb2['Gender'] = 'Male';
-                            } else if ($row_tb2['Gender'] == NULL) {
-                                $row_tb2['Gender'] = '<small class="text-danger">No Data</small>';
-                            } else {
+                            } else if ($row_tb2['Gender'] == 0) {
                                 $row_tb2['Gender'] = 'Female';
+                            } else {
+                                $row_tb2['Gender'] = '<small class="text-danger">No Data</small>';
                             }
                         } else {
                             $row_tb2['First_Name'] = $row_tb2['Last_Name'] = $row_tb2['Gender'] = $row_tb2['Address'] = "";
@@ -137,22 +138,30 @@ if (!$login) {
                             $row_tb1['Status'] = 'No Data';
                             $tbColor = 'table-danger';
                         }
-                        
+
                         if ($row_tb2['Role'] == 'admin') {
-                    ?>
-                        <tr>
-                            <th scope="row" class="text-center"><?php echo $ID ?></th>
-                            <td><?php echo $row_tb1['User_ID'] ?></td>
-                            <td><?php echo $row_tb2['First_Name']?></td>
-                            <td><?php echo $row_tb2['Last_Name'] ?></td>
-                            <td><?php echo $row_tb1['Email_Address'] ?></td>
-                            <td class="text-center"><?php echo $row_tb1['Password'] ?></td>
-                            <td class="text-center"><?php echo $row_tb2['Gender'] ?></td>
-                            <td class="text-center <?php echo $tbColor ?>"><?php echo $row_tb1['Status'] ?></td>
-                            <td class="text-center"><?php echo $row_tb2['Role'] ?></td>
-                            <td class="text-center">Tangina mo</td>
-                        </tr>
-                    <?php
+
+                            $stmt_check_Stat = $conn->prepare("SELECT * FROM account WHERE User_ID = ? AND Status = 'Active'");
+                            $stmt_check_Stat->bind_param("s", $row_tb1['User_ID']);
+                            $stmt_check_Stat->execute();
+                            $result_check_Stat = $stmt_check_Stat->get_result();
+                            $row_check_Stat = $result_check_Stat->fetch_assoc();
+
+                            // if the account is active, display the data
+                            if ($row_check_Stat) { ?>
+                                <tr <?php echo ($_SESSION['User_Data']['user_ID'] == $row_tb1['User_ID']) ? "class='opacity-50'" : ''; ?>>
+                                    <th scope="row" class="text-center"><?php echo $ID ?></th>
+                                    <td><?php echo $row_tb1['User_ID'] ?></td>
+                                    <td><?php echo $row_tb2['First_Name'] ?></td>
+                                    <td><?php echo $row_tb2['Last_Name'] ?></td>
+                                    <td><?php echo $row_tb1['Email_Address'] ?></td>
+                                    <td class="text-center"><?php echo $row_tb1['Password'] ?></td>
+                                    <td class="text-center"><?php echo $row_tb2['Gender'] ?></td>
+                                    <td class="text-center <?php echo $tbColor ?>"><?php echo $row_tb1['Status'] ?></td>
+                                    <td class="text-center"><?php echo $row_tb2['Role'] ?></td>
+                                    <td class="text-center">Tangina mo</td>
+                                </tr>
+                    <?php }
                         }
                     }
                     ?>

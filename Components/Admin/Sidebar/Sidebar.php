@@ -21,14 +21,16 @@ switch ($Filename) {
     case 'Account-Users':
         $Title = 'Users';
         break;
+    case 'Email-Service':
+        $Title = 'Service';
+        break;
     default:
         $Title = 'Undefined';
         break;
 }
 ?>
 <!-- Navbar -->
-<nav
-    class="navbar navbar-expand-lg bg-body-tertiary bg-opacity-75 bg-blur-3 border-bottom shadow-sm fixed-top d-sm-block d-md-none d-lg-none d-xl-none d-xxl-none">
+<nav class="navbar navbar-expand-lg bg-body-tertiary bg-opacity-75 bg-blur-3 border-bottom shadow-sm fixed-top d-sm-block d-md-none d-lg-none d-xl-none d-xxl-none">
     <div class="container-fluid">
         <div class="col-md-3 mb-2 mb-md-0 me-5">
             <a href="<?php $_SERVER['PHP_SELF']; ?>" class="d-inline-flex link-body-emphasis text-decoration-none">
@@ -38,18 +40,14 @@ switch ($Filename) {
                 <span class="fs-4 my-1"><?php echo $Title; ?></span>
             </a>
         </div>
-        <button class="navbar-toggler nb-t" type="button" data-bs-toggle="collapse"
-            data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false"
-            aria-label="Toggle navigation">
+        <button class="navbar-toggler nb-t" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
             <ul class="navbar-nav me-auto mb-2 mb-md-0">
                 <?php if ($UserRole == 'admin') { ?>
                     <li class="nav-item">
-                        <a href="<? echo $Dashboard ?>"
-                            class="nlinks <?php echo $Title == 'Dashboard' ? 'nav-active' : 'link-body-emphasis'; ?>"
-                            aria-current="page">
+                        <a href="<? echo $Dashboard ?>" class="nlinks <?php echo $Title == 'Dashboard' ? 'nav-active' : 'link-body-emphasis'; ?>" aria-current="page">
                             <svg class="bi pe-none me-2" width="16" height="16">
                                 <use xlink:href="#Dashboard" />
                             </svg>
@@ -59,9 +57,7 @@ switch ($Filename) {
                 <?php } ?>
                 <?php if ($UserRole == 'seller') { ?>
                     <li class="nav-item">
-                        <a href="<?php echo $SellerDashboard; ?>"
-                            class="nlinks <?php echo $Title == 'Dashboard' ? 'nav-active' : 'link-body-emphasis'; ?>"
-                            aria-current="page">
+                        <a href="<?php echo $SellerDashboard; ?>" class="nlinks <?php echo $Title == 'Dashboard' ? 'nav-active' : 'link-body-emphasis'; ?>" aria-current="page">
                             <svg class="bi pe-none me-2" width="16" height="16">
                                 <use xlink:href="#Dashboard" />
                             </svg>
@@ -69,9 +65,7 @@ switch ($Filename) {
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="<?php echo $Products; ?>"
-                            class="nlinks <?php echo $Title == 'Products' ? 'nav-active' : 'link-body-emphasis'; ?>"
-                            aria-current="page">
+                        <a href="<?php echo $Products; ?>" class="nlinks <?php echo $Title == 'Products' ? 'nav-active' : 'link-body-emphasis'; ?>" aria-current="page">
                             <svg class="bi pe-none me-2" width="16" height="16">
                                 <use xlink:href="#Products" />
                             </svg>
@@ -79,8 +73,7 @@ switch ($Filename) {
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nlinks active collapsed" data-bs-toggle="collapse"
-                            data-bs-target="#orders-collapse">
+                        <a href="#" class="nlinks active collapsed" data-bs-toggle="collapse" data-bs-target="#orders-collapse">
                             <svg class="bi pe-none me-2" width="16" height="16">
                                 <use xlink:href="#Order" />
                             </svg>
@@ -95,8 +88,7 @@ switch ($Filename) {
                             <ul class="nav nav-pills flex-column mb-auto list-unstyled fw-normal">
                                 <li class="border-top"></li>
                                 <li>
-                                    <a href="#"
-                                        class="nlinks <?php echo $Title == 'Status1' ? 'nav-active' : 'link-body-emphasis'; ?>">
+                                    <a href="#" class="nlinks <?php echo $Title == 'Status1' ? 'nav-active' : 'link-body-emphasis'; ?>">
                                         <svg class="bi pe-none me-2" width="16" height="16">
                                             <use xlink:href="#grid" />
                                         </svg>
@@ -104,8 +96,7 @@ switch ($Filename) {
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#"
-                                        class="nlinks <?php echo $Title == 'Status2' ? 'nav-active' : 'link-body-emphasis'; ?>">
+                                    <a href="#" class="nlinks <?php echo $Title == 'Status2' ? 'nav-active' : 'link-body-emphasis'; ?>">
                                         <svg class="bi pe-none me-2" width="16" height="16">
                                             <use xlink:href="#grid" />
                                         </svg>
@@ -113,8 +104,7 @@ switch ($Filename) {
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#"
-                                        class="nlinks <?php echo $Title == 'Status3' ? 'nav-active' : 'link-body-emphasis'; ?>">
+                                    <a href="#" class="nlinks <?php echo $Title == 'Status3' ? 'nav-active' : 'link-body-emphasis'; ?>">
                                         <svg class="bi pe-none me-2" width="16" height="16">
                                             <use xlink:href="#grid" />
                                         </svg>
@@ -128,10 +118,8 @@ switch ($Filename) {
                 <?php } ?>
                 <?php if ($UserRole == 'admin') { ?>
                     <li class="nav-item">
-                        <a href="#"
-                            class="nlinks collapsed
-                    <?php echo $Title == 'Administrators' || $Title == 'Sellers' || $Title == 'Users' ? 'nav-active' : 'link-body-emphasis'; ?>"
-                            data-bs-toggle="collapse" data-bs-target="#account-collapse">
+                        <a href="#" class="nlinks collapsed
+                    <?php echo $Title == 'Administrators' || $Title == 'Sellers' || $Title == 'Users' ? 'nav-active' : 'link-body-emphasis'; ?>" data-bs-toggle="collapse" data-bs-target="#account-collapse">
                             <svg class="bi pe-none me-2" width="16" height="16">
                                 <use xlink:href="#Account" />
                             </svg>
@@ -146,8 +134,7 @@ switch ($Filename) {
                             <ul class="nav flex-column mb-auto list-unstyled fw-normal">
                                 <li class="border-top"></li>
                                 <li>
-                                    <a href="../Accounts/Account-Admin.php"
-                                        class="nlinks <?php echo $Title == 'Administrators' ? 'nav-active' : 'link-body-emphasis'; ?>">
+                                    <a href="../Accounts/Account-Admin.php" class="nlinks <?php echo $Title == 'Administrators' ? 'nav-active' : 'link-body-emphasis'; ?>">
                                         <svg class="bi pe-none me-2" width="16" height="16">
                                             <use xlink:href="#Account" />
                                         </svg>
@@ -155,8 +142,7 @@ switch ($Filename) {
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="../Accounts/Account-Seller.php"
-                                        class="nlinks <?php echo $Title == 'Sellers' ? 'nav-active' : 'link-body-emphasis'; ?>">
+                                    <a href="../Accounts/Account-Seller.php" class="nlinks <?php echo $Title == 'Sellers' ? 'nav-active' : 'link-body-emphasis'; ?>">
                                         <svg class="bi pe-none me-2" width="16" height="16">
                                             <use xlink:href="#Account" />
                                         </svg>
@@ -164,8 +150,7 @@ switch ($Filename) {
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="../Accounts/Account-Users.php"
-                                        class="nlinks <?php echo $Title == 'Users' ? 'nav-active' : 'link-body-emphasis'; ?>">
+                                    <a href="../Accounts/Account-Users.php" class="nlinks <?php echo $Title == 'Users' ? 'nav-active' : 'link-body-emphasis'; ?>">
                                         <svg class="bi pe-none me-2" width="16" height="16">
                                             <use xlink:href="#Account" />
                                         </svg>
@@ -177,11 +162,11 @@ switch ($Filename) {
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nlinks <?php echo $Title == 'Reports' ? 'nav-active' : 'link-body-emphasis'; ?>">
+                        <a href="../Accounts/" class="nlinks <?php echo $Title == 'Service' ? 'nav-active' : 'link-body-emphasis'; ?>">
                             <svg class="bi pe-none me-2" width="16" height="16">
-                                <use xlink:href="#Reports" />
+                                <use xlink:href="#MailService" />
                             </svg>
-                            Reports
+                            Email Services
                         </a>
                     </li>
                 <?php } ?>
@@ -196,12 +181,10 @@ switch ($Filename) {
                 <ul class="dropdown-menu text-small shadow">
                     <h3 class="dropdown-header">
                         <div class="d-flex justify-content-center">
-                            <img src="https://github.com/mdo.png" alt="mdo" width="48" height="48"
-                                class="rounded-circle">
+                            <img src="https://github.com/mdo.png" alt="mdo" width="48" height="48" class="rounded-circle">
                         </div>
                         <div class="d-flex justify-content-center" style="max-width: 200px;">
-                            <p class="dropdown-item-text px-2 text-truncate fw-bold fs-6" data-bs-toggle="tooltip"
-                                data-bs-placement="bottom" data-bs-trigger="hover" data-bs-title="Username">
+                            <p class="dropdown-item-text px-2 text-truncate fw-bold fs-6" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover" data-bs-title="Username">
                                 <?php echo $Username; ?></p>
                         </div>
                         <div class="text-center" style="margin-top: -15px;">
@@ -211,9 +194,8 @@ switch ($Filename) {
                     <li>
                         <hr class="dropdown-divider">
                     </li>
-                    <li><a class="dropdown-item" href="#">Profile</a></li>
                     <li><a class="dropdown-item" href="<?php echo $Home; ?>">Homepage</a></li>
-                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                    <li><a class="dropdown-item" href="../../Profile/General_Setting.php">Settings</a></li>
                     <li>
                         <hr class="dropdown-divider">
                     </li>
@@ -231,12 +213,10 @@ switch ($Filename) {
 </nav>
 <hr style="height: 66px; margin: 0;">
 <!-- Sidebar -->
-<main
-    class="d-none d-sm-none d-md-block d-lg-block d-xl-block d-xxl-block shadow-sm bg-body-tertiary bg-opacity-75 bg-blur-3">
+<main class="d-none d-sm-none d-md-block d-lg-block d-xl-block d-xxl-block shadow-sm bg-body-tertiary bg-opacity-75 bg-blur-3">
     <aside class="d-flex flex-nowrap sidebar-height border-end">
         <div class="d-flex flex-column flex-shrink-0 p-3" style="width: 250px;">
-            <a href="<?php echo $Home; ?>"
-                class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+            <a href="<?php echo $Home; ?>" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
                 <svg class="bi pe-none me-2" width="40" height="32">
                     <use xlink:href="#Admin" />
                 </svg>
@@ -246,9 +226,7 @@ switch ($Filename) {
             <ul class="nav nav-pills flex-column mb-auto">
                 <?php if ($UserRole == 'admin') { ?>
                     <li class="nav-item">
-                        <a href="<?php echo $Dashboard; ?>"
-                            class="nav-link <?php echo $Title == 'Dashboard' ? 'side-active' : 'link-body-emphasis'; ?>"
-                            aria-current="page">
+                        <a href="<?php echo $Dashboard; ?>" class="nav-link <?php echo $Title == 'Dashboard' ? 'side-active' : 'link-body-emphasis'; ?>" aria-current="page">
                             <svg class="bi pe-none me-2" width="16" height="16">
                                 <use xlink:href="#Dashboard" />
                             </svg>
@@ -258,9 +236,7 @@ switch ($Filename) {
                 <?php }
                 if ($UserRole == 'seller') { ?>
                     <li>
-                        <a href="<?php echo $SellerDashboard; ?>"
-                            class="nav-link <?php echo $Title == 'Dashboard' ? 'nav-active' : 'link-body-emphasis'; ?>"
-                            aria-current="page">
+                        <a href="<?php echo $SellerDashboard; ?>" class="nav-link <?php echo $Title == 'Dashboard' ? 'nav-active' : 'link-body-emphasis'; ?>" aria-current="page">
                             <svg class="bi pe-none me-2" width="16" height="16">
                                 <use xlink:href="#Dashboard" />
                             </svg>
@@ -268,8 +244,7 @@ switch ($Filename) {
                         </a>
                     </li>
                     <li>
-                        <a href="<?php echo $Products; ?>"
-                            class="nav-link <?php echo $Title == 'Products' ? 'side-active' : 'link-body-emphasis'; ?>">
+                        <a href="<?php echo $Products; ?>" class="nav-link <?php echo $Title == 'Products' ? 'side-active' : 'link-body-emphasis'; ?>">
                             <svg class="bi pe-none me-2" width="16" height="16">
                                 <use xlink:href="#Products" />
                             </svg>
@@ -277,8 +252,7 @@ switch ($Filename) {
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="nav-link link-body-emphasis collapsed" data-bs-toggle="collapse"
-                            data-bs-target="#orders-collapse">
+                        <a href="#" class="nav-link link-body-emphasis collapsed" data-bs-toggle="collapse" data-bs-target="#orders-collapse">
                             <svg class="bi pe-none me-2" width="16" height="16">
                                 <use xlink:href="#Order" />
                             </svg>
@@ -293,8 +267,7 @@ switch ($Filename) {
                             <ul class="nav nav-pills flex-column mb-auto list-unstyled fw-normal">
                                 <li class="border-top"></li>
                                 <li>
-                                    <a href="#"
-                                        class="nav-link <?php echo $Title == 'Status1' ? 'side-active' : 'link-body-emphasis'; ?>">
+                                    <a href="#" class="nav-link <?php echo $Title == 'Status1' ? 'side-active' : 'link-body-emphasis'; ?>">
                                         <svg class="bi pe-none me-2" width="16" height="16">
                                             <use xlink:href="#grid" />
                                         </svg>
@@ -302,8 +275,7 @@ switch ($Filename) {
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#"
-                                        class="nav-link <?php echo $Title == 'Status2' ? 'side-active' : 'link-body-emphasis'; ?>">
+                                    <a href="#" class="nav-link <?php echo $Title == 'Status2' ? 'side-active' : 'link-body-emphasis'; ?>">
                                         <svg class="bi pe-none me-2" width="16" height="16">
                                             <use xlink:href="#grid" />
                                         </svg>
@@ -311,8 +283,7 @@ switch ($Filename) {
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#"
-                                        class="nav-link <?php echo $Title == 'Status3' ? 'side-active' : 'link-body-emphasis'; ?>">
+                                    <a href="#" class="nav-link <?php echo $Title == 'Status3' ? 'side-active' : 'link-body-emphasis'; ?>">
                                         <svg class="bi pe-none me-2" width="16" height="16">
                                             <use xlink:href="#grid" />
                                         </svg>
@@ -326,10 +297,8 @@ switch ($Filename) {
                 <?php }
                 if ($UserRole == 'admin') { ?>
                     <li>
-                        <a href="#"
-                            class="nav-link collapsed
-                    <?php echo $Title == 'Administrators' || $Title == 'Sellers' || $Title == 'Users' ? 'side-active' : 'link-body-emphasis'; ?>"
-                            data-bs-toggle="collapse" data-bs-target="#account-collapse">
+                        <a href="#" class="nav-link collapsed
+                    <?php echo $Title == 'Administrators' || $Title == 'Sellers' || $Title == 'Users' ? 'side-active' : 'link-body-emphasis'; ?>" data-bs-toggle="collapse" data-bs-target="#account-collapse">
                             <svg class="bi pe-none me-2" width="16" height="16">
                                 <use xlink:href="#Account" />
                             </svg>
@@ -344,8 +313,7 @@ switch ($Filename) {
                             <ul class="nav nav-pills flex-column mb-auto list-unstyled fw-normal">
                                 <li class="border-top"></li>
                                 <li>
-                                    <a href="../Accounts/Account-Admin.php"
-                                        class="nav-link <?php echo $Title == 'Administrators' ? 'side-active' : 'link-body-emphasis'; ?>">
+                                    <a href="../Accounts/Account-Admin.php" class="nav-link <?php echo $Title == 'Administrators' ? 'side-active' : 'link-body-emphasis'; ?>">
                                         <svg class="bi pe-none me-2" width="16" height="16">
                                             <use xlink:href="#Account" />
                                         </svg>
@@ -353,8 +321,7 @@ switch ($Filename) {
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="../Accounts/Account-Seller.php"
-                                        class="nav-link <?php echo $Title == 'Sellers' ? 'side-active' : 'link-body-emphasis'; ?>">
+                                    <a href="../Accounts/Account-Seller.php" class="nav-link <?php echo $Title == 'Sellers' ? 'side-active' : 'link-body-emphasis'; ?>">
                                         <svg class="bi pe-none me-2" width="16" height="16">
                                             <use xlink:href="#Account" />
                                         </svg>
@@ -362,8 +329,7 @@ switch ($Filename) {
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="../Accounts/Account-Users.php"
-                                        class="nav-link <?php echo $Title == 'Users' ? 'side-active' : 'link-body-emphasis'; ?>">
+                                    <a href="../Accounts/Account-Users.php" class="nav-link <?php echo $Title == 'Users' ? 'side-active' : 'link-body-emphasis'; ?>">
                                         <svg class="bi pe-none me-2" width="16" height="16">
                                             <use xlink:href="#Account" />
                                         </svg>
@@ -375,12 +341,11 @@ switch ($Filename) {
                         </div>
                     </li>
                     <li>
-                        <a href="#"
-                            class="nav-link <?php echo $Title == 'Reports' ? 'side-active' : 'link-body-emphasis'; ?>">
+                        <a href="../Accounts/Email-Service.php" class="nav-link <?php echo $Title == 'Service' ? 'side-active' : 'link-body-emphasis'; ?>">
                             <svg class="bi pe-none me-2" width="16" height="16">
-                                <use xlink:href="#Reports" />
+                                <use xlink:href="#MailService" />
                             </svg>
-                            Reports
+                            Email Services
                         </a>
                     </li>
                 <?php } ?>
@@ -395,12 +360,10 @@ switch ($Filename) {
                 <ul class="dropdown-menu text-small shadow">
                     <h3 class="dropdown-header">
                         <div class="d-flex justify-content-center">
-                            <img src="https://github.com/mdo.png" alt="mdo" width="48" height="48"
-                                class="rounded-circle">
+                            <img src="https://github.com/mdo.png" alt="mdo" width="48" height="48" class="rounded-circle">
                         </div>
                         <div class="d-flex justify-content-center" style="max-width: 200px;">
-                            <p class="dropdown-item-text px-2 text-truncate fw-bold fs-6" data-bs-toggle="tooltip"
-                                data-bs-placement="bottom" data-bs-trigger="hover" data-bs-title="Username">
+                            <p class="dropdown-item-text px-2 text-truncate fw-bold fs-6" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover" data-bs-title="Username">
                                 <?php echo $Username; ?></p>
                         </div>
                         <?php if ($UserRole == 'admin') { ?>
@@ -416,9 +379,8 @@ switch ($Filename) {
                     <li>
                         <hr class="dropdown-divider">
                     </li>
-                    <li><a class="dropdown-item" href="../../Profile/General_Setting.php">Profile</a></li>
                     <li><a class="dropdown-item" href="<?php echo $Home; ?>">Homepage</a></li>
-                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                    <li><a class="dropdown-item" href="../../Profile/General_Setting.php">Settings</a></li>
                     <li>
                         <hr class="dropdown-divider">
                     </li>

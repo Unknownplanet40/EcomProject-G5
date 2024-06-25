@@ -18,6 +18,17 @@ function response($data)
     exit;
 }
 
+function getCredential($conn, $keyName)
+{
+    $stmt = $conn->prepare("SELECT Credential FROM secret_keys WHERE Key_Name = ?");
+    $stmt->bind_param("s", $keyName);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $stmt->close();
+    return $row['Credential'];
+}
+
 try {
     if (isset($_GET['functionname'])) {
         switch ($_GET['functionname']) {
@@ -40,12 +51,8 @@ try {
                 }
                 break;
             case 'sendOTP':
-                $stmt_get_Key = $conn->prepare("SELECT Credential FROM secret_keys WHERE Key_Name = 'SMTP_Pass'");
-                $stmt_get_Key->execute();
-                $result = $stmt_get_Key->get_result();
-                $row = $result->fetch_assoc();
-                $SMTP_Pass = $row['Credential'];
-                $stmt_get_Key->close();
+                $SMTP_Pass = getCredential($conn, 'SMTP_Pass');
+                $SMTP_Uname = getCredential($conn, 'SMTP_Uname');
 
 
                 $Email = $_GET['email'];
@@ -57,13 +64,13 @@ try {
                 $mail->isSMTP();
                 $mail->Host = 'smtp.gmail.com';
                 $mail->SMTPAuth = true;
-                $mail->Username = 'ryanjamesc4@gmail.com';
+                $mail->Username = $SMTP_Uname;
                 $mail->Password = $SMTP_Pass;
                 $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                 $mail->Port = 587;
 
-                $mail->setFrom('ryanjamesc4@gmail.com');
-                $mail->addAddress($Email);
+                $mail->setFrom($SMTP_Uname, 'Playaz Luxury Streetwears');
+                $mail->addAddress($Email, $name);
 
                 $mail->isHTML(true);
                 $mail->Subject = 'OTP Verification';
@@ -74,7 +81,7 @@ try {
                 if ($mail->send()) {
                     response(['isSent' => true]);
                 } else {
-                    response(['isSent' => false]);
+                    response(['isSent' => false, 'error' => $mail->ErrorInfo]);
                 }
                 break;
             case 'createAccount':
