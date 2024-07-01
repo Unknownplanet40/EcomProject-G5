@@ -13,7 +13,7 @@
                 </ul>
             </div>
             <div class="modal-footer border-0 mt-0">
-                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-sm btn-secondary" id="RetCloseModal" data-bs-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-sm btn-primary" disabled id="RetBTN">Retrive Selected Items</button>
             </div>
         </div>

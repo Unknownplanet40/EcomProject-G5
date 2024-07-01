@@ -784,6 +784,7 @@ async function ProceedtoCheckout(Items, Address, PaymentMethod) {
         })
         .then(() => {
           CheckoutItems(User_ID);
+          location.reload();
         });
     } else {
       alert("Checkout failed!");
@@ -1036,6 +1037,8 @@ document.getElementById("checkBTN").addEventListener("click", function () {
         }
       }
     }
+  } else {
+    console.log("No items to checkout.");
   }
 });
 
@@ -1095,16 +1098,65 @@ document.getElementById("ArchiveCart").addEventListener("click", function () {
   ArchiveCart(TempUserID);
 });
 
-document.getElementById("RetBTN").addEventListener("click", function () {
+document.getElementById("RetBTN").addEventListener("click", async function () {
   if (retrievedItems.length > 0) {
     var RetBTN = document.getElementById("RetBTN");
     RetBTN.disabled = true;
     RetBTN.innerHTML = "Retrieving...";
 
-    setTimeout(() => {
-      RetBTN.disabled = false;
-      RetBTN.innerHTML = "Retrieve Selected Items";
-    }, 1000);
+    var data = {
+      UserID: TempUserID,
+      Items: retrievedItems,
+    };
+
+    try {
+      const response = await fetch("../../Utilities/api/RetrieveCart.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error("HTTP error " + response.status);
+      }
+
+      const resData = await response.json();
+
+      if (resData.status === "error") {
+        console.error(resData.message);
+        return;
+      }
+
+      if (resData.status === "success") {
+        Swal.mixin({
+          toast: true,
+          position: "top",
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        })
+          .fire({
+            icon: "success",
+            text: "Items retrieved successfully.",
+          })
+          .then(() => {
+            setTimeout(() => {
+              RetBTN.disabled = false;
+              RetBTN.innerHTML = "Retrieve Selected Items";
+              CheckoutItems(TempUserID);
+              document.getElementById("RetCloseModal").click();
+            }, 1000);
+          });
+      }
+    } catch (error) {
+      console.error("Function: RetrieveCart\n", error);
+    }
   } else {
     var RetBTN = document.getElementById("RetBTN");
     RetBTN.disabled = true;
