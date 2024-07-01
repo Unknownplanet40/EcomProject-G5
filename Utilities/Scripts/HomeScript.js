@@ -54,37 +54,25 @@ function ConsoleMessage() {
   }
 }
 
+var backgroundMusic = document.getElementById("backgroundMusic");
+backgroundMusic.volume = 0.1;
+backgroundMusic.currentTime = localStorage.getItem("BGMusicTime");
+
+
 document.addEventListener("DOMContentLoaded", function () {
   // ConsoleMessage();
 
-  if ('serviceMaker' in navigator) {
-    navigator.serviceMaker.register('serviceWorker.js')
-      .then(function (registration) {
-        console.log('Service Worker registered with scope:', registration.scope);
-      })
-      .catch(function (error) {
-        console.error('Service Worker registration failed:', error);
-      });
-  } else {
-    //console.error('Service Worker is not supported in this browser.');
-  }
-
-  var backgroundMusic = document.getElementById("backgroundMusic");
-  var playbtn = document.getElementById("play");
+  
   var keys = [];
   var konami = "38,38,40,40,37,39,37,39,66,65"; // Konami Code
-
-  backgroundMusic.currentTime = localStorage.getItem("BGMusicTime");
-  backgroundMusic.volume = 0.1;
-  setInterval(function () {
-    localStorage.setItem("BGMusicTime", backgroundMusic.currentTime);
-  }, 1000);
 
   function playMusic() {
     backgroundMusic
       .play()
       .then(() => {
-        backgroundMusic.volume = 0.1;
+        setInterval(function () {
+          localStorage.setItem("BGMusicTime", backgroundMusic.currentTime);
+        }, 1000);
       })
       .catch((error) => {
         console.error("Failed to play the music:", error);

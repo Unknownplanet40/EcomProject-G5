@@ -65,8 +65,11 @@ if (!$login) {
                 </div>
                 <div class="d-grid gap-2 col-6 mx-auto">
                     <button class="btn btn-secondary btn-sm" type="button" id="Back">Back</button>
-                    <button class="btn btn-primary btn-sm" id="changeimage" type="button"><span id="changeimage-label">ChangeImage</span></button>
+                    <button class="btn btn-primary btn-sm" id="changeimage" type="button"><span id="changeimage-label">Change Image</span></button>
                     <input type="file" class="d-none" id="ProfileImage" accept="image/png, image/jpeg image/jpg image/gif">
+                    <?php ($UserRole == 'seller') ? print('<button class="btn btn-primary btn-sm" type="button" onclick="window.location.href=\'../Admin/Dashboard/Dashboard_Seller.php\'">Dashboard</button>') : '' ?>
+                    <?php ($UserRole == 'admin') ? print('<button class="btn btn-primary btn-sm" type="button" onclick="window.location.href=\'../Admin/Dashboard/Dashboard.php\'">Homepage</button>') : '' ?>
+                    <button class="btn btn-danger btn-sm" type="button" onclick="window.location.href='../Signout/Logout.php'">Sign Out</button>
                 </div>
             </div>
             <div class="col-md-5">
@@ -77,7 +80,8 @@ if (!$login) {
                         </div>
                         <div class="col-md-6">
                             <label for="FirstName" class="form-label">First Name</label>
-                            <input type="text" class="form-control form-control-sm" id="FirstName" placeholder="e.g. Juan" aria-describedby="FN_FB updetails" <?php echo ($UserRole == 'seller') ? 'disabled' : ''; ?>>
+                            <input type="text" class="form-control form-control-sm" id="FirstName" placeholder="e.g. Juan" aria-describedby="FN_FB updetails" <?php echo ($UserRole == 'seller') ? 'disabled hidden' : ''; ?>>
+                            <input type="text" readonly class="form-control-plaintext text-center" id="FirstName-readonly" aria-describedby="FN_FB updetails" <?php echo ($UserRole == 'seller') ? '' : 'hidden'; ?> value="<?php echo $_SESSION['User_Data']['First_Name']; ?>">
                             <div id="FN_FB" class="invalid-feedback"></div>
                         </div>
                         <div class="col-md-6">

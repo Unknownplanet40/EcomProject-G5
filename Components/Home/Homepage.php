@@ -137,7 +137,7 @@ if (isset($_SESSION['User_Data'])) {
                     }
 
                     // change popularity to [100] to show the most popular products
-                    $stmt_prod = $conn->prepare("SELECT * FROM product WHERE Status = 0 AND Popularity > 3000 ORDER BY Popularity ASC LIMIT 8");
+                    $stmt_prod = $conn->prepare("SELECT * FROM product WHERE Status = 0 AND Popularity != 0 ORDER BY Popularity DESC LIMIT 8");
                     $stmt_prod->execute();
                     $result = $stmt_prod->get_result();
 

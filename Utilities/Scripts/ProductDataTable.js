@@ -1,6 +1,4 @@
-// dont display the product_Inv.php in the URL
-
-
+SelectedItem = [];
 
 function tableReady() {
   $("#loader").addClass("d-none");
@@ -693,6 +691,21 @@ $("#UpdateBtn").click(function () {
   }
 });
 
+function modal(status, modalname) {
+  const Name = "#" + modalname;
+  const modalStatus = status;
+
+  if (modalStatus == "show") {
+    const UniModal = new bootstrap.Modal(Name, {
+      keyboard: false,
+      dispose: true,
+    });
+    UniModal.show();
+  } else if (modalStatus == "hide") {
+    $(Name).modal("hide");
+  }
+}
+
 $(document).ready(function () {
   // Initialize Bootstrap Tooltip and Popover
   const tooltipTriggerList = document.querySelectorAll(
@@ -718,7 +731,7 @@ $(document).ready(function () {
     layout: {
       topStart: {
         pageLength: {
-          menu: [5, 10, 25, 50, 100],
+          menu: [5, 10],
         },
       },
       topEnd: {},
@@ -729,7 +742,7 @@ $(document).ready(function () {
       {
         data: null,
         defaultContent:
-          '<td class="d-flex justify-content-evenly"><button type="button" class="btn btn-sm btn-outline-success"><svg class="bi me-1" width="14" height="14" fill="currentColor"><use xlink:href="#Pencil" /></svg><span>Edit</span></button><button type="button" class="btn btn-sm btn-danger"><svg class="bi" width="16" height="16" fill="currentColor"><use xlink:href="#Trash" /></svg><span class="visually-hidden">Delete</span></button></td>',
+          '<div class="btn-group btn-group-sm" role="group"><button type="button" id="Edit" class="btn btn-sm btn-primary me-1"><svg class="bi" width="14" height="14" fill="currentColor"><use xlink:href="#Pencil" /></svg></span></button><button type="button" id="Remove" class="btn btn-sm btn-danger"><svg class="bi" width="14" height="14" fill="currentColor"><use xlink:href="#Trash" /></svg></span></button></div>',
         targets: -1,
       },
       {
@@ -756,7 +769,7 @@ $(document).ready(function () {
 
   $("#ProductTable tbody").on("click", "button", function () {
     var data = Table.row($(this).parents("tr")).data();
-    if ($(this).text() === "Edit") {
+    if ($(this).attr("id") === "Edit") {
       clearModal();
       GetProductData(`../../../Utilities/api/AdminProducts.php?id=${data[1]}`);
       var modal = new bootstrap.Modal(document.getElementById("ProdModal"));
@@ -797,7 +810,167 @@ $(document).ready(function () {
         ValidImage(this.files[0], "Pic-4", 4);
       });
     } else {
-      RemoveProduct(data[1]);
+      // check row count
+      if (Table.rows().count() == 1) {
+        Swal.fire({
+          title: "Are you sure?",
+          text: "You are about to Archive the last product. This action will remove the product from the list.",
+          icon: "warning",
+          customClass: {
+            confirmButton: "btn btn-danger",
+            cancelButton: "btn btn-primary",
+          },
+          showCancelButton: true,
+          confirmButtonColor: "#d33",
+          cancelButtonColor: "#3085d6",
+          confirmButtonText: "Yes, archive it!",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            RemoveProduct(data[1]);
+          }
+        });
+        return;
+      }
+
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You want to archive this product?",
+        icon: "warning",
+        customClass: {
+          confirmButton: "btn btn-danger",
+          cancelButton: "btn btn-primary",
+        },
+        showCancelButton: false,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, archive it!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          RemoveProduct(data[1]);
+        }
+      });
     }
   });
+
+  $("#SearchProduct").on("keyup", function () {
+    Table.search(this.value).draw();
+  });
+
+  $('#ArchiveProduct').on("click", async function(){
+    modal("show", "ArchiveUser");
+
+    try {
+      const response = await fetch("../../../Utilities/api/GetProdArchive.php?archive=0&brand=" + Brand);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const UserInfo = await response.json();
+
+      if (UserInfo.status == "error") {
+        console.error(UserInfo.error);
+      }
+
+      if (UserInfo.status == "success") {
+        $("#nodata").addClass("d-none");
+        $("#ArchiveList").removeClass("d-none");
+        $("#ArchiveList tbody").empty();
+
+        var list = $("#ArchiveList");
+
+        for (var i = 0; i < UserInfo.data.length; i++) {
+          var li = $("<li>").addClass("list-group-item d-flex justify-content-between align-items-start");
+          var input = $("<input>").addClass("form-check-input me-1").attr("type", "checkbox").attr("id", "CB_" + UserInfo.data[i].ID);
+          var div1 = $("<div>").addClass("ms-2 me-auto");
+          var div2 = $("<div>").addClass("fw-bold");
+          var label = $("<label>").text(UserInfo.data[i].Prod_Name).attr("for", "CB_" + UserInfo.data[i].ID);
+          var span = $("<span>").text("Color: " + UserInfo.data[i].Color + " | Price: " + UserInfo.data[i].Price + " | Popularity: " + UserInfo.data[i].Popularity);
+          var span2 = $("<span>").addClass("badge text-bg-secondary rounded text-uppercase").text("Removed").attr("id", "Status_" + UserInfo.data[i].ID);
+
+          div2.append(label);
+          div1.append(div2, span);
+          li.append(input, div1, span2);
+          list.append(li);
+
+          //event listener for checkbox
+          $("#CB_" + UserInfo.data[i].ID).on("change", function () {
+            var ID = $(this).attr("id").substring(3);
+            if ($(this).is(":checked")) {
+              SelectedItem.push(ID);
+              $("#Status_" + ID).removeClass("text-bg-secondary").addClass("text-bg-primary").text("Selected");
+            } else {
+              $("#Status_" + ID).removeClass("text-bg-primary").addClass("text-bg-secondary").text("Removed");
+              var index = SelectedItem.indexOf(ID);
+              SelectedItem.splice(index, 1);
+            }
+          });
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  });
+
+  $("#RestoreUser").on("click", async function(){
+    if (SelectedItem.length == 0) {
+      $('#RestoreUser').removeClass("btn-primary").addClass("btn-secondary shack").text("No item selected").attr("disabled", true);
+
+      setTimeout(function () {
+        $('#RestoreUser').removeClass("btn-secondary shack").addClass("btn-primary").text("Restore Selected").attr("disabled", false);
+      }, 1500);
+      return;
+    }
+
+    try {
+      const response = await fetch("../../../Utilities/api/GetProdArchive.php?delete=alluserpersonalinformations", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ data: SelectedItem }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.status == "error") {
+        console.error(data.message);
+      }
+
+      if (data.status == "success") {
+        modal("hide", "ArchiveUser");
+        Swal.mixin({
+          toast: true,
+          position: "top",
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        })
+          .fire({
+            icon: data.status,
+            title: data.message,
+          })
+          .then((result) => {
+            SelectedItem = [];
+            if (result.dismiss === Swal.DismissReason.timer) {
+              location.reload();
+            } else {
+              location.reload();
+            }
+          });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  });
+
+
 });

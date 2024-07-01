@@ -153,7 +153,7 @@
                         </div>
                         <div class="input-group input-group-sm mb-3">
                             <span class="input-group-text">Brand</span>
-                            <input type="text" class="form-control" id="Prod_Brand" value="" list="BrandList">
+                            <input type="text" class="form-control" id="Prod_Brand" value="<?php echo $Brand ?>" list="BrandList" disabled>
                         </div>
                         <datalist id="BrandList">
                             <option value="DBTK">DBTK</option>
@@ -212,6 +212,61 @@
                         <small class="text-danger" id="error-mes">&nbsp;</small>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ArchiveUser" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h1 class="modal-title fs-5">Archive Account</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="nodata">
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="list-group list-group-flush" id="ArchiveList">
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-sm btn-primary" id="RestoreUser">Restore Selected</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="updatestatus" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h1 class="modal-title fs-5">Plase Select Status</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted">You Selected:</p>
+                <div class="mb-3" style="overflow: auto; max-height: 128px;">
+                    <ul class="list-group list-group-flush" id="StatusList">
+                    </ul>
+                </div>
+                <p class="text-muted">Select Status:</p>
+                <select class="form-select form-select-sm" id="StatusSelect">
+                    <option hidden selected>Select Status</option>
+                    <option value="Prepering" id="PS">Prepering</option>
+                    <option value="Shipping" id="SS">Shipping</option>
+                    <option value="Delivered" id="DS">Delivered</option>
+                    <option value="Cancelled" id="CS">Cancelled</option>
+                </select>
+                <p class="text-muted" id="EM"></p>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-sm btn-primary" id="itemupstat">Update Status</button>
             </div>
         </div>
     </div>

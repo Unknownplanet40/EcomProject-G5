@@ -75,7 +75,7 @@
                                         <h4 class="card-text fw-bold">₱ <span id="Pprice"></span>.00<small class="visually-hidden" id="PriceItem"></small></h4>
                                     </div>
                                 </div>
-                                <div class="row row-cols-2 g-2">
+                                <div class="row row-cols-2 g-2<?php echo $UserType == 'user' ? '' : ' visually-hidden'; ?>">
                                     <div class="col-6">
                                         <div class="input-group mb-3">
                                             <button id="Qminus" class="btn btn-sm btn-outline-primary rounded-start-0" type="button">

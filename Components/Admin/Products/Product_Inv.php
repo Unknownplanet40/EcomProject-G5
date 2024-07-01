@@ -16,6 +16,14 @@ if (isset($_SESSION['User_Data'])) {
         $Theme = $_SESSION['User_Data']['User_Settings']['Theme'];
         echo '<script>var Is_User_Logged_In = true;</script>';
         echo '<script>var User_ID = "' . $_SESSION['User_Data']['user_ID'] . '";</script>';
+
+        if ($_SESSION['User_Data']['First_Name'] == 'UND') {
+            $Brand = 'UNDRAFTED';
+            echo '<script>var Brand = "UNDRAFTED";</script>';
+        } else {
+            $Brand = $_SESSION['User_Data']['First_Name'];
+            echo '<script>var Brand = "' . $_SESSION['User_Data']['First_Name'] . '";</script>';
+        }
     }
 } else {
     echo '<script>var Is_User_Logged_In = false;</script>';
@@ -40,8 +48,16 @@ if (!$login) {
     <link rel="stylesheet" href="../../../Utilities/Stylesheets/Admin/SidebarStyle.css">
     <link rel="stylesheet" href="../../../Utilities/Stylesheets/Admin/ProductStyle.css">
     <script defer src="../../../Utilities/Scripts/ProductDataTable.js"></script>
-    <title>Dashboard</title>
+    <title>Products</title>
     <?php include_once('../../../Assets/Icons/Icon_Assets.php'); ?>
+    <script>
+        // clear specific local storage
+        localStorage.removeItem('FileName');
+        //get file mame and set it as the title
+        var FileName = document.location.pathname.split('/').slice(-1)[0];
+        // save to local storage
+        localStorage.setItem('FileName', FileName);
+    </script>
 </head>
 
 <body class="d-md-flex">
@@ -86,9 +102,8 @@ if (!$login) {
                 </thead>
                 <tbody class="table-group-divider" id="ProductTableBody">
                     <?php
-                    $showBrand = $_SESSION['User_Data']['First_Name'];
-                    $stmt = $conn->prepare("SELECT * FROM product WHERE Status = 0 AND Brand = ? ORDER BY Prod_Name ASC");
-                    $stmt->bind_param("s", $showBrand);
+                    $stmt = $conn->prepare("SELECT * FROM product WHERE Status = 0 AND Brand = ? ORDER BY Popularity DESC");
+                    $stmt->bind_param("s", $Brand);
                     $stmt->execute();
                     $result = $stmt->get_result();
                     $ID = 0;
@@ -99,7 +114,7 @@ if (!$login) {
                             $row['Popularity'] = "<span class='text-danger'>No Orders</span>";
                         } else {
                             $row['Popularity'] = number_format($row['Popularity']);
-                            $row['Popularity'] = "<span class='text-success fw-bold'>" . $row['Popularity'] . " Orders</span>";
+                            $row['Popularity'] = "<span class='text-success fw-bold'>" . $row['Popularity'] . " Sold</span>";
                         }
                     ?>
                         <tr>
@@ -108,7 +123,7 @@ if (!$login) {
                             <td><?php echo $row['Prod_Name'] ?></td>
                             <td><?php echo $row['Brand'] ?></td>
                             <td><?php echo $row['Color'] ?></td>
-                            <td class="text-start" data-price="<?php echo $row['Price'] ?>"><?php echo $row['Price'] ?>.00</td>
+                            <td class="text-start" data-price="<?php echo $row['Price'] ?>"><?php echo number_format($row['Price'], 2) ?></td>
                             <td class="text-center"><?php echo $row['Status'] ?></td>
                             <td class="text-center"><?php echo $row['Popularity'] ?></td>
                             <td class="d-flex justify-content-evenly">

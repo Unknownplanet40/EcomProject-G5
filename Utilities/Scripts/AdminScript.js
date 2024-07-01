@@ -96,11 +96,6 @@ $(document).ready(function () {
     $("#AdminTable").DataTable().search(this.value).draw();
   });
 
-  $("#SearchProduct").on("keyup", function () {
-    // pass value to dt-search-0
-    $("#ProductTable").DataTable().search(this.value).draw();
-  });
-
   $("#AdminTable tbody").on("click", "#Edit", async function () {
     var data = Admin.row($(this).parents("tr")).data();
     console.log(data);
@@ -184,6 +179,42 @@ $(document).ready(function () {
   $("#AdminTable tbody").on("click", "#Remove", function () {
     var data = Admin.row($(this).parents("tr")).data();
 
+    function loading(status) {
+      if (status == "show") {
+        Swal.mixin({
+          toast: true,
+          position: "top",
+          showConfirmButton: false,
+          didOpen: () => {
+            Swal.showLoading();
+          },
+        }).fire({
+          icon: "info",
+          title: "Plase wait while we process your request",
+        });
+      } else if (status == "hide") {
+        Swal.close();
+      }
+    }
+
+    if (!navigator.onLine) {
+      Swal.mixin({
+        toast: true,
+        position: "top",
+        showConfirmButton: false,
+        timer: 3500,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", Swal.stopTimer);
+          toast.addEventListener("mouseleave", Swal.resumeTimer);
+        },
+      }).fire({
+        icon: "warning",
+        title: "We are unable to process your request, Please check your internet connection",
+      });
+      return;
+    }
+
     if (User_ID == data[1]) {
       Swal.mixin({
         toast: true,
@@ -217,14 +248,14 @@ $(document).ready(function () {
         },
       }).fire({
         icon: "warning",
-        title: "You cannot delete the last account",
+        title: "You cannot Archive the last account",
       });
       return;
     }
 
     Swal.fire({
       title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      text: "You want to archive this account",
       icon: "warning",
       customClass: {
         confirmButton: "btn btn-sm btn-danger px-4 me-2",
@@ -244,7 +275,9 @@ $(document).ready(function () {
         } else if (path == "Account-Users.php") {
           userType = 3;
         }
-        
+
+        loading("show");
+
         try {
           const response = await fetch(
             "../../../Utilities/api/Special_UserInfo.php?archive=1&user=" + userType, {
@@ -268,6 +301,7 @@ $(document).ready(function () {
           }
 
           if (UserInfo.status == "success") {
+            loading("hide");
             Swal.mixin({
               toast: true,
               position: "top",
@@ -295,230 +329,220 @@ $(document).ready(function () {
   });
 
   $("#SaveUser").on("click", async function () {
-    var NameFile = localStorage.getItem("FileName");
     var HaveAddress = $(this).data("stat1");
     var isChanged = [];
     var stats = ["Active", "Inactive", "Suspended"];
     var roles = ["admin", "seller", "user"];
     var Sex = ["Male", "Female"];
-    switch (NameFile) {
-      case "Account-Admin.php":
-        if (
-          $("#First_Name").val() == "" ||
-          $("#Last_Name").val() == "" ||
-          $("#Email_Address").val() == "" ||
-          $("#Gender").val() == "" ||
-          $("#Status").val() == "" ||
-          $("#Role").val() == ""
-        ) {
-          const Toast = Swal.mixin({
-            toast: true,
-            position: "top",
-            showConfirmButton: false,
-            timer: 1500,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
-            },
+    
+    if (
+      $("#First_Name").val() == "" ||
+      $("#Last_Name").val() == "" ||
+      $("#Email_Address").val() == "" ||
+      $("#Gender").val() == "" ||
+      $("#Status").val() == "" ||
+      $("#Role").val() == ""
+    ) {
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top",
+        showConfirmButton: false,
+        timer: 1500,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        },
+      });
+      Toast.fire({
+        icon: "warning",
+        title: "Please fill up all the fields",
+      });
+      return;
+    }
+
+    if (HaveAddress == "true") {
+      if (
+        $("#Province").val() == "" ||
+        $("#Municipality").val() == "" ||
+        $("#Barangay").val() == "" ||
+        $("#HouseNo").val() == "" ||
+        $("#Zipcode").val() == ""
+      ) {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top",
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+        });
+        Toast.fire({
+          icon: "warning",
+          title: "Please fill up all the fields",
+        });
+        return;
+      }
+    }
+
+    if ($("#Email_Address").val() != $("#Email_Address").data("email")) {
+      var EmailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+      if (!EmailRegex.test($("#Email_Address").val())) {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top",
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+        });
+        Toast.fire({
+          icon: "warning",
+          title: "Invalid Email Address",
+        });
+
+        $("#Email_Address").addClass("is-invalid");
+        setTimeout(() => {
+          $("#Email_Address").removeClass("is-invalid");
+        }, 1500);
+        return;
+      }
+    }
+
+    if (isNaN($("#Contact").val())) {
+      $("#Contact").addClass("is-invalid");
+      setTimeout(() => {
+        $("#Contact").removeClass("is-invalid");
+      }, 1500);
+      return;
+    } else if ($("#Contact").val().length != 11) {
+      $("#Contact").addClass("is-invalid");
+      setTimeout(() => {
+        $("#Contact").removeClass("is-invalid");
+      }, 1500);
+      return;
+    }
+
+    if (roles.indexOf($("#Role").val()) == -1) {
+      $("#Role").addClass("is-invalid");
+      setTimeout(() => {
+        $("#Role").removeClass("is-invalid");
+      }, 1500);
+      return;
+    }
+
+    if (stats.indexOf($("#Status").val()) == -1) {
+      $("#Status").addClass("is-invalid");
+      setTimeout(() => {
+        $("#Status").removeClass("is-invalid");
+      }, 1500);
+      return;
+    }
+
+    if (Sex.indexOf($("#Gender").val()) == -1) {
+      $("#Gender").addClass("is-invalid");
+      setTimeout(() => {
+        $("#Gender").removeClass("is-invalid");
+      }, 1500);
+      return;
+    }
+
+    if ($("#Province").val() != $("#Province").data("province")) {
+      isChanged.push("Province");
+    }
+
+    if (
+      $("#Municipality").val() != $("#Municipality").data("municipality")
+    ) {
+      isChanged.push("Municipality");
+    }
+
+    if ($("#Barangay").val() != $("#Barangay").data("barangay")) {
+      isChanged.push("Barangay");
+    }
+
+    if ($("#HouseNo").val() != $("#HouseNo").data("house")) {
+      isChanged.push("House No");
+    }
+
+    if ($("#Zipcode").val() != $("#Zipcode").data("zip")) {
+      isChanged.push("Zipcode");
+    }
+
+    if ($("#Landmark").val() != $("#Landmark").data("landmark")) {
+      isChanged.push("Landmark");
+    }
+
+    var data = {
+      ID: $("#User_ID").val(),
+      First_Name: $("#First_Name").val(),
+      Last_Name: $("#Last_Name").val(),
+      Email_Address: $("#Email_Address").val(),
+      Gender: $("#Gender").val(),
+      Role: $("#Role").val(),
+      Contact: $("#Contact").val(),
+      Status: $("#Status").val(),
+      isChanged: isChanged,
+      Have_Address: HaveAddress,
+      Province: $("#Province").val(),
+      Municipality: $("#Municipality").val(),
+      Barangay: $("#Barangay").val(),
+      HouseNo: $("#HouseNo").val(),
+      Zipcode: $("#Zipcode").val(),
+      Landmark: $("#Landmark").val(),
+    };
+
+    try {
+      const response = await fetch("../../../Utilities/api/Special_UserInfo.php?update=1",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const UserInfo = await response.json();
+
+      if (UserInfo.status == "error") {
+        console.log(UserInfo.message);
+        return;
+      }
+
+      if (UserInfo.status == "success") {
+        modal("hide", "UserInfo");
+        Swal.mixin({
+          toast: true,
+          position: "top",
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        })
+          .fire({
+            icon: UserInfo.status,
+            title: UserInfo.message,
+          })
+          .then(() => {
+            location.reload();
           });
-          Toast.fire({
-            icon: "warning",
-            title: "Please fill up all the fields",
-          });
-          return;
-        }
-
-        if (HaveAddress == "true") {
-          if (
-            $("#Province").val() == "" ||
-            $("#Municipality").val() == "" ||
-            $("#Barangay").val() == "" ||
-            $("#HouseNo").val() == "" ||
-            $("#Zipcode").val() == ""
-          ) {
-            const Toast = Swal.mixin({
-              toast: true,
-              position: "top",
-              showConfirmButton: false,
-              timer: 1500,
-              timerProgressBar: true,
-              didOpen: (toast) => {
-                toast.onmouseenter = Swal.stopTimer;
-                toast.onmouseleave = Swal.resumeTimer;
-              },
-            });
-            Toast.fire({
-              icon: "warning",
-              title: "Please fill up all the fields",
-            });
-            return;
-          }
-        }
-
-        if ($("#Email_Address").val() != $("#Email_Address").data("email")) {
-          var EmailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-          if (!EmailRegex.test($("#Email_Address").val())) {
-            const Toast = Swal.mixin({
-              toast: true,
-              position: "top",
-              showConfirmButton: false,
-              timer: 1500,
-              timerProgressBar: true,
-              didOpen: (toast) => {
-                toast.onmouseenter = Swal.stopTimer;
-                toast.onmouseleave = Swal.resumeTimer;
-              },
-            });
-            Toast.fire({
-              icon: "warning",
-              title: "Invalid Email Address",
-            });
-
-            $("#Email_Address").addClass("is-invalid");
-            setTimeout(() => {
-              $("#Email_Address").removeClass("is-invalid");
-            }, 1500);
-            return;
-          }
-        }
-
-        if (isNaN($("#Contact").val())) {
-          $("#Contact").addClass("is-invalid");
-          setTimeout(() => {
-            $("#Contact").removeClass("is-invalid");
-          }, 1500);
-          return;
-        } else if ($("#Contact").val().length != 11) {
-          $("#Contact").addClass("is-invalid");
-          setTimeout(() => {
-            $("#Contact").removeClass("is-invalid");
-          }, 1500);
-          return;
-        }
-
-        if (roles.indexOf($("#Role").val()) == -1) {
-          $("#Role").addClass("is-invalid");
-          setTimeout(() => {
-            $("#Role").removeClass("is-invalid");
-          }, 1500);
-          return;
-        }
-
-        if (stats.indexOf($("#Status").val()) == -1) {
-          $("#Status").addClass("is-invalid");
-          setTimeout(() => {
-            $("#Status").removeClass("is-invalid");
-          }, 1500);
-          return;
-        }
-
-        if (Sex.indexOf($("#Gender").val()) == -1) {
-          $("#Gender").addClass("is-invalid");
-          setTimeout(() => {
-            $("#Gender").removeClass("is-invalid");
-          }, 1500);
-          return;
-        }
-
-        if ($("#Province").val() != $("#Province").data("province")) {
-          isChanged.push("Province");
-        }
-
-        if (
-          $("#Municipality").val() != $("#Municipality").data("municipality")
-        ) {
-          isChanged.push("Municipality");
-        }
-
-        if ($("#Barangay").val() != $("#Barangay").data("barangay")) {
-          isChanged.push("Barangay");
-        }
-
-        if ($("#HouseNo").val() != $("#HouseNo").data("house")) {
-          isChanged.push("House No");
-        }
-
-        if ($("#Zipcode").val() != $("#Zipcode").data("zip")) {
-          isChanged.push("Zipcode");
-        }
-
-        if ($("#Landmark").val() != $("#Landmark").data("landmark")) {
-          isChanged.push("Landmark");
-        }
-
-        var data = {
-          ID: $("#User_ID").val(),
-          First_Name: $("#First_Name").val(),
-          Last_Name: $("#Last_Name").val(),
-          Email_Address: $("#Email_Address").val(),
-          Gender: $("#Gender").val(),
-          Role: $("#Role").val(),
-          Contact: $("#Contact").val(),
-          Status: $("#Status").val(),
-          isChanged: isChanged,
-          Have_Address: HaveAddress,
-          Province: $("#Province").val(),
-          Municipality: $("#Municipality").val(),
-          Barangay: $("#Barangay").val(),
-          HouseNo: $("#HouseNo").val(),
-          Zipcode: $("#Zipcode").val(),
-          Landmark: $("#Landmark").val(),
-        };
-
-        try {
-          const response = await fetch("../../../Utilities/api/Special_UserInfo.php?update=1",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(data),
-            }
-          );
-
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-
-          const UserInfo = await response.json();
-
-          if (UserInfo.status == "error") {
-            console.log(UserInfo.message);
-            return;
-          }
-
-          if (UserInfo.status == "success") {
-            modal("hide", "UserInfo");
-            Swal.mixin({
-              toast: true,
-              position: "top",
-              showConfirmButton: false,
-              timer: 1500,
-              timerProgressBar: true,
-              didOpen: (toast) => {
-                toast.addEventListener("mouseenter", Swal.stopTimer);
-                toast.addEventListener("mouseleave", Swal.resumeTimer);
-              },
-            })
-              .fire({
-                icon: UserInfo.status,
-                title: UserInfo.message,
-              })
-              .then(() => {
-                location.reload();
-              });
-          }
-        } catch (error) {
-          console.error(error);
-        }
-        break;
-      case "Seller":
-        break;
-      case "User":
-        break;
-      default:
-        break;
+      }
+    } catch (error) {
+      console.error(error);
     }
   });
 
@@ -951,6 +975,8 @@ $(document).ready(function () {
         userType = 3;
       }
 
+      $("#RestoreUser").attr("disabled", true).html("Processing...").removeClass("btn-primary").addClass("btn-secondary");
+ 
       try {
         const response = await fetch("../../../Utilities/api/Special_UserInfo.php?archive=2&user=" + userType,
           {
@@ -974,6 +1000,7 @@ $(document).ready(function () {
         }
 
         if (UserInfo.status == "success") {
+          $("#RestoreUser").attr("disabled", false).html("Restored").removeClass("btn-primary").addClass("btn-success");
           modal("hide", "ArchiveUser");
           Swal.mixin({
             toast: true,
@@ -991,6 +1018,7 @@ $(document).ready(function () {
               title: UserInfo.message,
             })
             .then(() => {
+              $("#RestoreUser").html("Restore Selected").removeClass("btn-success").addClass("btn-primary");
               location.reload();
             });
         }

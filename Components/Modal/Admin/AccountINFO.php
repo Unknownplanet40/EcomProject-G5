@@ -70,7 +70,13 @@
                             </div>
                             <div class="col-sm-4">
                                 <label for="Status" class="form-label">Status</label>
-                                <input type="text" class="form-control" id="Status" list="StatusList" placeholder="Choose Account Status" data-status="" pattern="Active|Inactive|Suspended">
+                                <select class="form-select" id="Status">
+                                    <option value="Active" selected>Active Account</option>
+                                    <option value="Inactive" disabled>Inactive Account</option>
+                                    <option value="Suspended">Suspend Account</option>
+                                </select>
+
+                                <!-- <input type="text" class="form-control" id="Status" list="StatusList" placeholder="Choose Account Status" data-status="" pattern="Active|Inactive|Suspended">
                                 <script>
                                     var Status = document.getElementById('Status');
                                     Status.addEventListener('click', function() {
@@ -81,7 +87,7 @@
                                     <option value="Active" selected>Account is Active</option>
                                     <option value="Inactive" disabled>Inactive Account</option>
                                     <option value="Suspended">Suspend the Account</option>
-                                </datalist>
+                                </datalist> -->
                             </div>
                         </div>
                     </div>

@@ -173,6 +173,33 @@ try {
                 $conn->rollback();
                 response(['status' => 'error', 'message' => 'Failed to add address']);
             }
+        } else if ($_GET['address'] == "checkout"){
+            $contact = $data['contactno'];
+            $conn->begin_transaction();
+            $stmt_insert_address = $conn->prepare("INSERT INTO user_addressinfo (User_ID, Province, Municipality, Barangay, HouseNo, zipcode, Landmark) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmt_insert_address->bind_param('sssssss', $user_ID, $province, $municipality, $barangay, $houseno, $zipcode, $landmark);
+            $stmt_insert_address->execute();
+
+            if ($stmt_insert_address->affected_rows > 0) {
+                $stmt_insert_address->close();
+                // Update user_informations
+                $stmt_update = $conn->prepare("UPDATE user_informations SET Have_Address = 1, ContactInfo = ? WHERE User_ID = ?");
+                $stmt_update->bind_param('ss', $contact, $user_ID);
+                $stmt_update->execute();
+
+                if ($stmt_update->affected_rows > 0) {
+                    $stmt_update->close();
+                    $conn->commit();
+                    $_SESSION['User_Data']['HaveAddress'] = 1;
+                    response(['status' => 'success', 'message' => 'Address has been added']);
+                } else {
+                    $conn->rollback();
+                    response(['status' => 'error', 'message' => 'Failed to add address']);
+                }
+            } else {
+                $conn->rollback();
+                response(['status' => 'error', 'message' => 'Failed to add address']);
+            }
         } else {
             $conn->begin_transaction();
             $stmt_update_address = $conn->prepare("UPDATE user_addressinfo SET Province = ?, Municipality = ?, Barangay = ?, HouseNo = ?, zipcode = ?, Landmark = ? WHERE User_ID = ?");

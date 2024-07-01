@@ -1,4 +1,4 @@
-<audio id="backgroundMusic" loop autoplay>
+<audio id="backgroundMusic" loop>
     <source src="../../Assets/Audio/BG Music.wav" type="audio/wav" />
 </audio>
 <button id="play" hidden>Play</button>
@@ -72,7 +72,7 @@
                     $result = $stmt->get_result();
                     $CartItem = $result->num_rows; ?>
                     <div class="hstack gap-3">
-                        <div class="me-3 position-relative" id="cart-btn">
+                        <div class="me-3 position-relative <?php echo ($UserRole == "user") ? '' : 'd-none'; ?>" id="cart-btn">
                             <a class="d-block link-body-emphasis text-decoration-none mt-1" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">
                                 <span class="position-absolute top-0 start-100 translate-middle badge rounded-2 text-bg-primary bg-opacity-75">
                                     <span id="Cart-Items"><?php echo $CartItem; ?></span>
@@ -141,10 +141,12 @@
                                 <?php if ($UserRole == "admin") { ?>
                                     <li><a class="dropdown-item dropdown-item-text" href="../Admin/Dashboard/Dashboard.php">Dashboard</a></li>
                                 <?php } else if ($UserRole == "seller") { ?>
-                                    <li><a class="dropdown-item dropdown-item-text" href="../Admin/Products/Product_Inv.php">Products Dashboard</a></li>
+                                    <li><a class="dropdown-item dropdown-item-text" href="../Admin/Products/Product_Inv.php">Dashboard</a></li>
                                 <?php } ?>
                                 <li><a class="dropdown-item dropdown-item-text" href="../../Components/Profile/General_Setting.php">Settings</a></li>
-                                <li><a class="dropdown-item dropdown-item-text" href="#">My Orders</a></li>
+                                <?php if ($UserRole == "user") { ?>
+                                    <li><a class="dropdown-item dropdown-item-text" href="#">My Orders</a></li>
+                                <?php } ?>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>

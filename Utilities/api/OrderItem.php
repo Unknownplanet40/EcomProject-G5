@@ -86,8 +86,8 @@ try {
             response(['status' => 'error', 'message' => 'An error occurred while processing your request. Please try again later.']);
         }
 
-        $stmt_OrderDetails = $conn->prepare('INSERT INTO user_itemsorder (User_ID, Order_ID, Brand, Prod_Name, Size, Quantity, Price, Total_Price, PaymentMethod, Address, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-        $stmt_OrderDetails->bind_param('ssssssdssss', $userID, $orderID, $Brand, $name, $size, $Quantity, $Price, $TotalPrice, $PaymentMethod, $Address, $createdAt);
+        $stmt_OrderDetails = $conn->prepare('INSERT INTO user_itemsorder (User_ID, UID, Order_ID, Brand, Prod_Name, Size, Quantity, Price, Total_Price, PaymentMethod, Address, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+        $stmt_OrderDetails->bind_param('sssssssdssss', $userID, $cartItem['UID'], $orderID, $Brand, $name, $size, $Quantity, $Price, $TotalPrice, $PaymentMethod, $Address, $createdAt);
         $stmt_OrderDetails->execute();
         $stmt_OrderDetails->close();
 
@@ -111,5 +111,5 @@ try {
     response(['status' => 'success', 'message' => 'Order successfully placed.']);
 
 } catch (\Throwable $th) {
-    response(['status' => 'error', 'message' => 'An error occurred while processing your request. Please try again later. ' . $th->getMessage()]);
+    response(['status' => 'error', 'message' => 'An error occurred while processing your request. Please try again later. ' . $th->getMessage() . 'Line: ' . $th->getLine()]);
 }

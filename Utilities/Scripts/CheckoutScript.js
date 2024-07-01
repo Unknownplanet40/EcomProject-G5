@@ -500,16 +500,16 @@ async function CheckoutItems(UserID) {
       li.appendChild(p);
       CheckoutList.appendChild(li);
     }
-  } catch (error) {}
+  } catch (error) { }
 }
 
 async function DeleteCartItem(UUID, UserID) {
   try {
     const response = await fetch(
       "../../Utilities/api/DeleteCartItem.php?UUID=" +
-        UUID +
-        "&UserID=" +
-        UserID
+      UUID +
+      "&UserID=" +
+      UserID
     );
 
     if (!response.ok) {
@@ -521,7 +521,7 @@ async function DeleteCartItem(UUID, UserID) {
     if (data.Status == "Success") {
       CheckoutItems(UserID);
     }
-  } catch (error) {}
+  } catch (error) { }
 }
 
 async function addressAndPaymentMethod(userID) {
@@ -598,9 +598,9 @@ async function CheckforPaymentType(
   try {
     const response = await fetch(
       "../../Utilities/api/PaymentInfo.php?UserID=" +
-        UsesrID +
-        "&PaymentMethod=" +
-        PaymentMethod
+      UsesrID +
+      "&PaymentMethod=" +
+      PaymentMethod
     );
 
     if (!response.ok) {
@@ -797,13 +797,13 @@ async function SaveOLPaymentInfo(Type, Number, Email, UserID) {
   try {
     const response = await fetch(
       "../../Utilities/api/OnlinePayment.php?Type=" +
-        Type +
-        "&Number=" +
-        Number +
-        "&Email=" +
-        Email +
-        "&UserID=" +
-        UserID
+      Type +
+      "&Number=" +
+      Number +
+      "&Email=" +
+      Email +
+      "&UserID=" +
+      UserID
     );
 
     if (!response.ok) {
@@ -1092,7 +1092,7 @@ document.getElementById("SaveWallet").addEventListener("click", function () {
 });
 
 document.getElementById("ArchiveCart").addEventListener("click", function () {
-    ArchiveCart(TempUserID);
+  ArchiveCart(TempUserID);
 });
 
 document.getElementById("RetBTN").addEventListener("click", function () {
@@ -1116,5 +1116,124 @@ document.getElementById("RetBTN").addEventListener("click", function () {
       RetBTN.classList.remove("btn-secondary");
       RetBTN.classList.add("btn-primary");
     }, 1000);
+  }
+});
+
+document.getElementById("SaveAddress").addEventListener("click", async function () {
+  var Province = document.getElementById("Province");
+  var City = document.getElementById("Municipality");
+  var Barangay = document.getElementById("Barangay");
+  var HouseNo = document.getElementById("HouseNo");
+  var ZipCode = document.getElementById("ZipCode");
+  var ContactNo = document.getElementById("Contact");
+  var Landmark = document.getElementById("Landmark");
+
+  if (
+    Province.value == "" ||
+    City.value == "" ||
+    Barangay.value == "" ||
+    HouseNo.value == "" ||
+    ZipCode.value == "" ||
+    ContactNo.value == ""
+  ) {
+    Swal.mixin({
+      toast: true,
+      position: "top",
+      showConfirmButton: false,
+      timer: 2000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.addEventListener("mouseenter", Swal.stopTimer);
+        toast.addEventListener("mouseleave", Swal.resumeTimer);
+      },
+    }).fire({
+      icon: "warning",
+      text: "Please fill up all fields.",
+    });
+    return;
+  }
+
+  if (ContactNo.value.length !== 11) {
+    ContactNo.classList.add("is-invalid");
+    setTimeout(() => {
+      ContactNo.classList.remove("is-invalid");
+    }, 2000);
+    return;
+  } else if (isNaN(ContactNo.value)) {
+    ContactNo.classList.add("is-invalid");
+    setTimeout(() => {
+      ContactNo.classList.remove("is-invalid");
+    }, 2000);
+    return;
+  }
+
+  if (ZipCode.value.length !== 4) {
+    ZipCode.classList.add("is-invalid");
+    setTimeout(() => {
+      ZipCode.classList.remove("is-invalid");
+    }, 2000);
+    return;
+  } else if (isNaN(ZipCode.value)) {
+    ZipCode.classList.add("is-invalid");
+    setTimeout(() => {
+      ZipCode.classList.remove("is-invalid");
+    }, 2000);
+    return;
+  }
+
+  var data = {
+    UserID: TempUserID,
+    province: Province.value,
+    municipality: City.value,
+    barangay: Barangay.value,
+    houseno: HouseNo.value,
+    zipcode: ZipCode.value,
+    contactno: ContactNo.value,
+    landmark: Landmark.value,
+  };
+
+  try {
+    const response = await fetch("../../Utilities/api/UserInfo.php?address=checkout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error("HTTP error " + response.status);
+    }
+
+    const resData = await response.json();
+
+    if (resData.status === "error") {
+      console.error(resData.message);
+      return;
+    };
+
+    if (resData.status === "success") {
+      Swal.mixin({
+        toast: true,
+        position: "top",
+        showConfirmButton: false,
+        timer: 1500,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", Swal.stopTimer);
+          toast.addEventListener("mouseleave", Swal.resumeTimer);
+        },
+      })
+        .fire({
+          icon: "success",
+          text: "Address saved successfully.",
+        })
+        .then(() => {
+          document.getElementById("AddModalClose").click();
+          addressAndPaymentMethod(TempUserID);
+        });
+    }
+  } catch (error) {
+    console.error("Function: SaveAddress\n", error);
   }
 });

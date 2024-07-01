@@ -91,7 +91,7 @@ if (!$login) {
                             <div class="col-md-6 text-center" id="showtemp">
                                 <p class="">Temporary Password <small class="text-secondary">(Hover to show)</small></p>
                                 <h3 class="mb-3" id="Email_Pass_temp"><?php echo $Email_Pass_new; ?></h3>
-                                <h3 class="mb-3 visually-hidden" id="Email_Pass"><?php echo $Email_Pass; ?></h3>
+                                <h3 class="mb-3 visually-hidden" style="cursor: pointer;" id="Email_Pass"><?php echo $Email_Pass; ?></h3>
                             </div>
                             <div class="col-md-12 text-center">
                                 <butto class="btn btn-primary btn-gradient w-50" id="Email_Data" data-bs-toggle="modal" data-bs-target="#EmailData">Update Service Information</button>
