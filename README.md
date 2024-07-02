@@ -74,6 +74,8 @@ By modifying these values, you are increasing the maximum file upload size and e
 3. Navigate to the `EcomProject-G5/Database` folder and select the **"playaz_db.sql"** file.
 4. Click on the **"Go"** button to import the database.
 
+> Please note that the database import may take some time depending on your system's performance.
+
 ## Step 7: Open the Website
 
 Open your browser and go to `http://localhost/EcomProject-G5/`.
@@ -84,16 +86,22 @@ Go to `http://localhost/EcomProject-G5` and just login with the following creden
 
 ### Admin Credentials
 
-- **Username:** admin
-- **Password:** admin
+- **Username:** yokiheb934@cnurbano.com
+- **Password:** Yokiheb@934
 
 after logging in, you can click on your profile then click on the "Dashboard" button to access the admin panel.
 
 ### Seller Credentials
 
 - DBTK Seller
-  - **Username:** dbtk@example.com
-  - **Password:** dbtk123
+  - **Username:** Dbtk@seller.com
+  - **Password:** DbtkSellerAccount@123
+
+- UND Seller
+  - **Username:** logot65379@joeroc.com
+  - **Password:** uaJPoV2mdFsN
+
+<sup>**Note:** You can also create a new seller account from the website.</sup>
 
 after logging in, you can click on your profile then click on the "Dashboard" button to access the seller panel.
 
@@ -101,8 +109,8 @@ after logging in, you can click on your profile then click on the "Dashboard" bu
 
 For customer credentials, you can create a new account or use the following test account:
 
-- **Email:** Example@domain.com
-- **Password:** 123456
+- **Email:** ninevic267@jadsys.com
+- **Password:** Secret@123
 
 Please make sure that you have a working internet connection to load some of the external resources used in the website. 
 

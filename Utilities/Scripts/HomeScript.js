@@ -62,7 +62,6 @@ backgroundMusic.currentTime = localStorage.getItem("BGMusicTime");
 document.addEventListener("DOMContentLoaded", function () {
   // ConsoleMessage();
 
-  
   var keys = [];
   var konami = "38,38,40,40,37,39,37,39,66,65"; // Konami Code
 
@@ -70,6 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
     backgroundMusic
       .play()
       .then(() => {
+        backgroundMusic.volume = 0.1;
         setInterval(function () {
           localStorage.setItem("BGMusicTime", backgroundMusic.currentTime);
         }, 1000);
@@ -82,7 +82,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.removeEventListener("click", playMusic);
     document.removeEventListener("keypress", playMusic);
   }
-  
+
   // Add event listeners for user interaction
   document.addEventListener("click", playMusic);
   document.addEventListener("keypress", playMusic);
@@ -578,9 +578,8 @@ document.addEventListener("DOMContentLoaded", function () {
         // Loop through each image element and set the src attribute
         for (let i = 1; i <= imagePaths.length; i++) {
           const imgElement = document.getElementById(`bimg-${i}`);
-          imgElement.src = `../../Assets/Images/Brands_Assets/Light/${
-            imagePaths[i - 1]
-          }`;
+          imgElement.src = `../../Assets/Images/Brands_Assets/Light/${imagePaths[i - 1]
+            }`;
           imgElement.onerror = function () {
             imgElement.src = "../../Assets/Images/Alternative.gif";
           };
@@ -597,9 +596,8 @@ document.addEventListener("DOMContentLoaded", function () {
         // Loop through each image element and set the src attribute
         for (let i = 1; i <= imagePaths.length; i++) {
           const imgElement = document.getElementById(`bimg-${i}`);
-          imgElement.src = `../../Assets/Images/Brands_Assets/Dark/${
-            imagePaths[i - 1]
-          }`;
+          imgElement.src = `../../Assets/Images/Brands_Assets/Dark/${imagePaths[i - 1]
+            }`;
           imgElement.onerror = function () {
             imgElement.src = "../../Assets/Images/Alternative.gif";
           };
@@ -892,7 +890,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         p4.textContent =
                           "Subtotal: ₱ " +
                           data.cart_items[i].prod_Details.Prod_Price *
-                            data.cart_items[i].Item_Qty;
+                          data.cart_items[i].Item_Qty;
 
                         // Append in the correct order
                         small.appendChild(a);
@@ -1022,5 +1020,205 @@ document.addEventListener("DOMContentLoaded", function () {
       console.log("No script to run.");
       break;
   }
+
+
+  // --------------------------------------------------------- //
+
+  async function userOrders(Status) {
+    try {
+      const response = await fetch("../../Utilities/api/FetchOrders.php?status=" + Status);
+
+      if (!response.ok) {
+        throw new Error("An error occured while fetching data.");
+      }
+
+      const data = await response.json();
+
+      if (data.status == "error") {
+        console.error(data.error);
+        return;
+      }
+
+      if (data.status == "success") {
+        var list_1 = document.getElementById("list-tab-1");
+        list_1.innerHTML = "";
+
+        if (data.orders.length == 0) {
+          var div = document.createElement("div");
+          div.classList.add("text-center");
+
+          var spinner = document.createElement("div");
+          spinner.classList.add("spinner-border");
+          spinner.setAttribute("role", "status");
+
+          var span = document.createElement("span");
+          span.classList.add("visually-hidden");
+          span.textContent = "Loading...";
+          spinner.appendChild(span);
+
+          div.appendChild(spinner);
+
+          list_1.appendChild(div);
+
+          return;
+        }
+
+        data.orders.forEach(order => {
+          var a = document.createElement("a");
+          a.classList.add("list-group-item", "list-group-item-action");
+          a.setAttribute("aria-current", "true");
+
+          var div1 = document.createElement("div");
+          div1.classList.add("d-flex", "w-100", "justify-content-between");
+
+          var h5 = document.createElement("h5");
+          h5.classList.add("mb-1");
+          h5.textContent = order.Prod_Name;
+
+          var pIcon = document.createElement("p");
+          var iconClose = document.createElement("i");
+          iconClose.classList.add("btn-close");
+          iconClose.id = "close_" + order.Order_ID;
+          pIcon.appendChild(iconClose);
+
+          var p = document.createElement("p");
+          p.classList.add("mb-1");
+
+          var smallDate = document.createElement("small");
+          var date = new Date(order.Created_at);
+          order.Created_at = date.toLocaleString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric",
+            hour12: true,
+          });
+
+          smallDate.innerHTML = `<b>Date Ordered:</b> <span class="text-primary">${order.Created_at}</span>`;
+
+          var smallSize = document.createElement("small");
+          if (order.Size == "S") {
+            smallSize.innerHTML = `<b>Size:</b> <span class="text-primary">Small</span>`;
+          } else if (order.Size == "M") {
+            smallSize.innerHTML = `<b>Size:</b> <span class="text-primary">Medium</span>`;
+          } else if (order.Size == "L") {
+            smallSize.innerHTML = `<b>Size:</b> <span class="text-primary">Large</span>`;
+          } else {
+            smallSize.innerHTML = `<b>Size:</b> <span class="text-primary">Extra Large</span>`;
+          }
+
+          var smallQuantity = document.createElement("small");
+          smallQuantity.innerHTML = `<b>Quantity:</b> <span class="text-primary">${order.Quantity}</span>`;
+
+          var smallPrice = document.createElement("small");
+          smallPrice.innerHTML = `<b>Price:</b> <span class="text-primary">₱ ${order.Total_Price}</span>`;
+
+          var smallStatus = document.createElement("small");
+          if (Status == "pending") {
+            smallStatus.innerHTML = `<b>Current Status:</b> <span class="badge rounded-pill bg-primary rounded-1">Preparing</span>`;
+          } else {
+            smallStatus.innerHTML = `<b>Current Status:</b> <span class="badge rounded-pill bg-primary rounded-1">${Status}</span>`;
+          }
+
+          p.appendChild(smallDate);
+          p.appendChild(document.createElement("br"));
+          p.appendChild(smallSize);
+          p.appendChild(document.createElement("br"));
+          p.appendChild(smallQuantity);
+          p.appendChild(document.createElement("br"));
+          p.appendChild(smallPrice);
+
+          div1.appendChild(h5);
+          div1.appendChild(pIcon);
+
+          a.appendChild(div1);
+          a.appendChild(p);
+          a.appendChild(smallStatus);
+
+          list_1.appendChild(a);
+
+          document.getElementById("close_" + order.Order_ID).addEventListener("click", function () {
+            var OrderID = this.id.split("_")[1];
+
+            if (Status == "pending") {
+              Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: false,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, cancel it!",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  fetch("../../Utilities/api/CancelOrder.php?order_id=" + OrderID)
+                    .then((response) => response.json())
+                    .then((data) => {
+                      if (data.status == "success") {
+                       Swal.mixin({
+                          toast: true,
+                          position: "top",
+                          showConfirmButton: false,
+                          timer: 1500,
+                          timerProgressBar: true,
+                          didOpen: (toast) => {
+                            toast.addEventListener("mouseenter", Swal.stopTimer);
+                            toast.addEventListener("mouseleave", Swal.resumeTimer);
+                          },
+                        }).fire({
+                          icon: data.status,
+                          title: data.message,
+                        }).then(() => {
+                          userOrders("pending");
+                        });
+                      } else {
+                        Swal.mixin({
+                          toast: true,
+                          position: "top",
+                          showConfirmButton: false,
+                          timer: 1500,
+                          timerProgressBar: true,
+                          didOpen: (toast) => {
+                            toast.addEventListener("mouseenter", Swal.stopTimer);
+                            toast.addEventListener("mouseleave", Swal.resumeTimer);
+                          },
+                        }).fire({
+                          icon: data.status,
+                          title: data.message,
+                        });
+                      }
+                    });
+                }
+              });
+            }
+          });
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  document.getElementById("showorders").addEventListener("click", function () {
+    userOrders("pending");
+  });
+
+  document.getElementById("tab1").addEventListener("click", function () {
+    userOrders("pending");
+  })
+
+  document.getElementById("tab2").addEventListener("click", function () {
+    userOrders("Shipping");
+  })
+
+  document.getElementById("tab3").addEventListener("click", function () {
+    userOrders("Delivered");
+  })
+
+  document.getElementById("tab4").addEventListener("click", function () {
+    userOrders("Cancelled");
+  })
 });
 

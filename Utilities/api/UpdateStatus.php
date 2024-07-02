@@ -49,9 +49,7 @@ function getCredential($conn, $keyName)
     return $row['Credential'];
 }
 
-
 try {
-
     $data = json_decode(file_get_contents('php://input'), true);
     $order_id = $data['SelectedID'];
     $status = $data['Status'];

@@ -112,3 +112,40 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="UserOrders" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Order Details</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+                        <div class="list-group" id="list-tab-1" role="tablist">
+                            What does the fox say?
+                            Fuck You
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0 d-flex justify-content-center">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="tab1" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Preparing</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tab2" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Shipping</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tab3" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false">Delivered</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tab4" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="disabled-tab-pane" aria-selected="false">Cancelled</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

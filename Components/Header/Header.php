@@ -145,7 +145,7 @@
                                 <?php } ?>
                                 <li><a class="dropdown-item dropdown-item-text" href="../../Components/Profile/General_Setting.php">Settings</a></li>
                                 <?php if ($UserRole == "user") { ?>
-                                    <li><a class="dropdown-item dropdown-item-text" href="#">My Orders</a></li>
+                                    <li><a class="dropdown-item dropdown-item-text" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#UserOrders" id="showorders">My Orders</a></li>
                                 <?php } ?>
                                 <li>
                                     <hr class="dropdown-divider">
@@ -191,7 +191,8 @@
     </div>
     <div class="offcanvas-footer my-3">
         <div class=" vstack gap-2 col-10 mx-auto">
-            <button id="tocheckout" type="button" class="btn btn-primary" <?php echo ($CartItem == 0) ? 'disabled' : ''; ?>>Proceed to Checkout</button>
+            <button id="tocheckout" type="button" class="btn btn-primary" <?php //echo ($CartItem == 0) ? 'disabled' : ''; 
+                                                                            ?>>Proceed to Checkout</button>
             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">Continue Shopping</button>
         </div>
     </div>

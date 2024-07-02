@@ -68,7 +68,7 @@ if (!$login) {
                     <button class="btn btn-primary btn-sm" id="changeimage" type="button"><span id="changeimage-label">Change Image</span></button>
                     <input type="file" class="d-none" id="ProfileImage" accept="image/png, image/jpeg image/jpg image/gif">
                     <?php ($UserRole == 'seller') ? print('<button class="btn btn-primary btn-sm" type="button" onclick="window.location.href=\'../Admin/Dashboard/Dashboard_Seller.php\'">Dashboard</button>') : '' ?>
-                    <?php ($UserRole == 'admin') ? print('<button class="btn btn-primary btn-sm" type="button" onclick="window.location.href=\'../Admin/Dashboard/Dashboard.php\'">Homepage</button>') : '' ?>
+                    <?php ($UserRole == 'admin') ? print('<button class="btn btn-primary btn-sm" type="button" onclick="window.location.href=\'../Admin/Dashboard/Dashboard.php\'">Dashboard</button>') : '' ?>
                     <button class="btn btn-danger btn-sm" type="button" onclick="window.location.href='../Signout/Logout.php'">Sign Out</button>
                 </div>
             </div>
